@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>Panel Control Board</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 17px;
+        }
+
+        a, p {
+            font-size: 20px;
+            color: #818181;
+            text-align: center;
+        }
+
+        button {
+            text-align: center;
+            justify-content: center;
+            background: none;
+            border-style: none;
+            box-shadow: none;
+            font-weight: bold;
+            border-radius: 7px;
+
+        }
+
+        div {
+            text-align: center;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            /*居中*/
+            margin-right: 40px;
+        }
+
+        ul li {
+            list-style: none;
+            margin: 0 auto;
+        }
+
+        #popUpForPlacingPanel {
+            background: white;
+            height: 400px;
+            width: 250px;
+            border-radius: 7px;
+            border-style: solid;
+            border-color: #0084CC;
+            margin-left: 20px;
+            position: fixed;
+            top: 200px;
+            left: 40px;
+            z-index: 1;
+        }
+
+        #add_panel, #select_panel, #delete_panel, #delete_all_panel, #addToReport {
+            height: 40px;
+            width: 170px;
+        }
+
+        #add_panel:hover, #select_panel:hover, #delete_panel:hover, #delete_all_panel:hover, #addToReport:hover {
+            background: rgb(125, 186, 214);
+        }
+
+        #add_panel:active, #select_panel:active, #delete_panel:active, #delete_all_panel:active, #addToReport:active {
+            box-shadow: 0 10px #999;
+            transform: translateY(5px);
+        }
+
+    </style>
+    <script src="https://js.arcgis.com/4.16/"></script>
+    
+
+</head>
+
+<script>
+    addPanelState = 0;
+
+
+    function addPanelA() {
+        addPanelState = 1;
+    }
+
+    function addPanelB() {
+        addPanelState = 2;
+    }
+
+    function deletePanel() {
+        addPanelState = 3;
+    }
+
+    function deletePanels(){
+        if (dynamicLayerMap.size() !== 0) {
+            for (var m of dynamicLayerMap.keySet()) {
+                map.findLayerById(dynamicLayerMap.get(m)).visible = false;
+                dynamicLayerMap.remove(m);
+            }
+        }
+    }
+
+    a_count=0;
+    b_count=0;
+    count_list=[];
+
+    function addToReport(){
+        // alert(dynamicLayerMap.keySet())
+        if (dynamicLayerMap.size() !== 0) {
+            for (var m of dynamicLayerMap.keySet()) {
+
+                if (m.charAt(m.length-1)==="1"){
+                    a_count+=1;
+                }
+                if (m.charAt(m.length-1)==="2"){
+                    b_count+=1;
+                }
+            }
+        }
+        count_list=[a_count,b_count];
+        document.cookie = count_list.toString();
+        // alert(document.cookie)
+    }
+
+    function HashMap() {
+        //定义长度
+        var length = 0;
+        //创建一个对象
+        var obj = new Object();
+
+        /**
+         * 判断Map是否为空
+         */
+        this.isEmpty = function () {
+            return length == 0;
+        };
+
+        /**
+         * 判断对象中是否包含给定Key
+         */
+        this.containsKey = function (key) {
+            return (key in obj);
+        };
+
+        /**
+         * 判断对象中是否包含给定的Value
+         */
+        this.containsValue = function (value) {
+            for (var key in obj) {
+                if (obj[key] == value) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        /**
+         *向map中添加数据
+         */
+        this.put = function (key, value) {
+            if (!this.containsKey(key)) {
+                length++;
+            }
+            obj[key] = value;
+        };
+
+        /**
+         * 根据给定的Key获得Value
+         */
+        this.get = function (key) {
+            return this.containsKey(key) ? obj[key] : null;
+        };
+
+        /**
+         * 根据给定的Key删除一个值
+         */
+        this.remove = function (key) {
+            if (this.containsKey(key) && (delete obj[key])) {
+                length--;
+            }
+        };
+
+        /**
+         * 获得Map中的所有Value
+         */
+        this.values = function () {
+            var _values = new Array();
+            for (var key in obj) {
+                _values.push(obj[key]);
+            }
+            return _values;
+        };
+
+        /**
+         * 获得Map中的所有Key
+         */
+        this.keySet = function () {
+            var _keys = new Array();
+            for (var key in obj) {
+                _keys.push(key);
+            }
+            return _keys;
+        };
+
+        /**
+         * 获得Map的长度
+         */
+        this.size = function () {
+            return length;
+        };
+
+        /**
+         * 清空Map
+         */
+        this.clear = function () {
+            length = 0;
+            obj = new Object();
+        };
+    }
+
+    // function optimizedPlacement() {
+    //     alert("5");
+    //     addPanelState = 5;
+    // }
+
+    //     .then(function (text) {
+    //
+    //     irr_text = text.indexOf("irr");
+    //     roi_text = text.indexOf("roi");
+    //     irr = parseFloat(text.substring(irr_text + 5, roi_text - 1));
+    //
+    //     // TODO: Put ROI here:
+    //     // roi_text = text.indexOf("roi");
+    //     roi = parseFloat(text.substring(roi_text + 5));
+    //     document.getElementById("Investment").innerHTML = "Est. Investment:<br> " + (cal_fee() / 1000000).toFixed(2) + "million $";
+    //     document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
+    //     document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+    // })
+
+
+</script>
+
+<body>
+<div id="viewDiv"></div>
+<div id="popUpForPlacingPanel" class="popUp">
+
+    <div class="popUpContent_functions"
+         style="font-weight:bold;font-size:16px;color:#818181;text-align: center;margin-right: 10px">
+
+        <ul style="list-style-type:none; ">
+            <li style="line-height:5">
+                <button onclick="addPanelA()" id="add_panel">
+                    <a title="Add Array A in the permitted location. &#10Array A is about 120m long and 60m wide"> Add Array A </a>
+                </button>
+            </li>
+
+            <li style="line-height:5">
+                <button onclick="addPanelB()" id="select_panel">
+                    <a title=""> Add Array B </a>
+                </button>
+            </li>
+
+            <li style="line-height:5">
+                <button onclick="deletePanel()" id="delete_panel">
+                    <a title="Delete the chosen panel"> Delete panel </a>
+                </button>
+            </li>
+
+            <li style="line-height:5">
+                <button onclick="deletePanels()" id="delete_all_panel">
+                    <a title="Clear all the panels in the select area"> Delete All </a>
+                </button>
+            </li>
+
+            <li style="line-height:5">
+                <button onclick="addToReport()" id="addToReport">
+                    <a title="Add current placement information to the PDF"> Add to Report </a>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="popUpContent_input"
+         style="font-weight:bold;font-size:16px;color:#818181;padding:20px;padding-left:35px; text-align: center">
+        <!--<p>-->
+            <!--Azimuth:-->
+            <!--<input type="number" name="Azimuth" id="azimuth"-->
+                   <!--style="margin-top:20px;border:1px solid; border-radius: 5px ;width:45px; height:25px; "-->
+                   <!--wrap="soft"-->
+                   <!--value="">-->
+            <!--&lt;!&ndash;oninput="if(value>20) value=20;if(value<1) value=1;">&ndash;&gt;-->
+        <!--</p>-->
+
+        <!--<p>-->
+            <!--Slope:-->
+            <!--<input type="number" name="Slope" id="slope"-->
+                   <!--style="margin-top:20px;border:1px solid; border-radius: 5px ;width:45px; height:25px;"-->
+                   <!--wrap="soft"-->
+                   <!--value="">-->
+            <!--&lt;!&ndash;oninput="if(value>20) value=20;if(value<1) value=1;">&ndash;&gt;-->
+        <!--</p>-->
+
+        <!--<p>-->
+            <!--Orientation:-->
+            <!--<input type="number" name="Orientation" id="rientation"-->
+                   <!--style="margin-top:20px;border:1px solid; border-radius: 5px ;width:45px; height:25px; "-->
+                   <!--wrap="soft"-->
+                   <!--value="">-->
+            <!--&lt;!&ndash;oninput="if(value>20) value=20;if(value<1) value=1;">&ndash;&gt;-->
+        <!--</p>-->
+
+    </div>
+
+    <!--<div style=" overflow:hidden; padding:5px; text-align:center">-->
+        <!--<button type="submit" id="addToReport"-->
+                <!--style="margin-top:10px; padding:20px;font-size:16px;font-weight:bold; border-radius:5px; border-style:none;-->
+					<!--background:rgb(125, 186, 214);outline:none; "-->
+                <!--value="Optimized Placement" onclick="optimizedPlacement()">-->
+            <!--<p id="optimizedPlacement" title="Optimized Placement " style="font-weight: 10;font-size:16px">-->
+                <!--Optimized Placement</p>-->
+        <!--</button>-->
+    <!--</div>-->
+</div>
+
+<script>
+    require([
+        "esri/Map",
+        "esri/views/MapView",
+
+
+
+        "esri/layers/BaseDynamicLayer",
+        "esri/geometry/Polygon",
+        "esri/symbols/SimpleFillSymbol",
+        "esri/Graphic"
+    ], function (Map, MapView, BaseDynamicLayer
+        , Polygon, SimpleFillSymbol, Graphic
+    ) {
+        imageList = [];
+        //自定义叠加图片图层
+        var CustomImageOverlayLayer = BaseDynamicLayer.createSubclass({
+            properties: {
+                picUrl: null,
+                extent: null,
+                image: null,
+                canvas: null,
+            },
+
+            // Override the getImageUrl() method to generate URL
+            // to an image for a given extent, width, and height.
+
+            getImageUrl: function (extent, width, height) {
+                //新Image对象，可以理解为DOM
+                if (!this.image) {
+                    this.image = new Image();
+                }
+                this.image.src = this.picUrl;
+
+                // 创建canvas DOM元素，并设置其宽高和图片一样
+                if (!this.canvas) {
+                    this.canvas = canvas = document.createElement("canvas");
+                }
+                this.canvas.width = 2000;
+                this.canvas.height = 2000;
+
+                //左上角地理坐标转换屏幕坐标,为了获取canvas绘制图片的起点
+                var mapPoint = {
+                    x: this.extent.xmin,
+                    y: this.extent.ymax,
+                    spatialReference: {
+                        wkid: 4326
+                    }
+                };
+                var screenPoint = view.toScreen(mapPoint);
+                //根据extent范围计算canvas绘制图片的宽度以及高度
+                //左下角
+                var leftbottom = {
+                    x: this.extent.xmin,
+                    y: this.extent.ymin,
+                    spatialReference: {
+                        wkid: 4326
+                    }
+                };
+                var screen_leftbottom = view.toScreen(leftbottom);
+                //右上角
+                var righttop = {
+                    x: this.extent.xmax,
+                    y: this.extent.ymax,
+                    spatialReference: {
+                        wkid: 4326
+                    }
+                };
+                var screen_righttop = view.toScreen(righttop);
+
+                this.canvas.getContext("2d").drawImage(this.image, screenPoint.x, screenPoint.y, Math.abs(screen_righttop.x - screen_leftbottom.x), Math.abs(screen_righttop.y - screen_leftbottom.y));
+                return this.canvas.toDataURL("image/png");
+
+            }
+        });
+
+        map = new Map({
+            basemap: 'streets',
+        });
+
+        point_list = []
+        dynamicLayerMap = new HashMap();
+
+        // alert(document.cookie)
+
+        function getcookie() {
+            //获取传递过来的localStorage
+            // 	console.log(window.localStorage.getItem('list'))
+            var ck = document.cookie.split(",");
+            for (var i = 0; i < ck.length; i += 2) {
+                var arr1 = ck[i];
+                var arr2 = ck[i + 1];
+                point_list.push([arr1, arr2]);
+            }
+        }
+
+        getcookie();
+        // alert(point_list);
+
+        function radToDeg(rad) {
+            return rad / (Math.PI / 180);
+        };
+
+        function degToRad(degrees) {
+            return degrees * (Math.PI / 180);
+        };
+
+        function get_polygon_centroid(pts) {
+            if (pts.length > 0) {
+                vertex_x = 0;
+                vertex_y = 0;
+                vertex_z = 0;
+                pts_len = pts.length;
+
+                for (i = 0; i < pts_len; i++) {
+                    vertex_lon = degToRad(pts[i][0]);
+                    vertex_lat = degToRad(pts[i][1]);
+
+                    vertex_x += Math.cos(vertex_lat) * Math.cos(vertex_lon);
+                    vertex_y += Math.cos(vertex_lat) * Math.sin(vertex_lon);
+                    vertex_z += Math.sin(vertex_lat);
+                }
+
+                vertex_x = vertex_x / pts_len;
+                vertex_y = vertex_y / pts_len;
+                vertex_z = vertex_z / pts_len;
+
+                cen_lon = radToDeg(Math.atan2(vertex_y, vertex_x));
+                cen_lat = radToDeg(Math.atan2(vertex_z, Math.sqrt(vertex_x * vertex_x + vertex_y * vertex_y)));
+                return [cen_lon, cen_lat]
+            }
+        }
+
+        point_center = get_polygon_centroid(point_list);
+        // alert(point_center);
+        var view = new MapView({
+            container: "viewDiv",
+            map: map,
+            // center: point_center,
+            center: point_center,
+            zoom: 13
+        });
+
+        // polygon_list=[[107.25,35.414465],[108.246154,36.414467],[104.246158,33.414469],[107.25,35.414465]]
+
+        var globe_var;
+        function isInPolygon(point, points) {
+            var n = points.length;
+            var nCross = 0;
+            for (let i = 0; i < n; i++) {
+                var p1 = points[i];
+                // alert("p1"+p1)
+                var p2 = (points[(i + 1) % n]);
+                // alert("p2"+p2)
+                // 求解 y=p.y 与 p1 p2 的交点
+                // p1p2 与 y=p0.y平行
+                p1[0] = parseFloat(p1[0]);
+                p1[1] = parseFloat(p1[1]);
+                p2[0] = parseFloat(p2[0]);
+                p2[1] = parseFloat(p2[1]);
+                if (p1[1] === p2[1]) {
+
+                    continue;
+                }
+
+                // 交点在p1p2延长线上
+                if (point[1] < Math.min(p1[1], p2[1]))
+                    continue;
+                // 交点在p1p2延长线上
+                if (point[1] >= Math.max(p1[1], p2[1]))
+                    continue;
+                // 求交点的 X 坐标
+                var x = (point[1] - p1[1]) * (p2[0] - p1[0]) / (p2[1] - p1[1]) + p1[0];
+
+                // 只统计单边交点
+                if (x > point[0]){
+                    globe_var = x;
+                    nCross++;
+                }
+            }
+
+            return (nCross % 2 === 1);
+        }
+
+        // function isInPolygon (point, vs) {
+        //     // ray-casting algorithm based on
+        //     // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+        //
+        //     var x = point[0], y = point[1];
+        //
+        //     var inside = false;
+        //     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        //         var xi = vs[i][0], yi = vs[i][1];
+        //         var xj = vs[j][0], yj = vs[j][1];
+        //
+        //         var intersect = ((yi > y) != (yj > y))
+        //             && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        //         if (intersect) inside = !inside;
+        //     }
+        //     alert(inside)
+        //     return !inside;
+        // }
+
+        // function isInPolygon(checkPoint, polygonPoints) {
+        //     var counter = 0;
+        //     var i;
+        //     var xinters;
+        //     var p1, p2;
+        //     var pointCount = polygonPoints.length;
+        //     p1 = polygonPoints[0];
+        //
+        //     for (i = 1; i <= pointCount; i++) {
+        //         p2 = polygonPoints[i % pointCount];
+        //         if (
+        //             checkPoint[0] > Math.min(p1[0], p2[0]) &&
+        //             checkPoint[0] <= Math.max(p1[0], p2[0])
+        //         ) {
+        //             if (checkPoint[1] <= Math.max(p1[1], p2[1])) {
+        //                 if (p1[0] !== p2[0]) {
+        //                     xinters =
+        //                         (checkPoint[0] - p1[0]) *
+        //                             (p2[1] - p1[1]) /
+        //                             (p2[0] - p1[0]) +
+        //                         p1[1];
+        //                     if (p1[1] === p2[1] || checkPoint[1] <= xinters) {
+        //                         counter++;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         p1 = p2;
+        //     }
+        //     alert("counter:"+counter)
+        //     if (counter % 2 === 0) {
+        //         return false;
+        //     } else {
+        //         return true;
+        //     }
+        // }
+
+
+        // function isInPolygon(pt, poly) {
+        //     for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+        //          ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+        //          && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+        //          && (c = !c);
+        //     alert(c)
+        //     return c;
+        // }
+
+
+        function drawpolygon() {
+            view.graphics.removeAll();
+            var polygon = new Polygon({
+                rings: point_list
+            });
+
+            // Create a symbol for rendering the graphic
+            var fillSymbol = new SimpleFillSymbol({
+                color: [100, 139, 79, 0.3],
+                outline: {
+                    color: [255, 255, 255],
+                    width: 1
+                }
+            });
+            // Add the geometry and symbol to a new graphic
+            var polygonGraphic = new Graphic({
+                geometry: polygon,
+                symbol: fillSymbol
+            });
+            // Add the graphic to the view
+            view.graphics.add(polygonGraphic);
+        }
+
+        drawpolygon();
+
+        // function checkCoinside() {
+        //
+        //     for (var v of imageList) {
+        //         if (v[2] == 1) {
+        //             if (Math.abs(v[0] - evt.mapPoint.longitude) < 120 || Math.abs(v[1] - evt.mapPoint.latitude) < 60) {
+        //                 return;
+        //                 //不能放
+        //             }
+        //         } else if (v[2] == 2) {
+        //             if (Math.abs(v[0] - evt.mapPoint.longitude) < 60 || Math.abs(v[1] - evt.mapPoint.latitude) < 60) {
+        //                 return;
+        //                 //不能放
+        //             }
+        //         }
+        //     }
+        //
+        //     // //tmp_longtitude 和 cur_latitude 是当前图片的经度和维度，相当于直接提取下面layer变量的某个值
+        //     // let cur_longtitude = 107;
+        //     // let cur_latitude = 35;
+        //     //
+        //     // //两个图水平不重叠
+        //     // let halfOfImgwidth = 10;
+        //     //
+        //     // //两个图垂直不重叠
+        //     // let halfOfImgheight = 10;
+        //     //
+        //     // for (let i = 0; i < imageList.length; i++) {
+        //     //     //判断经度（图片横向）不重叠
+        //     //     if (imageList[i][0] - cur_longtitude <= halfOfImgwidth) {
+        //     //
+        //     //         //判断维度（图片纵向）不重叠
+        //     //         if (imageList[i][1] - cur_latitude <= halfOfImgheight) {
+        //     //
+        //     //         }
+        //     //     }
+        //     //     //比较经度和维度是否超出范围
+        //     // }
+        // }
+
+        // author : Yuang LI 
+        function putPanelAbtn(x, y, url_pic) {
+
+
+            let place = true;
+
+
+            // if (!isInPolygon([x - x4 / 0.11131955 * 0.000001, y + y4 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + x1 / 0.11131955 * 0.000001, y + y1 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - x3 / 0.11131955 * 0.000001, y - y3 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + x2 / 0.11131955 * 0.000001, y - y2 / 0.11131955 * 0.000001], point_list)) {
+            if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+
+                place = false;
+                if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                    var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                    modifed_x = x + distance/4 - 0.0007
+                //    alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                    for (let j = 0 ; j<=30; j++){
+                        if (!isInPolygon([modifed_x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+                            modifed_x = modifed_x + 0.00001
+                            
+                            
+            
+    
+                        }else{
+                            
+                            var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                            picUrl: url_pic,
+                            extent: {
+                                xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                                ymin: y - 60 / 0.11131955 * 0.000001,
+                                xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                                ymax: y + 60 / 0.11131955 * 0.000001
+                            }      
+                            }); 
+                            map.add(ImageOverlayLayer3);
+                            dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+                            //alert("adjust automatily complete with iteration times"+j);
+                            break;
+                           
+                        }
+                    }
+
+                    // var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                    //     picUrl: url_pic,
+                    //     extent: {
+                    //         xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                    //         ymin: y - 60 / 0.11131955 * 0.000001,
+                    //         xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                    //         ymax: y + 60 / 0.11131955 * 0.000001
+                    //     }   
+                    // }); 
+                    // map.add(ImageOverlayLayer3);
+                    // dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+
+
+                }
+                // p2 p4
+                if (!isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                    var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                    modifed_x = x - distance/4 - 0.0007
+                  //  alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                    for (let j = 0 ; j<=30; j++){
+                        if (!isInPolygon([modifed_x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+                            modifed_x = modifed_x - 0.00001
+                            
+                        }else{
+                            
+                            var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                            picUrl: url_pic,
+                            extent: {
+                                xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                                ymin: y - 60 / 0.11131955 * 0.000001,
+                                xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                                ymax: y + 60 / 0.11131955 * 0.000001
+                            }      
+                            }); 
+                            map.add(ImageOverlayLayer3);
+                            dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+                           // alert("adjust automatily complete with iteration times"+j);
+                            break;
+                           
+                        }
+                    }
+
+                }
+                // p1 p2
+                if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)){
+                    var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                    //modifed_x = x - distance/4 - 0.0007
+                    modifed_y = y - distance/7 + 0.0001
+                   // alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                    for (let j = 0 ; j<=30; j++){
+                        if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list)) {
+                            modifed_y = modifed_y - 0.00001
+                            
+                        }else{
+                            
+                            var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                            picUrl: url_pic,
+                            extent: {
+                                xmin: x - 120 / 0.11131955 * 0.000001,
+                                ymin: modifed_y - 60 / 0.11131955 * 0.000001,
+                                xmax: x + 120 / 0.11131955 * 0.000001,
+                                ymax: modifed_y + 60 / 0.11131955 * 0.000001
+                            }      
+                            }); 
+                            map.add(ImageOverlayLayer3);
+                            dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);
+                            //alert("adjust automatily complete with iteration times"+j);
+                            break;
+                           
+                        }
+                    }
+
+                }
+                //p3 p4 outlier 
+                if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                    var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                    //modifed_x = x - distance/4 - 0.0007
+                    modifed_y = y + distance/8 + 0.00005
+                   // alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                    for (let j = 0 ; j<=30; j++){
+                        if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list)) {
+                            modifed_y = modifed_y + 0.00001
+                            
+                        }else{
+                            
+                            var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                            picUrl: url_pic,
+                            extent: {
+                                xmin: x - 120 / 0.11131955 * 0.000001,
+                                ymin: modifed_y - 60 / 0.11131955 * 0.000001,
+                                xmax: x + 120 / 0.11131955 * 0.000001,
+                                ymax: modifed_y + 60 / 0.11131955 * 0.000001
+                            }      
+                            }); 
+                            map.add(ImageOverlayLayer3);
+                            dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);
+                            //alert("adjust automatily complete with iteration times"+j);
+                           
+                            break;
+                           
+                        }
+                    }
+
+                }
+                if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001,y+ 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                    alert("Please apply the solar panel board in selected area");
+                }
+
+                
+                
+                
+
+
+            }
+
+            if (dynamicLayerMap.size() != 0) {
+
+                for (var v of dynamicLayerMap.keySet()) {
+                    var listv = v.split(",")
+                    listv[0] = parseFloat(listv[0])
+                    listv[1] = parseFloat(listv[1])
+
+                    if (listv[2] == 1) {
+                        if (Math.abs(listv[0] - x) < 240 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+
+                    } else if (listv[2] == 2) {
+                        if (Math.abs(listv[0] - x) < 180 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+
+                    }
+                }
+                if (place) {
+                    map.add(ImageOverlayLayer1);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 1])
+                    dynamicLayerMap.put(([x, y, 1]), ImageOverlayLayer1.id);
+                    // alert(ImageOverlayLayer1.id);
+                }
+            } else {
+                if (place) {
+                    map.add(ImageOverlayLayer1);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 1])
+                    dynamicLayerMap.put(([x, y, 1]), ImageOverlayLayer1.id);
+                    // alert(ImageOverlayLayer1.id);
+                }
+            }
+        }
+
+
+
+        //Functions that put panels (OLD version)
+        function putPanelA(x, y, url_pic) {
+            // var rad_angle = degToRad(angle);
+            // // New coordinates after clockwise rotation
+            // var x1 = 120 * Math.cos(rad_angle) + 60 * Math.sin(rad_angle);
+            // var y1 = -120 * Math.sin(rad_angle) + 60 * Math.cos(rad_angle);
+            // var x2 = 120 * Math.cos(rad_angle) - 60 * Math.sin(rad_angle);
+            // var y2 = -120 * Math.sin(rad_angle) - 60 * Math.cos(rad_angle);
+            // var x3 = -120 * Math.cos(rad_angle) - 60 * Math.sin(rad_angle);
+            // var y3 = 120 * Math.sin(rad_angle) - 60 * Math.cos(rad_angle);
+            // var x4 = -120 * Math.cos(rad_angle) + 60 * Math.sin(rad_angle);
+            // var y4 = 120 * Math.sin(rad_angle) + 60 * Math.cos(rad_angle);
+
+            var ImageOverlayLayer1 = new CustomImageOverlayLayer({
+                picUrl: url_pic,
+                extent: {
+                    xmin: x - 120 / 0.11131955 * 0.000001,
+                    ymin: y - 60 / 0.11131955 * 0.000001,
+                    xmax: x + 120 / 0.11131955 * 0.000001,
+                    ymax: y + 60 / 0.11131955 * 0.000001
+                }
+            });
+            let place = true;
+
+
+            // if (!isInPolygon([x - x4 / 0.11131955 * 0.000001, y + y4 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + x1 / 0.11131955 * 0.000001, y + y1 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - x3 / 0.11131955 * 0.000001, y - y3 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + x2 / 0.11131955 * 0.000001, y - y2 / 0.11131955 * 0.000001], point_list)) {
+            if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+
+                place = false;
+                // important note
+                // if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                //     var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                //     modifed_x = x + distance/4 - 0.0007
+                // //    alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                //     for (let j = 0 ; j<=30; j++){
+                //         if (!isInPolygon([modifed_x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+                //             modifed_x = modifed_x + 0.00001
+                            
+                            
+            
+    
+                //         }else{
+                            
+                //             var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                //             picUrl: url_pic,
+                //             extent: {
+                //                 xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                //                 ymin: y - 60 / 0.11131955 * 0.000001,
+                //                 xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                //                 ymax: y + 60 / 0.11131955 * 0.000001
+                //             }      
+                //             }); 
+                //             map.add(ImageOverlayLayer3);
+                //             dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+                //             //alert("adjust automatily complete with iteration times"+j);
+                //             break;
+                           
+                //         }
+                //     }
+
+                //     // var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                //     //     picUrl: url_pic,
+                //     //     extent: {
+                //     //         xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                //     //         ymin: y - 60 / 0.11131955 * 0.000001,
+                //     //         xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                //     //         ymax: y + 60 / 0.11131955 * 0.000001
+                //     //     }   
+                //     // }); 
+                //     // map.add(ImageOverlayLayer3);
+                //     // dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+
+
+                // }
+                // // p2 p4
+                // if (!isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                //     var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                //     modifed_x = x - distance/4 - 0.0007
+                //   //  alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                //     for (let j = 0 ; j<=30; j++){
+                //         if (!isInPolygon([modifed_x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([modifed_x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+                //             modifed_x = modifed_x - 0.00001
+                            
+                //         }else{
+                            
+                //             var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                //             picUrl: url_pic,
+                //             extent: {
+                //                 xmin: modifed_x - 120 / 0.11131955 * 0.000001,
+                //                 ymin: y - 60 / 0.11131955 * 0.000001,
+                //                 xmax: modifed_x + 120 / 0.11131955 * 0.000001,
+                //                 ymax: y + 60 / 0.11131955 * 0.000001
+                //             }      
+                //             }); 
+                //             map.add(ImageOverlayLayer3);
+                //             dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
+                //            // alert("adjust automatily complete with iteration times"+j);
+                //             break;
+                           
+                //         }
+                //     }
+
+                // }
+                // // p1 p2
+                // if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)){
+                //     var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                //     //modifed_x = x - distance/4 - 0.0007
+                //     modifed_y = y - distance/7 + 0.0001
+                //    // alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                //     for (let j = 0 ; j<=30; j++){
+                //         if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list)) {
+                //             modifed_y = modifed_y - 0.00001
+                            
+                //         }else{
+                            
+                //             var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                //             picUrl: url_pic,
+                //             extent: {
+                //                 xmin: x - 120 / 0.11131955 * 0.000001,
+                //                 ymin: modifed_y - 60 / 0.11131955 * 0.000001,
+                //                 xmax: x + 120 / 0.11131955 * 0.000001,
+                //                 ymax: modifed_y + 60 / 0.11131955 * 0.000001
+                //             }      
+                //             }); 
+                //             map.add(ImageOverlayLayer3);
+                //             dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);
+                //             //alert("adjust automatily complete with iteration times"+j);
+                //             break;
+                           
+                //         }
+                //     }
+
+                // }
+                // //p3 p4 outlier 
+                // if (!isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)||!isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                //     var distance = globe_var - (x - 120 / 0.11131955 * 0.000001);   
+                //     //modifed_x = x - distance/4 - 0.0007
+                //     modifed_y = y + distance/8 + 0.00005
+                //    // alert("correct point x: "+ globe_var +"/ acutual point p1 : "+ (x - 120 / 0.11131955 * 0.000001)+ "/ distance is :"+ distance+" **modfied p1 should located at ::"+ modifed_x);
+                //     for (let j = 0 ; j<=30; j++){
+                //         if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 120 / 0.11131955 * 0.000001, modifed_y - 60 / 0.11131955 * 0.000001], point_list)) {
+                //             modifed_y = modifed_y + 0.00001
+                            
+                //         }else{
+                            
+                //             var ImageOverlayLayer3 = new CustomImageOverlayLayer({
+                //             picUrl: url_pic,
+                //             extent: {
+                //                 xmin: x - 120 / 0.11131955 * 0.000001,
+                //                 ymin: modifed_y - 60 / 0.11131955 * 0.000001,
+                //                 xmax: x + 120 / 0.11131955 * 0.000001,
+                //                 ymax: modifed_y + 60 / 0.11131955 * 0.000001
+                //             }      
+                //             }); 
+                //             map.add(ImageOverlayLayer3);
+                //             dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);
+                //             alert("adjust automatily complete with iteration times"+j);
+                //             break;
+                           
+                //         }
+                //     }
+
+                // }
+                
+                
+
+
+            }
+
+            if (dynamicLayerMap.size() != 0) {
+
+                for (var v of dynamicLayerMap.keySet()) {
+                    var listv = v.split(",")
+                    listv[0] = parseFloat(listv[0])
+                    listv[1] = parseFloat(listv[1])
+
+                    if (listv[2] == 1) {
+                        if (Math.abs(listv[0] - x) < 240 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+
+                    } else if (listv[2] == 2) {
+                        if (Math.abs(listv[0] - x) < 180 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+
+                    }
+                }
+                if (place) {
+                    map.add(ImageOverlayLayer1);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 1])
+                    dynamicLayerMap.put(([x, y, 1]), ImageOverlayLayer1.id);
+                    // alert(ImageOverlayLayer1.id);
+                }
+            } else {
+                if (place) {
+                    map.add(ImageOverlayLayer1);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 1])
+                    dynamicLayerMap.put(([x, y, 1]), ImageOverlayLayer1.id);
+                    // alert(ImageOverlayLayer1.id);
+                }
+            }
+        }
+
+        function putPanelB(x, y, url_pic) {
+            var ImageOverlayLayer2 = new CustomImageOverlayLayer({
+                picUrl: url_pic,
+                extent: {
+                    xmin: x - 60 / 0.11131955 * 0.000001,
+                    ymin: y - 60 / 0.11131955 * 0.000001,
+                    xmax: x + 60 / 0.11131955 * 0.000001,
+                    ymax: y + 60 / 0.11131955 * 0.000001
+                }
+            });
+            let place = true;
+
+            if (!isInPolygon([x - 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
+                place = false;
+            }
+
+            if (dynamicLayerMap.size() !== 0) {
+
+                for (var v of dynamicLayerMap.keySet()) {
+                    var listv = v.split(",")
+                    listv[0] = parseFloat(listv[0])
+                    listv[1] = parseFloat(listv[1])
+                    if (listv[2] == 1) {
+                        if (Math.abs(listv[0] - x) < 180 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+
+                    } else if (listv[2] == 2) {
+                        if (Math.abs(listv[0] - x) < 120 / 0.11131955 * 0.000001 && Math.abs(listv[1] - y) < 120 / 0.11131955 * 0.000001) {
+                            place = false;
+                            break;
+                        }
+                    }
+                }
+                if (place) {
+                    map.add(ImageOverlayLayer2);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 2])
+                    dynamicLayerMap.put(([x, y, 2]), ImageOverlayLayer2.id);
+                    // alert(ImageOverlayLayer2.id);
+                }
+            } else {
+                if (place) {
+                    map.add(ImageOverlayLayer2);
+                    // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 2])
+                    dynamicLayerMap.put(([x, y, 2]), ImageOverlayLayer2.id);
+                    // alert(ImageOverlayLayer2.id);
+                }
+            }
+        }
+
+
+        //todo: get the panel coordinates from backend and place on map
+        function placeBackendPanel() {
+            {
+                //TODO: this is for optimizedPlacement
+                fetch('/optimizedPlacement_list', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "point_list": point_list
+                    }),
+                    headers: {'Content-type': 'application/json'}
+                }).then(function (response) {
+                    return response.text();
+                }).then(function (text) {
+                    // alert(text);
+                    let placementList = JSON.parse(text);
+                    // alert(placementList.length);
+
+                    for (var panel of placementList) {
+                        if (panel[0] == 'A') {
+                            putPanelA(panel[1]+120/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_A.png")
+                            // // addPanelA();
+                            // var ImageOverlayLayer1 = new CustomImageOverlayLayer({
+                            //     picUrl: "static/array_A.png",
+                            //     extent: {
+                            //         xmin: panel[1] - 120 / 0.11131955 * 0.000001,
+                            //         ymin: panel[2] - 60 / 0.11131955 * 0.000001,
+                            //         xmax: panel[1] + 120 / 0.11131955 * 0.000001,
+                            //         ymax: panel[2] + 60 / 0.11131955 * 0.000001
+                            //     }
+                            // });
+                            // map.add(ImageOverlayLayer1);
+                            // imageList.push([panel[1], panel[2], 1]);
+                            // dynamicLayerMap.put([panel[1], panel[2], 1], ImageOverlayLayer1.id);
+                            // // alert(ImageOverlayLayer1.id);
+                        } else {
+                            putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+                            // addPanelB();
+                            // if (panel[0] == 'B') {
+                            //     // addPanelA();
+                            //     var ImageOverlayLayer2 = new CustomImageOverlayLayer({
+                            //         picUrl: "static/array_B.png",
+                            //         extent: {
+                            //             xmin: panel[1] - 60 / 0.11131955 * 0.000001,
+                            //             ymin: panel[2] - 60 / 0.11131955 * 0.000001,
+                            //             xmax: panel[1] + 60 / 0.11131955 * 0.000001,
+                            //             ymax: panel[2] + 60 / 0.11131955 * 0.000001
+                            //         }
+                            //     });
+                            //     map.add(ImageOverlayLayer2);
+                            //     imageList.push([panel[1], panel[2], 2]);
+                            //     dynamicLayerMap.put([panel[1], panel[2], 2], ImageOverlayLayer2.id);
+                            //     // alert(ImageOverlayLayer2.id);
+                            // }
+                        }
+                        // return response.text();
+                    }
+                })
+
+            }
+        }
+
+        placeBackendPanel();
+
+        view.on("click", function (evt) {
+            // for(var i=0;i<imageList.length;i++){
+            // 	if (imageList[i][0])
+            // }
+            if (addPanelState === 1) {
+                // alert("1")
+                putPanelAbtn(evt.mapPoint.longitude, evt.mapPoint.latitude, "static/array_A.png");
+
+
+            }
+            if (addPanelState === 2) {
+                // alert("2")
+                putPanelB(evt.mapPoint.longitude, evt.mapPoint.latitude, "static/array_B.png");
+                // map.add(ImageOverlayLayer2);
+                // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 2])
+                // dynamicLayerMap.put([evt.mapPoint.longitude, evt.mapPoint.latitude, 2], ImageOverlayLayer2.id);
+            }
+            if (addPanelState === 3) {
+                // var dlkey=dynamicLayerMap.keySet()
+                // for (var k in dlkey){
+                //
+                //
+                // }
+                // alert("3")
+                // alert(dynamicLayerMap.keySet())
+                if (dynamicLayerMap.keySet().length > 0) {
+
+                    for (var m of dynamicLayerMap.keySet()) {
+
+                        // alert(m[2])
+                        // alert(typeof m[2])
+                        var listm = m.split(",")
+                        if (listm[2] == 1) {
+                            // alert("m2==1")
+                            listm[0] = parseFloat(listm[0])
+                            listm[1] = parseFloat(listm[1])
+                            // alert(listm[0] + 120 / 0.11131955 * 0.000001)
+                            // alert(evt.mapPoint.longitude-(listm[0] + 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.longitude>(listm[0] - 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.longitude<(listm[0] + 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.latitude>(listm[1] - 60 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.latitude<(listm[1] + 60 / 0.11131955 * 0.000001))
+                            if ((evt.mapPoint.longitude > (listm[0] - 120 / 0.11131955 * 0.000001)) && (evt.mapPoint.longitude < (listm[0] + 120 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude > (listm[1] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude < (listm[1] + 60 / 0.11131955 * 0.000001))) {
+                                // alert(m)
+                                //
+                                // alert(map.findLayerById(dynamicLayerMap.get(m)))
+                                // // map.remove(map.findLayerById(dynamicLayerMap[m]));
+                                // alert(map.findLayerById(dynamicLayerMap.get[m]))
+                                map.findLayerById(dynamicLayerMap.get(m)).visible = false;
+                                dynamicLayerMap.remove(m);
+
+                            }
+                        }
+                        if (listm[2] == "2") {
+                            listm[0] = parseFloat(listm[0])
+                            listm[1] = parseFloat(listm[1])
+                            if ((evt.mapPoint.longitude > (listm[0] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.longitude < (listm[0] + 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude > (listm[1] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude < (listm[1] + 60 / 0.11131955 * 0.000001))) {
+                                // map.remove(map.findLayerById(dynamicLayerMap.values()[0]));
+                                // map.remove(map.findLayerById(dynamicLayerMap[m]));
+                                // alert(map.findLayerById(dynamicLayerMap.get(m)))
+                                map.findLayerById(dynamicLayerMap.get(m)).visible = false;
+                                dynamicLayerMap.remove(m);
+
+
+                            }
+                        }
+
+                    }
+                }
+
+
+                // if (dlkey[2]===1){
+                // 	if (evt.mapPoint.longitude - 120 / 0.11131955 * 0.000001)
+                //
+                // }
+                // if (dlkey[2]===2){
+                //
+                // }
+
+
+            }
+            if (addPanelState === 6) {
+
+                if (dynamicLayerMap.keySet().length > 0) {
+                    for (var m of dynamicLayerMap.keySet()) {
+
+                        // alert(m[2])
+                        // alert(typeof m[2])
+                        var listm = m.split(",")
+                        if (listm[2] == 1) {
+                            // alert("m2==1")
+                            listm[0] = parseFloat(listm[0])
+                            listm[1] = parseFloat(listm[1])
+                            // alert(listm[0] + 120 / 0.11131955 * 0.000001)
+                            // alert(evt.mapPoint.longitude - (listm[0] + 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.longitude>(listm[0] - 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.longitude<(listm[0] + 120 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.latitude>(listm[1] - 60 / 0.11131955 * 0.000001))
+                            // alert(evt.mapPoint.latitude<(listm[1] + 60 / 0.11131955 * 0.000001))
+                            if ((evt.mapPoint.longitude > (listm[0] - 120 / 0.11131955 * 0.000001)) && (evt.mapPoint.longitude < (listm[0] + 120 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude > (listm[1] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude < (listm[1] + 60 / 0.11131955 * 0.000001))) {
+                                // alert(m)
+
+                                // alert(map.findLayerById(dynamicLayerMap.get(m)))
+                                // map.remove(map.findLayerById(dynamicLayerMap[m]));
+                                // alert(map.findLayerById(dynamicLayerMap.get[m]))
+                                map.findLayerById(dynamicLayerMap.get(m)).visible = false;
+                                dynamicLayerMap.remove(m);
+
+                                //todo get rotate degree (replace the 15 below)
+                                degree = 15;
+                                var route = "static/A_" + String(degree) + ".png"
+                                putPanelA(evt.mapPoint.longitude, evt.mapPoint.latitude, route, 0)
+
+                            }
+                        }
+                        if (listm[2] == "2") {
+                            listm[0] = parseFloat(listm[0])
+                            listm[1] = parseFloat(listm[1])
+                            if ((evt.mapPoint.longitude > (listm[0] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.longitude < (listm[0] + 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude > (listm[1] - 60 / 0.11131955 * 0.000001)) && (evt.mapPoint.latitude < (listm[1] + 60 / 0.11131955 * 0.000001))) {
+                                // map.remove(map.findLayerById(dynamicLayerMap.values()[0]));
+                                // map.remove(map.findLayerById(dynamicLayerMap[m]));
+                                // alert(map.findLayerById(dynamicLayerMap.get(m)))
+                                map.findLayerById(dynamicLayerMap.get(m)).visible = false;
+                                dynamicLayerMap.remove(m);
+
+                                //todo get rotate degree (replace the 15 below)
+                                degree = 15;
+                                var route = "static/B_" + String(degree) + ".png"
+                                putPanelB(evt.mapPoint.longitude, evt.mapPoint.latitude, route, 0)
+
+                            }
+                        }
+
+                    }
+                }
+
+
+                // if (dlkey[2]===1){
+                // 	if (evt.mapPoint.longitude - 120 / 0.11131955 * 0.000001)
+                //
+                // }
+                // if (dlkey[2]===2){
+                //
+                // }
+
+
+            }
+
+
+        });
+
+
+    })
+</script>
+</body>
+
+</html>

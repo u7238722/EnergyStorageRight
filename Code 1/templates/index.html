@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>ENERGY STORAGE RIGHTS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+    <link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet'/>
+
+    <link rel="import" href="https://fonts.googleapis.com/css?family=Raleway:400,800,200">
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.debug.js"></script>
+
+    <!-- side bar implement -->
+    <style>
+
+
+        .selectDraw {
+            background-color: #ffffff;
+            top: 70px;
+            left: 80px;
+            height: 64px;
+            width: 117px;
+            position: fixed;
+        }
+
+        .btn {
+            background-color: white;
+            height: 40px;
+            margin-left: -4px;
+            border-radius: 0px;
+            border: none;
+            padding: 5px 15px;
+            font-size: 14.5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: lightgray;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .success .tooltiptext {
+            top: 45px;
+            left: -50px;
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0px;
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .success:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .info {
+            color: dodgerblue;
+        }
+
+        .info .tooltiptext {
+            top: 45px;
+            left: -10px;
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .info:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .warning {
+            color: red;
+        }
+
+        .warning .tooltiptext {
+            top: 45px;
+            left: 30px;
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .warning:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .box {
+            position: absolute;
+            left: 0px;
+            top: 40px;
+        }
+
+        /*original box setting:*/
+        /*.box {*/
+        /*    position: absolute;*/
+        /*    left: 30px;*/
+        /*    top: 90px;*/
+        /*}*/
+
+        .box select {
+            background-color: #0563af;
+            color: white;
+            padding: 12px;
+            width: 250px;
+            border: none;
+            font-size: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            -webkit-appearance: button;
+            appearance: button;
+            outline: none;
+        }
+
+        .box::before {
+            content: ">";
+            font-family: cursive;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20%;
+            height: 100%;
+            text-align: center;
+            font-size: 28px;
+            line-height: 45px;
+            color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .box:hover::before {
+            color: rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .box select option {
+            padding: 30px;
+        }
+
+        .topnav {
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            background-color: #333;
+            font-size: 20px;
+            margin-top: 120px;
+            right: 10px;
+            height: 60px;
+            width: 110vw;
+            position: fixed;
+            z-index: 1;
+            top: -130px;
+            margin-right: -10vw;
+            padding: 10px;
+        }
+
+        .topnav ul {
+            list-style-type: none;
+        }
+
+        .topnav a {
+            text-decoration: none;
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 20px 35px;
+            font-size: 30px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .sidenav {
+            font-family: "Lato", sans-serif;
+            height: 100%;
+            width: 325px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #c9e1ee;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            font-family: "Lato", sans-serif;
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+
+        .botnav {
+            font-family: "Lato", sans-serif;
+            height: 11%;
+            width: 12vw;
+            position: fixed;
+            z-index: 1;
+            left: 20px;
+            bottom: 20px;
+            background-color: #c9e1ee;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 5px;
+            border-radius: 20px;
+        }
+
+        .botnav a {
+            font-family: "Lato", sans-serif;
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .botnav a:hover {
+            color: #f1f1f1;
+        }
+
+        /*@media screen and (max-height: 50px) {*/
+        /*    .botnav {*/
+        /*        padding-top: 5px;*/
+        /*    }*/
+
+        /*    .botnav a {*/
+        /*        font-size: 15px;*/
+        /*    }*/
+        /*}*/
+
+        /*.botnav .closebtn {*/
+        /*    position: absolute;*/
+        /*    bottom: 0;*/
+        /*    left: 25px;*/
+        /*    font-size: 36px;*/
+        /*    margin-left: 50px;*/
+        /*}*/
+
+
+        table {
+            background: ivory;
+            border-collapse: collapse;
+            width: 300px;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        .sbutton {
+            display: inline;
+            border-radius: 5px;
+            background-color: rgb(125, 186, 214);
+            padding-top: 0px;
+            margin-left: 5px;
+            margin-top: 100px;
+            font-family: Arial, Helvetica, sans-serif;
+            list-style-type: none;
+        }
+
+        .sbutton a {
+            float: left;
+        }
+
+        .sbutton a {
+            background-color: rgb(81, 174, 211);
+            margin-left: 24px;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 15px;
+            font-size: 15px;
+        }
+
+        .sbutton a:hover {
+            background-color: rgb(39, 129, 165);
+            color: rgb(255, 255, 255);
+            cursor: pointer;;
+        }
+
+        .sbutton a.active {
+            background-color: rgb(18, 144, 194);
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            width: 120px;
+        }
+
+        .dropdown-content a {
+            color: #f1f1f1;
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 86px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: #818181;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            margin-top: 49%;
+        }
+
+        .dropdown:hover .dropbtn:hover {
+            background-color: #f1f1f1;
+            color: #818181;
+        }
+
+        #loader-container {
+            width: 150px;
+            height: 150px;
+            color: #3498db;
+            margin: 0 auto;
+            position: absolute;
+            top: 350px; /* here */
+            left: 150px; /* here */
+            z-index: 10;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            border: 5px solid #3498db;
+            border-radius: 50%;
+            -webkit-animation: borderScale 1s infinite ease-in-out;
+            animation: borderScale 1s infinite ease-in-out;
+        }
+
+        #loadingText {
+            font-family: 'Raleway', sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @-webkit-keyframes borderScale {
+            0% {
+                border: 5px solid white;
+            }
+            50% {
+                border: 25px solid #3498db;
+            }
+            100% {
+                border: 5px solid white;
+            }
+        }
+
+        @keyframes borderScale {
+            0% {
+                border: 5px solid white;
+            }
+            50% {
+                border: 25px solid #3498db;
+            }
+            100% {
+                border: 5px solid white;
+            }
+        }
+
+
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.16/"></script>
+
+    <script>
+        esriConfig = {locale: "en-US"};
+        drawselection = 0;
+        polygonlist = [];
+        var lastpoint;
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/widgets/Search",
+            "esri/layers/VectorTileLayer",
+            "esri/layers/GraphicsLayer",
+            "esri/layers/FeatureLayer",
+            "esri/layers/TileLayer",
+            "esri/layers/WMTSLayer",
+            "esri/layers/WMSLayer",
+            "esri/Graphic",
+            "esri/geometry/Point",
+            "esri/symbols/SimpleMarkerSymbol",
+            "esri/geometry/Polyline",
+            "esri/symbols/SimpleLineSymbol",
+            "esri/geometry/Polygon",
+            "esri/symbols/SimpleFillSymbol",
+
+            //这里试试
+            "esri/layers/BaseDynamicLayer",
+
+            // "esri/geometry/geometryEngine",
+            "esri/widgets/Legend"
+        ], function (Map, MapView, Search, VectorTileLayer, GraphicsLayer, FeatureLayer, TileLayer, WMTSLayer, WMSLayer,
+                     Graphic, Point, SimpleMarkerSymbol, Polyline, SimpleLineSymbol, Polygon, SimpleFillSymbol, Legend, BaseDynamicLayer) {
+            efficiency = 100;
+            area_value = 1;
+            poe = 0.3441;
+            year = 5;
+            cost_value = 45.74;
+            solar_e = 0;
+            wind_e = 0;
+            speed_w = 0;
+            power_d = 0;
+            pvout = 0;
+            dni = 0;
+            ghi = 0;
+            dif = 0;
+            gti = 0;
+            class_ = 0;
+            head_ = 0;
+            separation = 0;
+            slope = 0;
+            volume = 0;
+            w_r = 0;
+            energy_battery = 0;
+            storage_time = 0;
+            power_storage = 0;
+            country = " ";
+            grid_distance = 0;
+            show_mode = 1;
+            //1:wind , 2:solar
+            panel_capacity = 150;
+            // 150 200 selection TBD
+            number_of_wind_turbine = 1;
+            //horizontal pi r^2
+            radius_of_wind_turbine = 25;
+            equipment_cost = 0;
+            // equipment cost 40,000 +45.74*area
+            // 8= 10kw wind turbine cost 500000, radius=22.5
+            lastpt = null;
+            calculationpoint = null;
+            const base_layer = new GraphicsLayer();
+            // 0 no selection,1 point selection, 2 polygon
+            //streets layer
+
+
+            map = new Map({
+                basemap: "satellite"
+            });
+
+            map.add(base_layer);
+            map.basemap = "satellite";
+
+            // wind_layer
+            wind_layer = new WMSLayer({
+                url: "https://gis.aremi.data61.io/dnvgl/wms",
+                id: "wind",
+                opacity: 0.6,
+                sublayers: [{
+                    name: "wind_100m"
+                }]
+            });
+            map.add(wind_layer);
+            wind_layer.visible = false;
+
+            //  solar_layer
+            solar_layer = new WMSLayer({
+                url: "https://gis.aremi.data61.io/bom/wms",
+                id: "solar",
+                opacity: 0.5,
+                sublayers: [{
+                    name: "Solar_Satellite_DNI_2014"
+                }]
+            });
+            map.add(solar_layer);
+            solar_layer.visible = false;
+
+            // water_layer
+            water_layer = new WMTSLayer({
+                url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_Water.xml"
+            });
+            map.add(water_layer);
+            water_layer.visible = false;
+            water_layer.opacity = 0.5;
+
+            //energy_layer
+            energy_layer = new WMSLayer({
+                url: "http://services.ga.gov.au/gis/services/Proximity_To_Transmission_Infrastructure_Lines_WM/MapServer/WMSServer"
+            });
+            map.add(energy_layer);
+            energy_layer.visible = false;
+            energy_layer.opacity = 0.5;
+
+            //hydro_layer
+            hydro_layer = new WMSLayer({
+                url: "https://gis.aremi.data61.io/anu/wms",
+                id: "hydro",
+                opacity: 0.5,
+                sublayers: [{
+                    name: "150gwh_18h"
+                }]
+            });
+            map.add(hydro_layer);
+            hydro_layer.visible = false;
+
+            //power_layer
+            // power_layer = new WMSLayer({
+            //     url: "https://gis.aremi.data61.io/bom/wms",
+            //     id: "power",
+            //     opacity: 0.5,
+            //     sublayers: [{
+            //         name: ""
+            //     }]
+            // });
+
+            // var opts = {
+            //     "url": "http://worldmap.harvard.edu/geoserver/wfs?outputFormat=SHAPE-ZIP&service=WFS&request=GetFeature&format_options=charset%3AUTF-8&typename=geonode%3Aosm_power_tmm&version=1.0.0",
+            //     "version": "1.0.0",
+            //     "name": "JapanPrefectures2018"
+            // };
+            // map.add(power_layer);
+            // power_layer.visible = false;
+
+
+            view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [147.71511, -36.09042],
+                zoom: 3
+            });
+            var search = new Search({
+                view: view
+            });
+            search.view.constraints.minZoom = 3;
+            var coordsWidget = document.createElement("div");
+            coordsWidget.id = "coordsWidget";
+            coordsWidget.className = "esri-widget esri-component";
+            coordsWidget.style.padding = "7px 15px 5px";
+            view.ui.add(coordsWidget, "bottom-right");
+            view.ui.add(search, "top-left", index = 2);
+
+            //自定义叠加图片图层
+            let CustomImageOverlayLayer = BaseDynamicLayer.createSubclass({
+                properties: {
+                    picUrl: null,
+                    extent: null,
+                    image: null,
+                    canvas: null,
+                },
+
+                // Override the getImageUrl() method to generate URL
+                // to an image for a given extent, width, and height.
+
+                getImageUrl: function (extent, width, height) {
+                    //新Image对象，可以理解为DOM
+                    if (!this.image) {
+                        this.image = new Image();
+                    }
+                    this.image.src = this.picUrl;
+
+                    // 创建canvas DOM元素，并设置其宽高和图片一样
+                    if (!this.canvas) {
+                        this.canvas = canvas = document.createElement("canvas");
+                    }
+                    this.canvas.width = 2000;
+                    this.canvas.height = 2000;
+
+                    //左上角地理坐标转换屏幕坐标,为了获取canvas绘制图片的起点
+                    var mapPoint = {
+                        x: this.extent.xmin,
+                        y: this.extent.ymax,
+                        spatialReference: {
+                            wkid: 4326
+                        }
+                    };
+                    var screenPoint = view.toScreen(mapPoint);
+                    //根据extent范围计算canvas绘制图片的宽度以及高度
+                    //左下角
+                    var leftbottom = {
+                        x: this.extent.xmin,
+                        y: this.extent.ymin,
+                        spatialReference: {
+                            wkid: 4326
+                        }
+                    };
+                    var screen_leftbottom = view.toScreen(leftbottom);
+                    //右上角
+                    var righttop = {
+                        x: this.extent.xmax,
+                        y: this.extent.ymax,
+                        spatialReference: {
+                            wkid: 4326
+                        }
+                    };
+                    var screen_righttop = view.toScreen(righttop);
+
+                    this.canvas.getContext("2d").drawImage(this.image, screenPoint.x, screenPoint.y, Math.abs(screen_righttop.x - screen_leftbottom.x), Math.abs(screen_righttop.y - screen_leftbottom.y));
+                    return this.canvas.toDataURL("image/png");
+
+                }
+            });
+
+            view.on("double-click", function (evt) {
+                if (drawselection == 2) {
+                    drawpolygon();
+                    // update_value();
+                    drawselection = 0;
+                    // if (show_mode == 2) {
+                    area_value = calculatepolygonarea(polygonlist);
+                    // document.getElementById("area_a").value = area_value;
+                    // }
+                    showPopup_polygon(get_polygon_centroid(polygonlist));
+                }
+            });
+
+            view.on("pointer-move", function (evt) {
+                if (drawselection == 2) {
+                    drawline(view.toMap({x: evt.x, y: evt.y}));
+                    drawpartialpolygon();
+                }
+            });
+
+            view.on("click", function (evt) {
+                search.clear();
+                view.popup.clear();
+                if (drawselection == 2) {
+                    lastpoint = [evt.mapPoint.longitude, evt.mapPoint.latitude];
+                    polygonlist.push([evt.mapPoint.longitude, evt.mapPoint.latitude]);
+
+                }
+                if (drawselection == 1) {
+                    console.log(evt.mapPoint.longitude, evt.mapPoint.latitude);
+                    polygonlist.push([evt.mapPoint.longitude, evt.mapPoint.latitude]);
+                    drawPoint(evt.mapPoint);
+                }
+
+                // -=Todo:这里可以放出来，注释掉下面的addpanel
+                // if (addPanelState == 1) {
+                //
+                //     var ImageOverlayLayer = new CustomImageOverlayLayer({
+                //         picUrl: "array_B.png",
+                //         extent: {
+                //             xmin: evt.mapPoint.longitude - 120 / 0.11131955 * 0.000001,
+                //             ymin: evt.mapPoint.latitude - 60 / 0.11131955 * 0.000001,
+                //             xmax: evt.mapPoint.longitude + 120 / 0.11131955 * 0.000001,
+                //             ymax: evt.mapPoint.latitude + 60 / 0.11131955 * 0.000001
+                //         }
+                //     });
+                //     map.add(ImageOverlayLayer);
+                // }
+            });
+
+
+            function drawpartialpolygon() {
+                for (i = 0; i < polygonlist.length - 1; i++) {
+                    var polyline = new Polyline({
+                        paths: [
+                            polygonlist[i],
+                            polygonlist[i + 1]
+                        ]
+                    });
+                    // Create a symbol for drawing the line
+                    var lineSymbol = new SimpleLineSymbol({
+                        color: [226, 119, 40],
+                        width: 1
+                    });
+                    // Create a line graphic
+                    var polylineGraphic = new Graphic({
+                        geometry: polyline,
+                        symbol: lineSymbol
+                    })
+                    // Add the graphic to the view
+                    view.graphics.add(polylineGraphic);
+                }
+            }
+
+            function ConvertToRadian(input) {
+                return input * Math.PI / 180;
+            }
+
+            //new calculation begins
+
+            var earthRadiusMeters = 6371000.0;
+            var metersPerDegree = 2.0 * Math.PI * earthRadiusMeters / 360.0;
+            var radiansPerDegree = Math.PI / 180.0;
+            var degreesPerRadian = 180.0 / Math.PI;
+
+
+            function calculatepolygonarea(points) {
+                if (points.length > 2) {
+                    var areaMeters2 = PlanarPolygonAreaMeters2(points);
+                    if (areaMeters2 > 1000000.0) {
+                        areaMeters2 = SphericalPolygonAreaMeters2(points);
+                        console.log(points);
+                        // alert("Debugging message   points" + points + "  area:" + areaMeters2 + "m^2");
+
+                        console.log("areaMeters2 ", areaMeters2);
+                    }
+                    return areaMeters2;
+
+                }
+            }
+
+            /*球面多边形面积计算*/
+            function SphericalPolygonAreaMeters2(points) {
+                var totalAngle = 0;
+                for (var i = 0; i < points.length; i++) {
+                    var j = (i + 1) % points.length;
+                    var k = (i + 2) % points.length;
+                    totalAngle += Angle(points[i], points[j], points[k]);
+                }
+                var planarTotalAngle = (points.length - 2) * 180.0;
+                var sphericalExcess = totalAngle - planarTotalAngle;
+                if (sphericalExcess > 420.0) {
+                    totalAngle = points.length * 360.0 - totalAngle;
+                    sphericalExcess = totalAngle - planarTotalAngle;
+                } else if (sphericalExcess > 300.0 && sphericalExcess < 420.0) {
+                    sphericalExcess = Math.abs(360.0 - sphericalExcess);
+                }
+                return sphericalExcess * radiansPerDegree * earthRadiusMeters * earthRadiusMeters;
+            }
+
+            /*角度*/
+            function Angle(p1, p2, p3) {
+                var bearing21 = Bearing(p2, p1);
+                var bearing23 = Bearing(p2, p3);
+                var angle = bearing21 - bearing23;
+                if (angle < 0) {
+                    angle += 360;
+                }
+                return angle;
+            }
+
+
+            /*方向*/
+            function Bearing(from, to) {
+                var lat1 = from[1] * radiansPerDegree;
+                var lon1 = from[0] * radiansPerDegree;
+                var lat2 = to[1] * radiansPerDegree;
+                var lon2 = to[0] * radiansPerDegree;
+                var angle = -Math.atan2(Math.sin(lon1 - lon2) * Math.cos(lat2), Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
+                if (angle < 0) {
+                    angle += Math.PI * 2.0;
+                }
+                angle = angle * degreesPerRadian;
+                return angle;
+            }
+
+            /*平面多边形面积*/
+            function PlanarPolygonAreaMeters2(points) {
+                var a = 0;
+                for (var i = 0; i < points.length; ++i) {
+                    var j = (i + 1) % points.length;
+                    var xi = points[i][0] * metersPerDegree * Math.cos(points[i][1] * radiansPerDegree);
+                    var yi = points[i][1] * metersPerDegree;
+                    var xj = points[j][0] * metersPerDegree * Math.cos(points[j][1] * radiansPerDegree);
+                    var yj = points[j][1] * metersPerDegree;
+                    a += xi * yj - xj * yi;
+                }
+                return Math.abs(a / 2);
+            }
+
+            //new calculation ends
+
+
+            // function calculatepolygonarea(coordinates) {
+            //     var area;
+            //     area = 0;
+            //     if (coordinates.length > 2) {
+            //         for (var i = 0; i < coordinates.length - 1; i++) {
+            //             var p1;
+            //             var p2;
+            //             p1 = coordinates[i];
+            //             p2 = coordinates[i + 1];
+            //             area += ConvertToRadian(p2[0] - p1[0]) * (2
+            //                 + Math.sin(ConvertToRadian(p1[1]))
+            //                 + Math.sin(ConvertToRadian(p2[1])));
+            //         }
+            //         area = area * 6378137 * 6378137 / 20000; //originally /2 here is to change to M^2
+            //     }
+            //     return Math.abs(area);
+            // }
+
+            function degToRad(degrees) {
+                return degrees * (Math.PI / 180);
+            };
+
+            function radToDeg(rad) {
+                return rad / (Math.PI / 180);
+            };
+
+            function get_polygon_centroid(pts) {
+                if (pts.length > 0) {
+                    vertex_x = 0;
+                    vertex_y = 0;
+                    vertex_z = 0;
+                    pts_len = pts.length;
+
+                    for (i = 0; i < pts_len; i++) {
+                        vertex_lon = degToRad(pts[i][0]);
+                        vertex_lat = degToRad(pts[i][1]);
+
+                        vertex_x += Math.cos(vertex_lat) * Math.cos(vertex_lon);
+                        vertex_y += Math.cos(vertex_lat) * Math.sin(vertex_lon);
+                        vertex_z += Math.sin(vertex_lat);
+                    }
+
+                    vertex_x = vertex_x / pts_len;
+                    vertex_y = vertex_y / pts_len;
+                    vertex_z = vertex_z / pts_len;
+
+                    cen_lon = radToDeg(Math.atan2(vertex_y, vertex_x));
+                    cen_lat = radToDeg(Math.atan2(vertex_z, Math.sqrt(vertex_x * vertex_x + vertex_y * vertex_y)));
+                    return [cen_lon, cen_lat]
+                }
+            }
+
+            function drawpolygon() {
+                view.graphics.removeAll();
+                var polygon = new Polygon({
+                    rings: polygonlist
+                });
+
+                // Create a symbol for rendering the graphic
+                var fillSymbol = new SimpleFillSymbol({
+                    color: [227, 139, 79, 0.8],
+                    outline: {
+                        color: [255, 255, 255],
+                        width: 1
+                    }
+                });
+                // Add the geometry and symbol to a new graphic
+                var polygonGraphic = new Graphic({
+                    geometry: polygon,
+                    symbol: fillSymbol
+                });
+                // Add the graphic to the view
+                view.graphics.add(polygonGraphic);
+                // <form name="form" method="post" onsubmit="return check()">
+                //     <input type="text" name="name" id="name"/>
+                //     <input type="submit" value="提交" />
+                // </form>
+                // showPopup_point(polygonlist[0])
+                showPopUpSideBar();
+            }
+
+            function showPopUpSideBar() {
+                document.getElementById("popUpForPlacingPanel").style.display = "block";
+            }
+
+
+            function drawline(pt) {
+                view.graphics.removeAll();
+                if (lastpoint == null) {
+                } else {
+                    var polyline = new Polyline({
+                        paths: [
+                            lastpoint,
+                            [pt.longitude, pt.latitude]
+                        ]
+                    });
+                    // Create a symbol for drawing the line
+                    var lineSymbol = new SimpleLineSymbol({
+                        color: [226, 119, 40],
+                        width: 1
+                    });
+                    // Create a line graphic
+                    var polylineGraphic = new Graphic({
+                        geometry: polyline,
+                        symbol: lineSymbol
+                    })
+                    // Add the graphic to the view
+                    view.graphics.add(polylineGraphic);
+                }
+            }
+
+            function drawPoint(pt) {
+                // view.graphics.removeAll();
+                console.log("longitude: ", pt.longitude, "latitude: ", pt.latitude);
+                // alert("longitude: " + pt.longitude + " latitude: " + pt.latitude);
+                var point = new Point({
+                    longitude: pt.longitude,
+                    latitude: pt.latitude
+                });
+                // Create a symbol for drawing the point
+                var markerSymbol = new SimpleMarkerSymbol({
+                    color: [226, 119, 40],
+                    outline: {
+                        color: [255, 255, 255],
+                        width: 1
+                    }
+                });
+                // Create a graphic and add the geometry and symbol to it
+                var pointGraphic = new Graphic({
+                    geometry: point,
+                    symbol: markerSymbol
+                });
+                // Add the graphic to the view
+                view.graphics.add(pointGraphic);
+                update_value();
+                showPopup_point(pt);
+                lastpt = pt;
+            }
+
+            function getCountry(latLng) {
+                geocoder.geocode({'latLng': latLng},
+                    function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            if (results[0]) {
+                                for (var i = 0; i < results[0].address_components.length; i++) {
+                                    if (results[0].address_components[i].types[0] == "country") {
+                                        // alert(results[0].address_components[i].long_name);
+                                    }
+                                }
+                            } else {
+                                // alert("No results");
+                            }
+                        } else {
+                            // alert("Status: " + status);
+                        }
+                    }
+                );
+            }
+
+            // var fill = new SimpleFillSymbol("solid", null, new Color("#A4CE67"));
+            // var popup = new Popup({
+            // fillSymbol: fill,
+            // titleInBody: false
+            // });
+            //Add the dark theme which is customized further in the <style> tag at the top of this page
+            // domClass.add(popup.domNode, "dark");
+
+            function showPopup_point(pt) {
+                vertex = [pt.longitude, pt.latitude];
+                // alert("vertex", vertex);
+                return showPopup_polygon(vertex);
+            }
+
+            function update_value() {
+                if (show_mode == 1) {
+                    cost_value = document.getElementById("cost_c").value;
+                    poe = document.getElementById("poe_e").value;
+                    year = document.getElementById("year_y").value;
+                    efficiency = document.getElementById("effi").value;
+                    radius_of_wind_turbine = document.getElementById("rad_r").value;
+                    number_of_wind_turbine = document.getElementById("num_wind_turbine").value;
+                } else {
+                    cost_value = document.getElementById("cost_c").value;
+                    area_value = document.getElementById("area_a").value;
+                    poe = document.getElementById("poe_e").value;
+                    year = document.getElementById("year_y").value;
+                    efficiency = document.getElementById("effi").value;
+                    panel_capacity = document.getElementById("sp_ca").value;
+                }
+                // TBD panel capacity
+            }
+
+            function showPopup_polygon(pt) {
+                if (document.getElementById("cost_c").value == "") {
+                    document.getElementById("cost_c").value = 45.74;
+                    cost_value = 45.74
+                }
+                if (document.getElementById("cost_c").value == "") {
+                    document.getElementById("cost_c").value = panel_capacity * 0.4;
+                    cost_value = panel_capacity * 0.4;
+                }
+                pt = get_polygon_centroid(polygonlist)
+                calculationpoint = (pt);
+                // console.log("show point");
+                // console.log(pt.longitude);
+                // console.log(pt.latitude);
+                loadingProcess();
+                fetch('/energy_info', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "lon": calculationpoint[0],
+                        "lat": calculationpoint[1],
+                        "mode": show_mode
+                    }),
+                    headers: {'Content-type': 'application/json'}
+                }).then(function (response) {
+                    return response.text();
+                }).then(function (text) {
+                    n1 = text.indexOf("power_density");
+                    n2 = text.indexOf("wind_speed");
+                    n3 = text.indexOf("PVOUT_csi");
+                    n4 = text.indexOf("DNI");
+                    n5 = text.indexOf("GHI");
+                    n6 = text.indexOf("DIF");
+                    n7 = text.indexOf("GTI_opta");
+                    s1 = text.indexOf("Class");
+                    s2 = text.indexOf("Head");
+                    s3 = text.indexOf("Separation");
+                    s4 = text.indexOf("Slope");
+                    s5 = text.indexOf("Volume");
+                    s6 = text.indexOf("Water to Rock");
+                    s7 = text.indexOf("Energy");
+                    s8 = text.indexOf("Storage time");
+                    s9 = text.indexOf("Power");
+                    c1 = text.indexOf("Country");
+                    c2 = text.indexOf("Distance");
+                    c3 = text.indexOf("Elec_price")
+
+                    power_d = parseFloat(text.substring(n1 + 15, n2 - 1));
+                    speed_w = parseFloat(text.substring(n2 + 12, n3 - 1));
+                    pvout = parseFloat(text.substring(n3 + 11, n4 - 1));
+                    dni = parseFloat(text.substring(n4 + 5, n5 - 1));
+                    ghi = parseFloat(text.substring(n5 + 5, n6 - 1));
+                    dif = parseFloat(text.substring(n6 + 5, n7 - 1));
+                    gti = parseFloat(text.substring(n7 + 10, s1 - 1));
+                    class_ = (text.substring(s1 + 7, s2 - 1));
+                    head_ = (text.substring(s2 + 6, s3 - 1));
+                    separation = (text.substring(s3 + 12, s4 - 1));
+                    slope = (text.substring(s4 + 7, s5 - 1));
+                    volume = (text.substring(s5 + 8, s6 - 1));
+                    w_r = (text.substring(s6 + 15, s7 - 1));
+                    energy_battery = (text.substring(s7 + 8, s8 - 1));
+                    storage_time = (text.substring(s8 + 14, s9 - 1));
+                    power_storage = (text.substring(s9 + 7, c1 - 1));
+                    country = text.substring(c1 + 9, c2 - 1);
+                    grid_distance = text.substring(c2 + 10, c3 - 1) + " km";
+                    elec_price = text.substring(c3 + 12);
+                    // if (country != ' Australia') {
+                    //     grid_distance = "Currently we don't support this area."
+                    // }
+
+                    // alert("1");
+                    view.popup.open({
+                        // title: "Latitude: " + "<div style='background-color:DarkGray;color:white'>"+Math.round(calculationpoint[1] * 100000) / 100000 +".</div>"+ ", Longitude" + "<div style='background-color:DarkGray;color:white'>"+Math.round(calculationpoint[0] * 100000) / 100000+".</div>",
+                        // Yuang .toFixed(2)
+                        content: "Area: " + area_value.toFixed(2) + " m²<br><br><br>" + "Latitude: " + (Math.round(calculationpoint[1] * 100000) / 100000).toFixed(2) + ", Longitude: " + (Math.round(calculationpoint[0] * 100000) / 100000).toFixed(2) + "<br><br><br>Country: " + country + "<br><br><br>Distance to nearest grid: " + grid_distance,
+
+                        // location: "<div style='color:black'>"+calculationpoint+".</div>",
+                        // highlightAll: [255,0,0]
+                    });
+                    // once calculation finish, the data will update here first and then change use the sub-tab
+                    if (show_mode == 1) {
+                        // document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Specific Photovoltaic Power Output:<br> " + pvout.toFixed(2) + " kWh/kWp";
+                        // document.getElementById("Power_Density").innerHTML = "Direct Normal Irradiation:<br> " + dni.toFixed(2) + " kWh/m2";
+                        // document.getElementById("Wind_Speed").innerHTML = "Global Horizontal Irradiation:<br> " + ghi.toFixed(2) + " kWh/m2";
+                        toSolarMode();
+                    }
+                    if (show_mode == 2) {
+                        // document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Specific Photovoltaic Power Output:<br> " + pvout.toFixed(2) + " kWh/kWp";
+                        // document.getElementById("Power_Density").innerHTML = "Power Density: <br> " + power_d.toFixed(2) + " W/m²";
+                        // document.getElementById("Wind_Speed").innerHTML = "Wind Speed: <br> " + speed_w.toFixed(2) + " m/s";
+                        // document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation:<br> " + dif.toFixed(2) + " kWh/m2";
+                        // document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation At Optimum Angle:<br> " + gti.toFixed(2) + " kWh/m2";
+                        toWindMode();
+                    }
+                    if (show_mode == 3) {
+                        // document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Class:<br> " + class_.toFixed(4) ;
+                        // document.getElementById("Power_Density").innerHTML = "Storage head:<br> " + head_.toFixed(4) + " m";
+                        // document.getElementById("Wind_Speed").innerHTML = "Separation:<br> " + separation.toFixed(4) + " km";
+                        // document.getElementById("Slope").innerHTML = "Slope:<br> " + slope.toFixed(4) + " %";
+                        // document.getElementById("Volume").innerHTML = "Volume:<br> " + volume.toFixed(4) + " GL";
+                        // document.getElementById("water_to_rock").innerHTML = "Water to Rock Ratio:<br> " + w_r.toFixed(4) ;
+                        toStorageMode();
+                    }
+                    if (show_mode == 4) {
+                        toBatteryMode()
+                    }
+                });
+            }
+        })
+    </script>
+
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .outer {
+            height: 100%;
+            padding: 50px 0 0;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #viewDiv {
+            height: 100%;
+            width: 100%;
+        }
+
+    </style>
+</head>
+
+<body onmousedown="showCoords(event)">
+
+<div class="outer">
+    <!-- Top navigator -->
+
+    <div class="topnav" style="padding: 2px 0px;">
+        <ul>
+            <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+            <li><a href="{{ url_for('openSolar') }}">OpenSolar.com</a></li>
+            <!--            <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>-->
+        </ul>
+    </div>
+
+    <!-- Select area zone -->
+    <div id="viewDiv" onclick="drawPanel()"></div>
+</div>
+
+<div class="selectDraw">
+    <h1 style="margin-left:-3px;background-color:#ffffff;width:108px;text-align: center"><b>Select Area</b></h1>
+    <button class="btn success" onclick="changetopoint()">&#8226<span
+            class="tooltiptext">Single Point<br>Data Select</span></button>
+    <button class="btn info" onclick="changetopolygon()">&#9826;<span class="tooltiptext">Polygon Regional Data Select (double click to finish)</span>
+    </button>
+    <button class="btn warning" onclick="changetonan()">&#10008<span class="tooltiptext">Remove Selection</span>
+    </button>
+</div>
+
+<!-- Reopen button of the sidebar -->
+<span style="font-size:20px;cursor:pointer;margin-top: 120px;
+      right:10px;
+      height: 50px;
+      width: 120px;
+      position: fixed;
+      z-index: 1;
+      top: -40px;
+      border-radius:10px;
+      background-color:rgba(0, 0, 0, 0.9);
+      padding: 10px;" onclick="openNav()">&#9776; reopen
+</span>
+
+<div id="popUpForPlacingPanel" class="popUp"
+     style="display:none;background:white;height:400px;width:250px;border-radius: 7px;
+     border-style:solid; border-color:#0084CC;
+     margin-left:20px; position:fixed;top: 200px;z-index: 1;">
+
+
+    <div style=" overflow:hidden; padding:5px; text-align:center">
+        <script>
+            function jump_panel() {
+                // location.href="{{ url_for('panelBoard') }}";
+                // window.localStorage.setItem('list',polygonlist.toString());
+                document.cookie = polygonlist.toString();
+            }
+
+        </script>
+
+        <a href="{{ url_for('panelBoard') }}" target="_blank">
+
+            <button type="button" id=""
+                    style="margin-top:30px; padding:20px;font-size:16px;font-weight:bold; border-radius:5px; border-style:none;
+                background:rgb(125, 186, 214);outline:none; "
+                    value="" onclick="jump_panel()">
+                <p title="Jump to Panel Control Board" style="font-weight:10;font-size:16px">
+                    Panel Control Board</p>
+            </button>
+
+            <p style="margin-top:30px;font-size:16px;font-weight:bold; color:rgb(125, 186, 214);text-align: justify;padding-left: 30px;padding-right: 40px ">
+                Click this button to redirect you to a page, where you can view the automatically placed panels
+                and adjust it yourself.
+                <br><br>Note: Please avoid setting the area too large or too small.</p>
+        </a>
+    </div>
+
+</div>
+
+<script>
+
+    var positionX;
+    var positionY;
+    var addPanelState = 0;
+    // function mousePosition(ev) {
+    //     if (ev.pageX || ev.pageY) {
+    //         return {x: ev.pageX, y: ev.pageY};
+    //     }
+    //     return {
+    //         x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+    //         y: ev.clientY + document.body.scrollTop - document.body.clientTop
+    //     };
+    // }
+
+    // function mouseMove(ev) {
+    //     ev = ev || window.event;
+    //     var mousePos = mousePosition(ev);
+    //     document.getElementById('xxx').value = mousePos.x;
+    //     document.getElementById('yyy').value = mousePos.y;
+    //     positionX = x;
+    //     positionY = y;
+    // }
+
+
+    // document.onmousemove = mouseMove;
+
+    // function Show(el) {
+    //     var x = parseInt(document.getElementById('xxx').value) - el.offsetLeft;
+    //     var y = parseInt(document.getElementById('yyy').value) - el.offsetTop;
+    //     x = "X:" + x;
+    //     y = "Y:" + y;
+    //     positionX = x;
+    //     positionY = y;
+    //
+    //     document.getElementById("imgPic").style.top = positionX;
+    //     document.getElementById("imgPic").style.left = positionY;
+    //     alert(x + "," + y);
+    // }
+
+    //
+    // document.getElementById("imgPic").style.top = "1000px";
+    // document.getElementById("imgPic").style.left = "1000px";
+
+    function showCoords(evt) {
+        console.log(
+            'clientX value: ' + evt.clientX + '\n' +
+            'clientY value: ' + evt.clientY + '\n'
+        );
+
+        var e = event || window.event;
+        var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+        var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+        var x = e.pageX || e.clientX + scrollX;
+        var y = e.pageY || e.clientY + scrollY;
+        //alert('x: ' + x + '\ny: ' + y);
+
+        positionX = x / 2 - 23.6;
+        positionY = y / 2 - 11.3;
+
+        console.log(
+            'positionX value: ' + positionX + '\n' +
+            'positionY value: ' + positionY + '\n'
+        );
+
+        // return {'x': x, 'y': y};
+    }
+
+    function addPanel() {
+
+        if (addPanelState == 0) {
+            addPanelState = 1;
+            // alert(addPanelState);
+            return true;
+        } else {
+            addPanelState = 0;
+            // alert(addPanelState);
+            return false;
+        }
+    }
+
+    function getMousePos(event) {
+        var e = event || window.event;
+        var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+        var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+        var x = e.pageX || e.clientX + scrollX;
+        var y = e.pageY || e.clientY + scrollY;
+        //alert('x: ' + x + '\ny: ' + y);
+        return {'x': x, 'y': y};
+    }
+
+    function drawPanel() {
+
+        if (addPanelState == 1) {
+            var currentInnerHTML = document.getElementById('panelLayer').innerHTML;
+            // alert(currentInnerHTML);
+            //
+            //         view.on("click", function (evt) {
+            //             var ImageOverlayLayer = new CustomImageOverlayLayer({
+            //                 picUrl: "array_B.png",
+            //                 extent: {
+            //                     xmin: evt.mapPoint.longitude - 120 / 0.11131955 * 0.000001,
+            //                     ymin: evt.mapPoint.latitude - 60 / 0.11131955 * 0.000001,
+            //                     xmax: evt.mapPoint.longitude + 120 / 0.11131955 * 0.000001,
+            //                     ymax: evt.mapPoint.latitude + 60 / 0.11131955 * 0.000001
+            //                 }
+            //             });
+            //             map.add(ImageOverlayLayer);
+            //        });
+            // //
+            //
+            //         // let mapView = document.getElementById('viewDiv');
+            //         //
+            //         // mapView.onclick = (e) => {
+            //         //     console.log(e.screenX, e.screenY);
+            //         //     positionX = hand_position.x;
+            //         //     positionY = hand_position.y;
+            //         // }
+            //
+            //         // var hand_position = getMousePos();
+            //
+            //         // alert(positionX);
+            //         // alert(positionY);
+            //
+            let btnNum = event.button;
+            //         //
+            //         //
+            if (btnNum == 0) {
+
+                document.getElementById('panelLayer').innerHTML = currentInnerHTML +
+                    "<img src=\"array_A.png\" alt=\"\"\n" +
+                    "         style=\"width:47.2px; height: 22.6px;" +
+                    " left:" + positionX + "px;\n" +
+                    " top:" + positionY + "px;\n" +
+                    " position: absolute;" + "zoom: 2;\"\">"
+
+            }
+            //
+            //
+        }
+    }
+
+    function selectPanel() {
+
+    }
+
+    function deletePanel() {
+        document.getElementById('panelLayer').innerHTML = '';
+    }
+
+</script>
+
+<div id="panelLayer" class="panelAdding">
+    <!--<img src="array_A.png" alt=""-->
+    <!--style=" width:47.2px; height: 22.6px; left:950px; top:25px;-->
+    <!--position: absolute;zoom: 2;">-->
+
+    <!--<img src="array_A.png" alt=""-->
+    <!--style=" left:250px; bottom:250px; ;-->
+    <!--position: absolute;zoom: 2">-->
+</div>
+
+<div id="mySidenavbottom" class="botnav">
+    <!--    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
+    <h1 style="font-size:14px;  font-weight: bolder; color:rgba(0, 0, 0, 0.9); text-align: center;"><a href=#
+                                                                                                       style="font-size:14px; margin-left: -20px; margin-top: -8px; font-weight: bolder; color:rgba(0, 0, 0, 0.9); text-align: center;"
+                                                                                                       title="You can choose different styles of maps according to your preferences, which will not affect the evaluation of the investment.">
+        Change Base Map</a></h1>
+    <br>
+    <div class="box">
+        <select id="select_map" onclick="change_base_map()" style="font-size:16px;">
+            <option value="topo-vector">Topographic Map</option>
+            <option value="satellite">World Imagery map</option>
+            <option value="streets"> World Street Map</option>
+            <option value="streets-night-vector"> World Street Map (Night)</option>
+        </select>
+    </div>
+</div>
+
+<!-- side bar [top right button for changing map] -->
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!--    <h1 style="font-size:20px; font-weight: bolder; color:rgba(0, 0, 0, 0.9); text-align: center;"><a href=#-->
+    <!--                                                                                                      style="font-size:25px; margin-left: -20px; margin-top: -8px; font-weight: bolder; color:rgba(0, 0, 0, 0.9); text-align: center;"-->
+    <!--                                                                                                      title="You can choose different styles of maps according to your preferences, which will not affect the evaluation of the investment.">-->
+    <!--        Change Base Map</a></h1>-->
+    <!--    <br>-->
+    <!--    <div class="box">-->
+    <!--        <select id="select_map" onclick="change_base_map()">-->
+    <!--            <option value="topo-vector">Topographic Map</option>-->
+    <!--            <option value="satellite">World Imagery map</option>-->
+    <!--            <option value="streets"> World Street Map</option>-->
+    <!--            <option value="streets-night-vector"> World Street Map (Night)</option>-->
+    <!--        </select>-->
+    <!--    </div>-->
+    <!--    <br><br>-->
+
+    <!-- Choose energy part -->
+    <div style="color:rgb(255, 255, 255);background-color:rgba(11, 158, 238, 0.596);">
+        <form action="" method="get" style="padding:10px; font-size:15px;">
+            <h3 title="You can choose different layers. More information about these layers can be found in FAQ"
+                style="font-size:20px; font-weight: bolder; color: #rgb(255, 255, 255); text-align: center;">Change
+                Layer</h3>
+            <div style="display: inline">
+                <label title="Solar layer only covers Australia. You can tick it to help you select area. &#10The darker the color, the more abundant the solar energy."
+                       onclick="change_to_solar()"><input style="margin:13px;" name="e" type="checkbox"
+                                                          id="solar_button" value=""/>Solar </label>
+                <label title="Wind layer only covers Australia. You can tick it to help you select area. &#10The darker the color, the more abundant the wind energy."
+                       onclick="change_to_wind()"><input style="margin:13px;" name="e" type="checkbox" id="wind_button"
+                                                         value=""/>Wind </label>
+                <label title="Hydro layer covers the whole world. You can tick it to help you select area.&#10 Only area with points can show storage data."
+                       onclick="change_to_hydro()"><input style="margin:14px;" name="e" type="checkbox"
+                                                          id="hydro_button" value=""/>Hydro</label> <br/>
+
+            </div>
+        </form>
+    </div>
+    <!-- background color of switch tab -->
+    <div class="option" style=" background-color:rgba(201, 225, 238); height:110px; margin-top:0px; margin-bottom:0px;
+          width:325px; padding-left:0px; padding-right:30px; text-align: center ;">
+
+        <!--{# sub-button#}-->
+        <div class="sbutton">
+            <ul>
+                <li>
+                    <a title="The data of solar energy in your selected area. &#10This tab will return the ROI and IRR for combination of Solar + Storage."
+                       class="active" tag="#solar" onclick="toSolarMode()" id="solar_m"> Solar</a></li>
+                <li>
+                    <a title="The data of wind energy in your selected area. &#10This tab will return the ROI and IRR for combination of Wind + Storage."
+                       class="active" tag="#wind" onclick="toWindMode()" id="wind_m">Wind</a></li>
+                <div class="dropdown">
+                    <li><a title="The data of storage, which contains hydro info and battery info."
+                           class="active dropbtn" tag="#storage" id="storage_m">Storage</a>
+                    </li>
+                    <div class="dropdown-content">
+                        <a tag="#storage" onclick="toStorageMode()" id="hydro_m">Hydro</a>
+                        <a tag="#battery" onclick="toBatteryMode()" id="battrey_m">Battery</a>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SideBar information -->
+    <div id="SideBar_info">
+
+        <div id="loader-container" style="display: none;">
+            <p id="loadingText">Loading</p>
+        </div>
+
+        <p id="Data_for_10%_windiest_areas"
+           style="background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px">
+            Data for 10% windiest areas </p>
+        <p id="Power_Density"
+           style="background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px">
+            Power Density </p>
+        <p id="Wind_Speed"
+           style="background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px">
+            Wind Speed </p>
+        <div id="energy_info"></div>
+    </div>
+
+    <!-- parameters the users need to set on the start up screen: fixed bugs-->
+    <br><br>
+
+    <form action="/main/form" ,method="get" , target="the_Frame">
+        <div style="background:#c9e1ee;padding-bottom:65px;padding-left:0px" id="calculate_energy">
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px; ">
+                project term:
+                <input type="number" name="project term" id="effi"
+                       style="margin-top:20px;border:1px solid; border-radius: 5px ;width:45px; height:25px; margin-right:10px;"
+                       id="effi" wrap="soft" title="Range from 1 - 20"
+                       value="20" oninput="if(value>20) value=20;if(value<1) value=1;"></input>
+                year
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                itc on storage system:
+                <select name="itc_on_storage_ststem" id="rad_r"
+                        style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        wrap="soft" title="If any federal tax incentive">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+                <!--<option type="text" style="margin-top:20px; border-radius: 5px;width:35px; height:25px;" id="rad_r"-->
+                <!--wrap="soft"-->
+                <!--value="1"></option>-->
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                sgip eligible:
+                <select name="sgip_eligible" style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        id="num_wind_turbine"
+                        wrap="soft" title="If any state rebate ">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+                <!--<input type="text" style="margin-top:20px; border-radius: 5px;width:35px; height:25px;"-->
+                <!--id="num_wind_turbine"-->
+                <!--wrap="soft" value="1"></input>-->
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                In-state supplier:
+                <select name="in_state_supplier" style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        id="cost_c"
+                        wrap="soft" title="If any in-state supplier ">
+                    <option value="true">True</option>
+                    <option value="false" selected>False</option>
+                </select>
+                <!--<input type="text" style="margin-top:20px; border-radius: 5px;width:35px; height:25px;"-->
+                <!--id="cost_c"-->
+                <!--wrap="soft"-->
+                <!--value="45.74"></input>-->
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                sgip step:
+                <select name="sgip_step" style="margin-top:20px; border-radius: 5px;width:60px; height:25px;" id="poe_e"
+                        wrap="soft" title="Range from 1-5">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <!--<input type="text" style="margin-top:20px;border-radius: 5px; width:35px; height:25px;"-->
+                <!--id="poe_e" wrap="soft"-->
+                <!--value="0.3441"></input>-->
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                saving assumptions:
+                <select name="saving_assumptions" style="margin-top:20px; border-radius: 5px;width:105px; height:25px;"
+                        id="year_y"
+                        wrap="soft" title="The pattern of saving">
+                    <option value="Estimated" selected>Estimated</option>
+                    <option value="Conservative">Conservative</option>
+                    <option value="Optimal">Optimal</option>
+                </select>
+                <!--<input type="text" style="margin-top:20px;border-radius: 5px; width:35px; height:25px;"-->
+                <!--id="year_y"-->
+                <!--wrap="soft"-->
+                <!--value="5"></input>-->
+            </p>
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                calculation pattern:
+                <select name="calculation_pattern" id="calculation_pattern"
+                        style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        wrap="soft"
+                        title=" 1: Solar & no storage&#10;2: Solar & pump hydro&#10;3: Solar & battery&#10;4: Wind & no storage&#10;5: Wind & pump hydro&#10;6: Wind & battery&#10;">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+
+                </select>
+            </p>
+            <p id="isOnshore"
+               style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                onshore:
+                <select name="isOnshore"
+                        style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        id="onshore"
+                        wrap="soft" title=" The position is onshore or offshore">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+            </p>
+        </div>
+        <div id="two_btn">
+            <!-- Calculate button -->
+            <div style="width:80px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-70px; margin-bottom:25px; margin-left:60px; border-radius: 7px;">
+                <button typle="submit" id="calculateBtn" value="myValue" onclick="getNum()">
+                    <p title="Calculate the ROI and IRR for the selected energy in selected area."
+                       style="background:#0084CC ;font-weight:10;font-size:16px; color:white">
+                        Calculate</p>
+                </button>
+            </div>
+            <!-- Apply loan button and the pop window-->
+            <div style="width:100px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-58.5px; margin-bottom:25px; margin-left:170px; border-radius: 7px;">
+                <button id="applyBtn" value="myValue" onclick="getNum()">
+                    <p title="Interested in investing in this area? Get a loan!"
+                       style="background:#0084CC ;font-weight:10;font-size:16px; color:white">
+                        Apply Loan</p>
+                </button>
+            </div>
+        </div>
+    </form>
+    <iframe id="is_Frame" name="the_Frame" src="about:blank" style="display:none;"></iframe>
+
+
+    <!-- start of the pop window -->
+    <div id="background" class="back">
+        <div id="div1" class="content">
+            <div id="close">
+                <span id="close-button">×</span>
+                <h2>Bank Information</h2>
+            </div>
+            <div id="div2">
+                <h3></h3>
+                <ul class="innerScroll">
+                    <li>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.nab.com.au/business/loans-and-finance/business-loans"
+                                   target="_blank" style="color: #818181;">National Australia Bank</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 13 10 12</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.commbank.com.au/business/loans-and-finance.html?ei=nav_loans-overdrafts"
+                                   target="_blank" style="color: #818181;">CommBank</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 13 19 98</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.westpac.com.au/business-banking/business-loans/" target="_blank"
+                                   style="color: #818181;">WestPac</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 13 21 42</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://online.citi.com/US/ag/personal-loan?JFP_TOKEN=TLIUKJ9R" target="_blank"
+                                   style="color: #818181;">CitiBank</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 18773629100</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.ubs.com/us/en/wealth-management/banking/sec-lending.html"
+                                   target="_blank" style="color: #818181;">The Union Bank of Switzerland</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 0844 853 004</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.anz.com.au/business/loans-finance/" target="_blank"
+                                   style="color: #818181;">Australia and New Zealand Banking Group Limited</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 1800 801 485</p>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <p style="font-weight:10;font-size:16px;color:#818181;padding:20px;padding-left:35px;margin-left:-60px;margin-top:-20px">
+                                <a href="https://www.hsbc.co.uk/loans/products/" target="_blank"
+                                   style="color: #818181;">The Hongkong and Shanghai Banking Corporation</a></p>
+                            </span>
+                            <span>
+                                <p style="font-weight:10;font-size:24px;color:#818181;padding:20px;padding-left:35px;margin-left:600px;margin-top:-72px">Phone: 44 1226 261 010</p>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <h3 id="foot">Links connect to bank directly</h3>
+        </div>
+    </div>
+    <!-- end of the pop window -->
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 17px;
+            text-align: 1.5;
+        }
+
+        #background {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #div1 {
+            background: #c9e1ee;
+            width: 70%;
+            z-index: 1;
+            margin: 12% auto;
+            overflow: auto;
+        }
+
+        span {
+            /*color: white;*/
+            padding-top: 8px;
+            /*cursor: pointer;*/
+            /*padding-right: 12px;*/
+        }
+
+        #div2 {
+            background: #c9e1ee;
+            margin: auto;
+            height: 400px;
+            padding: 0 20px;
+        }
+
+        #close {
+            padding: 5px;
+            background: rgba(11, 158, 238, 0.596);
+        }
+
+        #close-button {
+            float: right;
+            font-size: 30px;
+        }
+
+        #foot {
+            padding: 5px 0;
+            text-align: center;
+            background: rgba(11, 158, 238, 0.596);
+            color: white;
+        }
+
+        h2 {
+            margin: 10px 0;
+            font-size: 32px;
+            color: white;
+            padding-left: 15px;
+        }
+
+        h3 {
+            margin: 0 0px;
+            padding-top: 15px;
+        }
+
+        .innerScroll {
+            height: 350px;
+            overflow-y: scroll;
+        }
+
+        .innerScroll a:hover {
+            color: #818181;
+            font-weight: bolder;
+        }
+    </style>
+
+    <script>
+        var btn = document.getElementById('applyBtn');
+        var div = document.getElementById('background');
+        var close = document.getElementById('close-button');
+        var cal_btn = document.getElementById('calculateBtn');
+
+        // btn.onclick = function () {
+        //     hiddenLoading();
+        //     document.getElementById("loader-container").style.display = "none";
+        // }
+
+        btn.onclick = function show() {
+            div.style.display = "block";
+        }
+
+        close.onclick = function close() {
+            div.style.display = "none";
+        }
+
+        window.onclick = function close(e) {
+            if (e.target == div) {
+                div.style.display = "none";
+            }
+        }
+
+        cal_btn.onclick = function calculate_ROI_IRR() {
+            //TODO: this is only solar
+            fetch('/calculate_roi_irr', {
+                method: 'POST',
+                body: JSON.stringify({
+                    "area": area_value
+                }),
+                headers: {'Content-type': 'application/json'}
+            }).then(function (response) {
+                return response.text();
+            }).then(function (text) {
+                irr_text = text.indexOf("irr");
+                roi_text = text.indexOf("roi");
+                irr = parseFloat(text.substring(irr_text + 5, roi_text - 1));
+
+                // TODO: Put ROI here:
+                // roi_text = text.indexOf("roi");
+                roi = parseFloat(text.substring(roi_text + 5));
+                document.getElementById("Investment").innerHTML = "Est. Investment:<br> " + (cal_fee() / 1000000).toFixed(2) + "million $";
+                document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
+                document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+            })
+        }
+    </script>
+
+
+    <!-- ROI and IRR -->
+    <div style="margin-bottom: 30px" ;>
+        <div>
+            <p id="Investment"
+               title="Estimated investment on your selected energy combination in your selected area."
+               style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
+                Est. Investment
+        </div>
+
+        <div>
+            <p id="ROI"
+               title="Estimated return of investment on your selected energy combination in your selected area."
+               style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
+                ROI
+        </div>
+
+        <div>
+            <p id="IRR"
+               title="Estimated internal rate of return on your selected energy combination in your selected area."
+               style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
+                IRR
+        </div>
+    </div>
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <button class="downloadBtn" title="Download the energy information." style="width:100%; margin-top:-100px"
+            id="downloadBtn">
+        <i class="fa fa-download"></i> Download
+    </button>
+    <style>
+        .downloadBtn {
+            text-align: center;
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Darker background on mouse-over */
+        .downloadBtn:hover {
+            background-color: RoyalBlue;
+        }
+    </style>
+    <script>
+        // //download script
+        function download(file, text) {
+            //creating an invisible element
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+            element.setAttribute('download', file);
+            // Above code is equivalent to <a href="path of file" download="file name">
+            document.body.appendChild(element);
+            //onClick property
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function get_combination() {
+            var text = ""
+            if (show_mode == 1) {
+                text = text + "solar+";
+                if (document.getElementById("calculation_pattern").value == "1") {
+                    text = text + "no storage";
+                } else if (document.getElementById("calculation_pattern").value == "2") {
+                    text = text + "pumped hydro";
+                } else if (document.getElementById("calculation_pattern").value == "3") {
+                    text = text + "battery";
+                }
+            }
+            if (show_mode == 2) {
+                text = text + "wind+";
+                if (document.getElementById("calculation_pattern").value == "4") {
+                    text = text + "no storage";
+                } else if (document.getElementById("calculation_pattern").value == "5") {
+                    text = text + "pumped hydro";
+                } else if (document.getElementById("calculation_pattern").value == "6") {
+                    text = text + "battery";
+                }
+            }
+            return text;
+        }
+
+        function cal_fee() {
+            cal_value = 0;
+            battery_fee = 0;
+            pump_fee = 0
+            if (energy_battery != "No value in this area") {
+                battery_fee = parseFloat(energy_battery) * 1000 * 70;
+                pump_fee = parseFloat(power_storage) * 800 * 1000;
+            }
+            if (show_mode == 1) {
+
+                if (document.getElementById("calculation_pattern").value == "1") {
+                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5;
+                } else if (document.getElementById("calculation_pattern").value == "2") {
+                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + pump_fee;
+                } else if (document.getElementById("calculation_pattern").value == "3") {
+                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + battery_fee;
+                }
+            }
+            if (show_mode == 2) {
+
+                if (document.getElementById("calculation_pattern").value == "4") {
+                    cal_value = cal_value + 0.001 * power_d * area_value / 1000 * 70 * 60;
+                } else if (document.getElementById("calculation_pattern").value == "5") {
+                    cal_value = cal_value + 0.001 * power_d * area_value / 1000 * 70 * 60 + pump_fee;
+                } else if (document.getElementById("calculation_pattern").value == "6") {
+                    cal_value = cal_value + 0.001 * power_d * area_value / 1000 * 70 * 60 + battery_fee;
+                }
+            }
+            return cal_value;
+        }
+
+        // // Start file download.
+        // document.getElementById("downloadBtn")
+        //     .addEventListener("click", function () {
+        //         // Generate download of test download.txt file with some content
+        //         //this is the way to download the content of elements
+        //         var text = "ENERGY STORAGE RIGHTS" + "\n"
+        //             + "Your chosen energy combination:" + get_combination() + "\n"
+        //             + "\n"
+        //             + "1. Solar Information:" + "\n"
+        //             + "Specific Photovoltaic Power output:" + pvout + "kWh/kWp" + "\n"
+        //             + "Direct Normal Irradiation: " + dni + "kWh/m²" + "\n"
+        //             + "Global Horizontal Irradiation: " + ghi + "kWh/m²" + "\n"
+        //             + "Diffuse Horizontal Irradiation: " + dif + "kWh/m²" + "\n"
+        //             + "Global Titled Irradiation At Optimum Angle: " + gti + "kWh/m²" + "\n"
+        //             + "\n"
+        //             + "2. Wind Information:" + "\n"
+        //             + "Data for 10% windiest areas: " + "\n"
+        //             + "Power Density: " + power_d + "W/m²" + "\n"
+        //             + "Wind Speed: " + speed_w + "m/s" + "\n"
+        //             + "\n"
+        //             + "3. Storage Information:" + "\n"
+        //             + "(1). Hydro:" + "\n"
+        //             + "Class: " + class_ + "\n"
+        //             + "Storage head: " + head_ + "m" + "\n"
+        //             + "Separation: " + separation + "km" + "\n"
+        //             + "Volume: " + volume + "GL" + "\n"
+        //             + "Water to Rock: " + w_r + "Pair" + "\n"
+        //             + "\n"
+        //             + "(2). Battery:" + "\n"
+        //             + "Energy: " + energy_battery + "GWh" + "\n"
+        //             + "Storage: " + storage_time + "h" + "\n"
+        //             + "Power: " + power_storage + "GW" + "\n"
+        //             + "\n"
+        //             + "4. Investment Information:" + "\n"
+        //             + "project term: " + document.getElementById("effi").value + "\n"
+        //             + "itc on storage system: " + document.getElementById("rad_r").value + "\n"
+        //             + "sgip eligible: " + document.getElementById("num_wind_turbine").value + "\n"
+        //             + "In-state supplier: " + document.getElementById("cost_c").value + "\n"
+        //             + "sgip step: " + document.getElementById("poe_e").value + "\n"
+        //             + "saving assumptions: " + document.getElementById("year_y").value + "\n"
+        //             + "calculation pattern: " + document.getElementById("calculation_pattern").value + "\n"
+        //             + "onshore: " + document.getElementById("onshore").value + "\n"
+        //             + "cost for power: " + "800$/kW" + "\n"
+        //             + "cost for energy: " + "70$/kW" + "\n"
+        //             + "desired hours for solar operation: " + "5h" + "\n"
+        //             + "electricity price in your selected country/region: " + elec_price+"$\n"
+        //             + "total cost: " + (cal_fee() / 1000000).toFixed(6) + "million$\n"
+        //             + "distance to nearest energy grid: " + grid_distance + "\n"
+        //             + "\n"
+        //             + "5. ROI & IRR:" + "\n"
+        //             + "ROI: " + roi.toFixed(2) + "%" + "\n"
+        //             + "IRR: " + irr.toFixed(2) + "%" + "\n"
+        //             + "\n"
+        //             + "Note: The calculation results on this website are for reference only.";
+        //         var filename = "ROI&IRR.txt";
+        //         download(filename, text);
+        //     }, false);
+
+        function getCookies() {
+            //获取传递过来的localStorage
+            // 	console.log(window.localStorage.getItem('list'))
+            // var strCookie=document.cookie;
+            // var arrCookie=strCookie.split("; ");
+            // var userId;
+            // //遍历cookie数组，处理每个cookie对
+            // for(var i=0;i<arrCookie.length;i++){
+            // var arr=arrCookie[i].split("=");
+            // //找到名称为userId的cookie，并返回它的值
+            // if("panel"==arr[0]){
+            //     userId=arr[1];
+            //     var ck = userId.split(",");
+            //     a_count = parseInt(ck[0]);
+            //     b_count = parseInt(ck[1]);
+            //     break;
+            // }
+            var ck = document.cookie.split(",");
+            if (parseInt(ck[0])==ck[0]){
+                a_count = parseInt(ck[0]);
+                b_count = parseInt(ck[1]);
+            }
+            else {
+                a_count = 0;
+                b_count = 0;
+            }
+
+
+        }
+
+
+        //jsPDF download function
+        function downloadPDFfromHTML() {
+            getCookies();
+            var pdf = new jsPDF();
+            pdf.addImage("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCADtAJYDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAorkfjt8dvCf7NHwo1nxt431q08P+GdBgNxeXlwThB0CqoyzuxwFRQWYkAAk1+Xfjv/g7j+G2k+IZoPDnwp8Ya5pqMVju7zUYLCSUA8HygsuAf97PtQB+uVFfjqP+DvLwsf8AmiPiD/wo4f8A4xS/8ReHhb/oiHiD/wAKOH/4xQB+xNFfjt/xF4eFv+iIeIP/AAo4f/jFH/EXh4W/6Ih4g/8ACjh/+MUAfsTRX47f8ReHhb/oiHiD/wAKOH/4xSf8RePhb/oiHiD/AMKOH/4xQB+xVFfjof8Ag708Kj/miPiD/wAKOH/4xX0X+wL/AMHE/wAG/wBt34m2Hgi9sdX+Hni7WHEWm22rSJLZ6jKekMdwuB5p7K6ruOApJ4oA/QCigHNFABRRRQAUUUUAFFFFABRVTWdfsfDtmbjULy1sbcEKZbiVYkBPQZYgVkf8Le8Jn/mZ/Dv/AIMof/iqAPyV/wCDun4janp/wp+EnhSCeSLStV1W6v7uNWIWd4YgI9w77d5I96/DmKCv2b/4O0vFWl+K7T4LnTNS0/URFPqG82twk2zKJjO0nFfjfDFigCNLfin/AGbNWFWneXQBV+y0fZateXR5dAFX7LQberXl0FMCgChJb8VFFcXOk3sN1ZXE1le2sizW9xCxSS3lUhkkRhyGVgCCOhArQkTIqrPFmgD+x39nzxfefEH4C+Cde1Ble/1vQbHULllXAaWW3SRyB2G5jXX147+yb8VPDFl+yx8NYpvEegxSx+FdLV0fUIlZCLSLIILcGvQ7b4q+F724SGHxJoMssjBURNQiZnJ7ABsk0Ab9FIG3CloAKKKKACvP/wBq349Wf7Lf7M3j74j6hEbi18EaBea00AbabkwQtIsQPq7KqD3YV6BXy7/wWt/5RP8Ax8/7FC7/AJCgD+Yv9rD9qnx1+3D8Vr7xf8SdbufEGo3UrPBbzOWtNMQniG2iOViQDA4GTjJJPNebR+GrA/8ALjaf9+V/wqzAmRXVeE/g74s8caT9v0Xw5q+qWXmND59tBvTeuMrn1GR+dY18RSox560lFd20vzMa+Jo0I89eaiu7aS/E5mw0q309j5FvDCT18uMLn8quo2K63/hm/wCIX/QleIv/AAFNL/wzl8Qx/wAyV4i/8BTXH/bOX/8AP+H/AIFH/M4v7by7/oIh/wCBx/zOU8zFL5v1rqh+zl8Q/wDoSvEX/gKaX/hnL4hf9CV4i/8AAQ/40/7YwH/P+H/gUf8AMP7by7/oIh/4HH/M5XzqPOrqv+GcviF/0JXiL/wEP+NH/DOXxC/6ErxF/wCAh/xo/tjAf8/4f+BR/wAw/tvLv+giH/gcf8zlfOpPN+tdX/wzl8Qv+hK8Rf8AgIf8aD+zl8Qv+hK8Rf8AgIf8aP7YwH/P+H/gUf8AMP7by7/oIh/4HH/M5Jn4qKT5q7H/AIZy+If/AEJXiL/wFNIf2cPiGf8AmSvEX/gKaX9s5f8A8/4f+BR/zD+28u/6CIf+Bx/zPPJvDlg7EmytMnnJhXn9KrzeGbH/AJ8rT/vyv+FelN+zd8Qj/wAyV4i/8BTXLeK/Cep+C9XfT9YsLrTL6IKz29wmyRQwDKSPcEH8a3oZhha8uSjUjJ9k0/yN8PmOEry5KFWMn2Uk3+DP1G/4Npv+Cl3jjwp+0ppnwL8Sa1qWv+CPEttKmjQ3s7znQbiJC6pAWyVhdQV8vO1TgqBzn9/K/ls/4IGjH/BVv4W/9fM//ol6/qTrrOwKKKKACvl7/gtZ/wAon/j5/wBihd/yFfUNfL3/AAWs/wCUT/x8/wCxQu/5CgD+UuPpX6Af8E132/sxn/sOXf8A6BDX5/RnIr79/wCCbZx+zKf+w3d/+gQ1+Z+K/wDyJF/jj+TPyvxg/wCRCv8Ar5H8me+tNTPP5qNjk00Nlq/m6x/LhOJv85pwlryT9rD4y6z8E/Bem6joq2Dz3d+LWQXcLSLt8t34CsvOVHeovHf7Q11oH7MmneMrNbM6nqUVuscciFofOY4kXAYH5cSd/wCGv17JfA7ijNsryvN8DTjKlmWIeGo+9r7VO3vq3ux0bvromz3sPw3ja9GhXppONaXJHX7Xn2PYd9G+vnrQf2m/FE2g/DLVLxNH+xeLb+7s9SMds6mLyrgRqYz5h25QnrnlTXU+F/2hbnWf2mfEPg+VbQaZp1nIbVlUiZriIRmRWbOCu3zSMAY2ivXzf6OXGWXrEynThNYeniKs3Cd0o4bEPDVVsveVRNpdYe95HRX4SzClz3SfIpN2fSEuSXzv+Gp620uKRpSPWvnu2/ay1ux+A+oeLbqz0+4ubvXDpWjpFG6RbCjMHkyxLYEcnTGSAOOtaf7O/jHxT4d8aXPg7xPp8ebiN9Xtr22V2hzKwkaMscj+I454245rqzf6OPE2V5TmGZ46dKMsJKUfZ+0XNUVJR+sSpptNqg501JWu23b4Xeq/CWNo0Ktaq4p021a6u+W3M1/hur/8A9vM/vSibNQM2DQrZr8Asj5exbSWvz0/4KHt/wAZTaz/ANetmf8AyXjr9BY2zX57/wDBQ8/8ZS6z/wBeln/6TpX6d4TaZ1L/AK9y/wDSon6x4N/8jyf/AF7l/wClRPVf+CBxz/wVa+Fn/XzP/wCiXr+pOv5bP+CBp/42tfCz/r5n/wDRL1/UnX9Hn9PhRRRQAV8vf8FrP+UT/wAfP+xQu/5CvqGvl7/gtZ/yif8Aj5/2KF3/ACFAH8pUYwK+/f8Agm3z+zKf+w5d/wDoENfAadK+/v8AgmyP+MZP+43d/wDoENfmniv/AMiRf44/kz8r8YP+RCv+vkfyZ7o3Bpu35s1Iwpu3nrX83H8uHiP7cAQ+GPB/moJIv+Ejg3oejrskyPxFeYRme9S2+H86F4vBeqavqM4K4ja3WMPAf+BPLcfgUr6h8e/DPRfibZ2cGs2pu4rC5W7gAmePZIAQD8jDPBPB4qH/AIU94dk8TavrBsB/aOu2YsL2XzpB5sIVFCgbsLxGnKgHjrya/szwy+kbkPDXB2CyDF0Ks62G9vUi0o8sa85ctKcbzT92jVr30TU+RK6u1+hZNxdhcHl9PC1IycoczW1lJuye/SLl87HzhLpZk/YL8Kaqqbn8P60b4kdSv2yeMj6EyKT/ALtc9qQv/CngTQvihGrfbta1rU47hzw22eIxxrn02x3B/wCBV9X2fwY8OWPw0PhCOxI8PsHU2xuJCfmcyH5y2/7xJ68UzV/gj4Z1z4dW3hS50/foVmUMNuJ5FKFM7TvDbs8nknnJr7fJ/pccO4PE141cLVnRr5lia07xheWX4lT56LXtLc/PPncb8t0vfPTw/HmEpzkpQk4yrTk9FrSne8d97u9tvM8fsbDwj4S/ZC8L6R4zS9jsNbbzYntoi0ltcMWcMD/CcFuuQQWGMZrT+C3iTWvh38b7n4cX+sf8JJpdvYC6sL1gDLbqApCFsnK7TxknHy4ODivW/Evw10LxZ4IHh7UdPhutJSNI44GZh5ewYRlcEOrAfxAg4JBOCQea+Bv7PukfBWzuHhht5tWumZJb0M7M0O/ckY3H5QBtztA3FQTnAx+b4nxj4WzXhTPIZt7apicXWxFSFCcYTpKrXmpUsTSqNqdCVGMZQrRjzKtzQ1tzcvjT4gwVfA4lV+ZzqSk1FpOPNJ3U094uKTUkr8118u6ZcmlVdtOK0qrg1/Ih8HcdGuK/Pf8A4KHj/jKTWf8Ar0s//SdK/QuNa/Pb/gocP+MptZ/69LP/ANJ46/TfCb/kdS/69y/9KifrHg3/AMjyf/XuX/pUT1P/AIIG/wDKVr4W/wDXzP8A+iXr+pOv5bP+CB3H/BVr4Wf9fM//AKJev6k6/o8/p8KKKKACvl7/AILWf8on/j5/2KF3/IV9Q18vf8FrP+UT/wAfP+xQu/5CgD+UtOlbeg/EzxV4S0/7Jo/i7xfotlvMn2bTtdu7ODecZby4pFXJwMnGTgVhxniv1A/4JF/sE/CP9o/9kZvEfjXwbaa7rQ168tPtUl3cRN5SJCVXEcirwWbt3r5zijOcJlmC+s42nzwulZJPV376Hl5viMPRoc+JhzxvtZP8z85T8dPH2f8AkonxF/8ACq1D/wCPU3/he/j7/oonxG/8KrUP/j1ftwf+CR/7Ov8A0TPT/wDwYXv/AMepv/Do39nY/wDNNNP/APBhef8Ax6vzv/iJXDv/AECP/wAAh/mfMf2vk/8A0DL/AMBifiT/AML38ff9FE+I3/hVah/8epf+F7ePv+iifEX/AMKrUP8A49X7a/8ADoz9nX/ommn/APgwvP8A49R/w6M/Z1/6Jpp//gwvP/j1H/ESuHf+gR/+AQ/zH/a+T/8AQMv/AAGJ+JX/AAvbx9/0UT4i/wDhVah/8eo/4Xt4+/6KL8Rf/Cq1D/49X7bf8Ojv2dv+iaaf/wCDC8/+PUf8Ojv2dv8Aommn/wDgwvP/AI9R/wARK4d/6BH/AOAQ/wAw/tfJ/wDoGX/gMT8Sf+F7ePv+iifEX/wqtQ/+PUf8L38ff9FE+I3/AIVWof8Ax6v21/4dGfs6/wDRNNP/APBhef8Ax6j/AIdGfs6/9E00/wD8GF5/8eo/4iVw7/0CP/wCH+Yf2vk//QMv/AYn4k/8L38f/wDRRPiL/wCFXqH/AMepR8dfHx/5qJ8Rf/Cq1D/49X7a/wDDoz9nX/ommn/+DC8/+PUo/wCCR37Ow/5ppp//AIML3/49R/xErh3/AKBH/wCAQ/zF/a+T/wDQMv8AwGJ+Ji/HPx8R/wAlE+Iv/hV6h/8AHqxdd8Q6j4o1BrzVdT1TWL2QAPdaheS3c7gAAAySMzEAAAZPAFfugv8AwSP/AGdT/wA000//AMGF7/8AHq/Kz/gqn8FfC/7Pf7Zmu+GPB+kx6LodrZWMsNpHLJIqNJbo7nLszcsSevevpeFeL8qzTGPD4Gg4SUW7uMVpdaaO/U9XJ8dgK1dwwtFQlbflitNOx3P/AAQQ/wCUrfwt/wCvmf8A9EPX9SVfy2f8EDT/AMbWvhZ/18z/APol6/qTr9CPpgooooAK+Xf+C1v/ACif+Pn/AGKF3/IV9RV8u/8ABa3/AJRP/Hz/ALFC7/kKAP5SEPy1+0H/AAQeP/GB7f8AYz3/AP6Lt6/F9Olfs/8A8EHv+TEW/wCxmv8A/wBF29fmniv/AMiT/t+P6nzfFX+5fNH1N8a/irZ/A74Ua74u1C2u7yy0C2N1NBahfOlUEDC7iFzz3Ir5p8If8Ff9D8cTWH9nfCT4xXFrqMqxRXkekQyW/wAzbd29ZSCoOckehr1z/goJz+xX8SP+wQ3/AKMSvnH/AIJ0+Ov2lbf4O/DnT9M8HfDib4UAMi6pNPINV+ym4lMj7ftoXeH3gfuegHBr1fC3gDhfF+HWM4qzjD0qtenifZR9ti3hY8nsPaWho1Uqcy0hu1fsfEYejTdB1JLW9t7dD3/4O/t6+FPjJ+0f4q+GFtYaxpniDwtPdQNJeiIQX7W8pjk8na7Nxgt8yrwDWbB/wUV8LXFv8YZBoXiQD4LyeVquVg/08+ZNH/o/73nmBvv7eor4Q1bR9e8L/tmfG/4oeGjNLqPwr8ZXOrXFon/L5ZPfzR3C/Xac88Yzwa3vhp4xsviJ8Nf22df01/M0/WhFfWzf3o5Li/df0Ir95xv0WuD6dP8AtPDxnPDullykueV6WIr18Kq0W92qlDEKUL7Nyt8OnfLLaS95bWj97av+DPpjwl/wV60bxrc6cLD4R/GKW21OWOOG8XR4Xt8OwAfespBXnORnirXjn/grf4Z8G/EvxL4Yh+HvxJ1y48KXj2d/daZYwXFvEVLDeSJdyodrEFgM7T6VyH/BPvx3+0wnw3+GGnR+Dvhv/wAKn+z2sR1Qzyf2sNO4zJt+3bfN2848n/gNeYfBb40eO/g/+0f+01/whHw3ufiBJqupRJePFqH2ddK2G+8tmj8tzMH3yfKGT/VYz83HlR8F+BqucZxgsNl1Cp9RgnCMMzXLJyxUKH76rLljQnGDk/ZybblaKu2rwsJRc5xUVp/e87as+1dP/bc+Heo/s2z/ABWXWtvhG2XEsrRMJkl3hPJ8v7xkLkAKOuc9Oa8z+Ff/AAVk8E/EX4g6DoOo+F/HPg1fE8q2+l6jrlgkNleyuyqiI6u33i64YjbyMkZFfFvje10zT/8Agkn4ak07VGvL3U/idFJrMAiaFbOc2N8fI2nsFWNvQnmvqH9tX9prSfhF/wAINo3i34Nt4s8NW0FlLo+tXFyIraO5MKFliGxsMgAzz2Fefi/o88KZfiqmVYbA4jHVcTicbSpfvoUKlGnhYw5XGNXkhWm51Lvma5qcbxitWTLA04vlSbbclvbb8z3n4T/ti6L8V/2hPF/w0XR9c0XxH4QUSSLfrCI7+IsB5kOx2JX5kPzAffXvmnfs2fth6H+1F4p8YWPh3StZXT/B982nyatcCIWeoSBmXMBV2YqQu4FlGQR618y/8FddH1v9nL4k+H/jV4PnWx1S4s7vwtqNxt7zW8qxS4zy6guy9g8KEg4wfoz9gL9nUfsy/su+HNAmjVNXuoRqOq7e1zMAxT/gC7U64yhI61+ScZ8BcFZf4eUONcDd1MfGlSo0ueTdKvS5ljZyv8UPdp+zTbt7byRz1aFKNBVV10Xqt/68z2sHBr8Sf+C3P/KQnxL/ANg7Tv8A0ljr9tq/Ej/gtx/ykI8Sf9g7Tv8A0kjr8t8JP+RzP/r2/wD0qJ6nCf8Avj/wv80aH/BA0/8AG1v4W/8AXzP/AOiXr+pOv5a/+CBn/KVv4W/9fM//AKIev6lK/o8/RQooooAK+Xf+C1v/ACif+Pn/AGKF3/IV9RV8vf8ABaz/AJRP/Hz/ALFC7/kKAP5SEGVr9oP+CDoz+we3/Yz3/wD6Lt6/GGMYFfZv7CH/AAWBk/Yf+BTeCP8AhWC+LVOpz6kL/wD4Sr+zf9asa7PK+xTdPL67+c9BXw/iDk+MzPK/q2ChzT5k7XS0V+7SPEz/AAlbE4X2dFXd1/Wp+tf7Qvwob46fBLxL4QW+GmN4gszai6MPm+RllO7ZuXd06ZFeGfCH9jP4z/BLwbovhrQ/jxaweHdD+SCyPgmzc+UZTI6eY7s/JZuSSRn2r5sf/g5Cb/ohK/8Ahf8A/wB66b/xEht/0Qkf+F//APeuvluGMb4g5DlFTIcHh6M8NOp7VwrUsLXXtOXk517aM+V8ul42692fI08mzSEeSNNW8+V/mfX3wK/Yeh+Evxt+K/irUdah1+x+KNxcST6a1j5Ito5p5JWjL+Y2/hyudq+ted/Cb/glNH8JPhd8XPCtn4y8+0+JdrBaW0j6XtbSkiacruAlxLxMBxt+7714L/xEht/0Qkf+F/8A/euj/iJDb/ohI/8AC/8A/vXXu0uNvFynOvOFX+P9W51ahZ/VHB4d22Tg4Ru0k5pWnzI0/srN9fd3t1j026n038LP2QPjV8IvCuh+H9J+PNrH4f0KOK3gsj4Js2PkIR+78xnZ+RkbiSea7H9nP9j9vgL8W/iz4mOvDUo/ideQXS2y2XknTRGbo7S29vMz9oHOF+578fGf/ESG3/RCR/4X/wD966P+IkNv+iEj/wAL/wD+9dcmecR+JebUMXh8TRoxWLSVb2dHCUnUtVhWTnKlCDlL2kIy5m77q9pNOZ5Rms7pwWu/wrz6H0X4L/4JZ6Tpv7OPjr4c674jk1S28V683iGx1GCx8ibSLkIqxkKZGD7QpB5Xcsjr8uQw56H/AIJn/ED4ral4Z0n4sfFo+JvAvgW4DaTp1hpcdtc30YUKBNNw0Z+VAcmdtm5VdC28eK/8RIbf9EJH/hf/AP3ro/4iQ2/6ISP/AAv/AP7117lHxJ8YadSvXU4upVk587p4aUqdSVNUpzoycW6M500oydPlvv8AFqaLLM31fLv5x/DXQ+0f28v2SZP21fgvD4TXXl8PPFqkWpG7az+1BtkcybNm9Ovm5zn+HpzXsdla/ZLWOPO7y1C5x1xX5l/8RIbf9EJH/hf/AP3roH/ByGx/5oSP/C//APvXX5bjck42xeTYXh/EU74bDSqTpxvSXLKrye0fMnzO/JHRtpW0tdnM8hzJwUHDRecevzP07UZNfiR/wW5/5SE+Jf8AsHad/wCksde/r/wcgv8A9EJX/wAL/wD+9dfEv7bP7Uzftm/tBan49bw6PCx1G3t7f+zxqX9oeX5MSx583yYc525xsGPU17Xh3wlm2WZnLEY6lyxcGr80XrePZt9D2eH8pxWGxLqV42Vrbry7M9q/4IG/8pW/hb/18z/+iXr+pOv5bP8Aggb/AMpWvhZ/18z/APol6/qTr9rPswooooAK+Xv+C1n/ACif+Pn/AGKF3/IV9Q18u/8ABa3/AJRP/Hz/ALFC7/kKAP5S4zkV9n/sIf8ABFDx3+358Cm8eeHfFnhLRdPXU59M+z6j9o87fEsbFvkjZcHzB37V8XIflr9+f+DbL/lHLJ/2Nmof+i7evyvxh4qzHh/IPr+WSUanPGN2k9He+j9Dvy6hCtW5Km1j49b/AINdPiyw/wCShfDz/wAnP/jNN/4hcfiz/wBFD+Hf/k5/8Zr9Gf2j/wDgq94X+B/xu1D4daD4L8d/EnxdocCXesW3hyySaPS4SquTIzODuCMrYCkfMMstTeHf+Csfgjx/+z/pfxD8JeD/AImeM7C9v5NNvNN0XSIJ9S0SZI/MP2qNrhUVduMMjuDuGD1x+c0Y+OlXAYXNI4J+xxPJ7OThSSftIuVNyu06cakYt05VFGM0vcbPS9jlyk431XqfnB/xC4/Fn/oofw7/APJz/wCM0f8AELj8Wf8Aoofw7/8AJz/4zX6Hfs0/8FffCP7VniSws/C3w2+MP9nXeoHTJ9butGsxpemyhFdvtE0d25QKrIThSQHXjmuY8V/8FzPAema3r02g+APib4v8G+E7s2WteKNK02JtPtX4wULSgsp55fyzxkBgRn1P7D+kB/adTJ/7Pft6cYynHloe6pScYKUublU5yTUIN882vdiyeTLeXnvp8z4Y/wCIXH4s/wDRQ/h3/wCTn/xmj/iFx+LP/RQ/h3/5Of8Axmv0o+O//BVz4bfA74afDvxYlh4t8Y6V8UDKuif8I7ZwTyu0Yj3K6zTxbWzIq4GTkMCBipP2bv8Agqd4C/aK+O9z8M30Hx34D8bRwG4t9L8WaZFZS36qjO4i8qaUblRdxDFSRkru2tjwnX8cFkdTiN4GX1WmqjlL2VO8VRm6dVuH8RKlNONRuNoWfNZF+wy7n9nfXTq+uq+8/NP/AIhcfiz/ANFD+Hf/AJOf/GaP+IXH4s/9FD+Hf/k5/wDGa/TP9r//AIKjfDj9if4t+GvBvi218S3Op+JYUuEl023t5LexieYxB52kmjZRkMflVjhTx0B7X9sP9tPwV+xB8LU8U+Mpb6SG6nFpY2GnQrNe6lMRnZEjMq8AEksyqB3yQD5NHiTxiq/2X7LCyl/anN9VtSi/b8r5Zcll9l73tZe9tqW8JgFzXfw767H5L/8AELj8Wf8Aoofw7/8AJz/4zSr/AMGuXxZB/wCShfDv/wAnP/jNfop+zv8A8FZfC/xo+NulfDvxB4I8e/DXxT4ige60aLxFZRww6pEFLrscOW3siswBXbwQGJqhd/8ABYzwlP8AFHxb4S0T4XfGvxZqPgvUptM1KXRNDs7qBJI5GjLA/bA20lDgsoJHYV9T9Q8ePr9TLPqX7ynTjVlpQ5PZTk4RmqnN7OUXNON4yfvJrdGXsst5ea+m3Xc/P1f+DXf4sg/8lB+Hn/k5/wDGa+I/22f2RtZ/Yd/aC1P4ea/qemavqOmW9vcPc6fv8hxNGJABvVWyM46V/TR8BPjIvx5+G9r4kXw34p8KC6kkj/s3xDZpaX8WxiuXjSSRQDjI+Y5BFfgr/wAHCJ/42d+LP+wZpv8A6SpS8LuPOKcw4pxGQ8QyjejGfNFKGk4yjF+9G6drvZtMyx+DoU6Cq0upk/8ABA3/AJSs/Cz/AK+Z/wD0S9f1J1/LZ/wQN/5St/C3/r5n/wDRL1/UnX9IniBRRRQAV8u/8Frf+UT/AMfP+xQu/wCQr6ir5d/4LW/8on/j5/2KF3/IUAfykJ0r9+v+DbL/AJRyyf8AY2ah/wCi7evwFT7tfv1/wbZf8o5ZP+xs1D/0Xb1+EfSJ/wCSU/7iw/KR6uTf7x8mZnx2/Zs+KfwU/bW8cfGz9m3XPCXjHVNZjWPxb4LvplNx5kaqhVMMuQTGH2l43DBgC+4KPTP+CXvxu+HHx5/Ze8Y6z4G+H1l8NNYW6uIfE+j2qgx/bPKJWZXwu9WU91VlYOuCFDNX+OH/AAS08Tz/ALRviP4m/Br4vaj8KNa8apjxBbf2X/aFtevgDzUHmxlGJG4/e+bkYJOfR/2Ff2ANK/Yf+A2q+FLLXLvxBrPiKR7rV9ZuYfL+1XDR7MrEGOxByQpdjycsc5rm4+8ReCs08OKOHr5osVmUY4GnS5KNehXVOimqtHHWSwuIp0FZYWpFzrbNtXkjuw+HrwxLfJaPvX1TWuzj1V+vQ+TP+CKcskP/AASo+OrxFllTxDr5Qr1DDRbHGPfNXP8AglNZWt1/wRK8eC5jiK3D689zvA/eN5SgFvU4Cjn0FfTv/BOf9gX/AIYT+AfiTwNqHiSDxpD4j1+51mWcaWbFFSe2trcwGMyy7uLcnduGd+MDHPgesf8ABEvxh4bt/E3hT4ffH3XPCHwo8WXj3V74afSftToJAolRZvPQEMqhQSnRVzvIJP3ee+Lnh/xPxFxPhambxwlDFZjgsbRxE6NeUKlPDRnGpDlhTlVjP3+aHPBRbjZuOjOenhMRSpUnyXajKLV1pf52PijVNU1nTv8Agnf+x1daHZpqmuQeLfEb2FrNIFS5mGpJsjLEgAEgDqPrX0V8G/F/jP4r/wDBarwJqX7QehR/DPxvpvh6RPDGjabCk9nqo8q8x5tys74P7ycrjcGaPYSmAH+l/i1/wSU0jxT4K+Bvhzwp4m/4RnRvgvfyXyx3Gm/bZdXMjQu+5hLEI3Zo2Ythsl+nHPRftM/8E8bv48fttfDv4z6b4zi0C88CWQsX0+XSDdi9USTuGWQTx+W3+kOOVfop9Qfsc++lB4e53hq+DjUhReLo56vbyp1vb4d4zE1auHpKylScMRGUVVapzcE/4lNpswhleJg07X5XT0urOySb76f1c/Nb9vnx/wCDP2lv2of2m9a1/wAS6Rpuo+EtFtdI8FQXU21726truCWU26nq5itZ4jyP+PvoSePQv24vjXH+0R8Ev2F/EM0onN9rQttQVzndLDPpsMm8ZPJ2sT/vV9qfse/8EpvC/wCzz8MfE+k+MZdB+JGu+KdUudTudYu9BWBozMoUqiPJKQAQTw45J4Fed6N/wQ8sZf2Oz8Ktb+INze3Gia7NrvhXXLTSfs0+hPIoBidGmk85CwUthoydowVIBr2ML9JPwkoYzK8JRxdWNHJqsKVCbpzlGdCrl8sFXqUYqnGcIxqRpV5wqPnk3NwTfukvLcW4yk46zV36qXMr/itDR/aT/antPD//AAUb+Gfg/wAb/s/abe3F3rkNl4P8b3PiKN54kkZA1zFbLblk2uxGxpATtznmvnz9ivUPjjY/tvftLf8ACm7D4bXzN4tvP7S/4SyW7QJ/pk+zyvIIz3zu9q+jvg7/AMEpPGH/AA0X4V+Ivxi+Neq/FK98COs2hWi6X9gSGVSWDyMZpC/zYbaAuSBkkcVzNx/wR8+Knhb45ePvGPgD9pC68CL481i41W5tLPwszlRJM8ixs/21d+3fjO1c+gr4jhnxC8JsmyfE8MYTMsK5zy+jRnUrUsyr4KpXhi3VfLSnGdaC9naclCFKl7ZtxVjapQxkpqq4P4m7LlUkrW32/N2Pt/4SS+KJ/hpor+NodGg8WNaodVj0lnaxS4x84hL/ADlM9N3NfgJ/wcI/8pO/Fn/YM03/ANJUr92v2W/hV4t+DPwgs9B8beOrn4ja/bzSyTa5PZ/ZHnVmJVfL8yTG0cfe5r8Jf+DhH/lJ34s/7Bmm/wDpKlfzX4Kww8OPsdHCVIVKfLV5ZUozhTkvaRs6caijOMGvhjNKSVk1c7c0v9VjzKz0332Mn/ggZ/ylb+Fv/XzP/wCiHr+pSv5bP+CBv/KVv4W/9fM//ol6/qTr+xz5oKKKKACvl7/gtZz/AMEn/j5/2KF3/IV9Q18vf8FrP+UT/wAfP+xQu/5CgD+UmNcrX7a/8EAP2t/hb8Ff2C5NF8X/ABF8FeGNX/4Sa+n+xaprNvaz+W0cAV9jsDg4ODjsa/EyIZFXbPw9falD5lvZ3NxHnbujiZhn0yBXxXHvBuH4nyz+zcTVdOPMpXVr6X019TswNWpTq81KPMz+oI/8FE/gGf8Ams3ww/8ACltP/jlJ/wAPEPgH/wBFn+GH/hS2n/xyv5gW8HaqD/yDL/8A8B3/AMKYfB2qf9AzUP8AwHf/AAr8W/4lpyj/AKDp/dE9n69jP+fL+5n9QP8Aw8Q+An/RZ/hh/wCFLaf/AByj/h4h8BP+iz/DD/wpbT/45X8vv/CHap/0DdQ/8B3/AMKP+EO1T/oG6h/4Dv8A4Uf8S05R/wBB0/uiH1/Gf8+X9zP6gv8Ah4h8A/8Aos/wx/8ACltP/jlL/wAPEfgH/wBFm+GH/hS2n/xyv5fP+EO1T/oG6h/4Dv8A4Uf8Idqn/QN1D/wHf/Cj/iWnKP8AoOn90Q+v4z/ny/uZ/UH/AMPEfgH/ANFm+GH/AIUtp/8AHKT/AIeIfAP/AKLP8Mf/AApbT/45X8vv/CHap/0DdQ/8B3/wo/4Q7VP+gbqH/gO/+FH/ABLTlH/QdP7oh9fxn/Pl/cz+oL/h4h8A/wDos/wx/wDCltP/AI5Sj/gol8Ax/wA1m+GH/hS2n/xyv5fP+EO1T/oG6h/4Dv8A4U5fB2q/9Ay//wDAd/8ACj/iWnKP+g6f3RD69jP+fL+5n9QX/DxP4CH/AJrN8Mf/AApbT/45X4Vf8Fyvid4b+MP/AAUR8T654U13SfEmjT6fp8cd9pt2l1byMtsgYB0JUkHg818rL4N1X/oGX/8A4Dv/AIVUvbGXT5jFNFJDIvVHUqw/A19z4f8Ag/gOFsxlmOGxMqknBxs0rWbTvp6HFjsTiKlPlq03FX7M+u/+CBv/ACla+Fn/AF8z/wDol6/qTr+W3/ggh/ylb+Fv/XzP/wCiHr+pKv2U8cKKKKACvl7/AILWf8on/j5/2KF3/IV9Q18vf8FrP+UT/wAfP+xQu/5CgD+UyCv0R/4JgsR+zK/J/wCQ1df+gRV+dsZwK/RD/gmAf+MZJP8AsNXX/oEVfN8U/wC5fNH7X4Cf8lO/+vc/zifQ7SNu6n86azM38R/OivnOz+KHxR+Inxe8baJ4a1TQbaHw1dSpDHd2mTIokKqu7B546muLgrgLF8SxxVShXpUKeGgpznVlKMUpTUFrGMn8Ul0P6yz/AIloZS6MalKdSVWTjGMEm21Fye7j0TPovLf3j+dLuPqfzr5t/wCGuNf1z9lTVPFNvHaWXiHRtTj06ZvK3wyZ2HeFPTIfGOxB9RWx8Rfj14qvNc8E+EfDJsYPEHibTItRur24j3RwI+4fKv1jkJ+i4619l/xALiiOIeHr+zp8lStTm5T92HsKcatSpJpP93ySi4tXbvblueB/xE3JpUlVpc8rwpyilHWXtZOEYpX+LmTTTsl3Petx9T+dGT6n868Z+HHjz4heHfHOu+G/FtmdRgtNOe8sddtbB47V2VQwRmxszyeM5BUjkHNWv2ZfjBrfxQ+CWoa5q0sEmoW806I0cIRcIoK/KK8PN/CfNcBha2PVajVo03QSnTm5KaxCk6co+6nb3GpKSjKL+yejgONcFiq0MN7OcKklUfLKNnH2TSknr/eVmrprqetkt/eP50hZh3P5188/Dn4ofEv4sfAOz8Tabq+hWl3bPeG+8+yyJlQjywgGQCAGz65FWv2cfid8QviL4Yi8YazqmjzeG4BdG5sobPZdSeVG+NpHH39p69Aa9zNPAzNMvwmNxOIxuGvhKjozhz1Of2vv8sEvZWbqcjcNUrW5nE4MH4jYLE1sPRpYeravBVIy5Y8vJ7t5P372jzLm0v2ue9+Y3qfzp6TMR94/nXy54d+Mvxa+IHgO68d6G+lXdlbXXkpoFtZtcXEib1U42gsSNw98Bjxivo7wbrs3iTwtp2oXFlc6bcXlukstpcIUltnIBZGBAIIORyB0r5vjvwxzHhWKeNr0ajU5Upxpz5pU6kUm4TTUXezXvR5oPVKWh6vDnGGEzttYenOK5VOLnGynBtpSi031WztJdUbKyHHU/nX5uf8ABRxt37Vut5/59rT/ANEJX6Qoea/N3/go2f8AjK3W/wDr2tP/AEQlfO8Kf74/8L/NH5x9ID/km4f9fY/+kyPTv+CCH/KVv4W/9fM//oh6/qSr+W3/AIIIf8pW/hb/ANfM/wD6Iev6kq/RT+MQooooAK+Xv+C1n/KJ/wCPn/YoXf8AIV9Q18vf8FrP+UT/AMfP+xQu/wCQoA/lLjGRX6If8EwBj9mR/wDsNXX/AKBFX54wdK/Q/wD4Jhf8mzSf9hq6/wDQIq+b4q/3L5o/a/AT/kp3/wBe5/nE+hCMGvkfwd8J7/4rftGfFC2sPEmpeHXivZ8taHAn3SsMN3x9K+vMZrB8OfDLQ/CPiXU9Y07T47bUtZcyXs6uxM7E7iSCSBz6AV6Hhp4kPhLCZp7BP2+IpQhTfLCcYyjVhNuUZ3VuWLS92WttOp/T/F3Cizutg/aP93SnKU1eUW04SirOOt7tdVofH2na/HqH7B3iPTls4LaXSNcijkkiH/H0WaMiRv8Aa/h+irXaajqcHhL9p74UapqUiWemzeFbe2W5mYJF5mbjKljwMeYmfTePWvdE/Zy8FRaBqelroVuNP1idLi8gEsm2aRCSrfe4wSemK0fFvwd8NeO/DFro+raTbXmn2ShbaN85gAGBtYHcOAO/OOa/asd9IDhqvicRCGGrKhiauLlU+DnjDFYelSk43m05RqQlLlbUeVpJrZfn2G8Mc3pUqcpVabqUoUFH4uVyo1ZzSl7qaTjJK6u73dn18N8MfETX1/aQ1nwxJ4vk8S6Imk3NxlREY1YwFguUH8JIHWuQ/Zq+BVz4/wDgpf6tF4v8SaMkE06mzspgsEm1Qcke/Q19NeAPgb4V+GFndQ6Jo1tZfbUMc7jLSSqf4SxJOPYcVf8AB3wx0L4f+HJdI0fT47LTp2ZnhV2YMWGG5JJ5+teRj/HvK8Fg8RheGaEqM5/VI8/saEVU9h7X2tSdON4QnUdRWUVL4fiWx3YXwzxmIxFKvm9RVIr275eeo+X2nJyRjJ2lKMeV3vbfY8T/AGOW3fsdXx6ZF8cf99Vf/Yl1UaB+yU181vLdLZSX1wYIhmSYJltijuxxgD1NeueEvhfoPgXwk+haTp0dnpMm/dbq7FTv+9ySTzn1qbwP8PtH+G3h5NK0SySw0+N2kWFGZgGY5JyxJ5r5HjHxVynN6ed06VGpbHY2niYJ2VqcFVTjJqTak/aK3Ldb67Hu5DwXjcDPL5TqR/2fDzoytd+9Lks0mldLle9umh8neJf+EZ0P4c3fxH+G3iK68LXqXCiXRWuUxOxkCFfK3HsxYDkbQ2MdR9S/CnxPceN/hxoWsXcQgudRsYriVAMAMygkgeh6j2IrAv8A9k/4e6n4iOpzeGbE3LP5jAFljZuuSgO38MY9q9Bht0tolSNVREAVVUYCgdAB6Vl4r+I+RcR5ZhsJgI1qlanUlL2tdQ9pGk4xUcP7SLcq0YNNqpUtLpbcvgrhTMsqxlatiXThTlFLkpuXJKabbq8rSVNyTs4xuvMVBX5u/wDBRv8A5Ot1v/r2tP8A0QlfpJX5uf8ABRr/AJOs1z/r2tP/AEQlfl3Cn++P/C/zR8t9ID/km4f9fY/+kyPTf+CCH/KVv4W/9fM//oh6/qSr+W3/AIIIf8pW/hb/ANfM/wD6Iev6kq/RT+MQooooAK+Xf+C1h/41P/Hz/sULv+Qr6irzL9s/9n9f2q/2SviP8NzcC0fxt4dvdIhuGGRbTSwssUpHcJIUbHfbQB/HxAeK9H+GH7UXjj4P+Gf7I8O62+n6eZmuDEII3+dgATllJ/hFc58Yvgx4p/Z0+KGr+C/GujXegeJtCmMN5ZXKFSME4dCQN8bdVccMMEVgxtkVnVo06seWok15nbgMyxeBq+2wdSVOVrXi2nbtdHsf/DenxV/6GmX/AMBYf/iKT/hvP4q/9DTL/wCAsP8A8RXkAPFGa5v7Nwn/AD7j9yPa/wBduIP+g2r/AODJf5nsH/DenxV/6GmX/wABYf8A4ij/AIb1+K3/AENUv/gLD/8AEV4/mjNH9m4T/n3H7kH+u3EH/QbV/wDBkv8AM9g/4b1+K3/Q1S/+AsP/AMRR/wAN6/Fb/oapf/AWH/4ivH80Zo/s3Cf8+4/cg/124g/6Dav/AIMl/mev/wDDenxV/wChpl/8BYf/AIij/hvP4q/9DTL/AOAsP/xFeQZozR/ZuE/59x+5D/124g/6Dav/AIMl/mev/wDDefxV/wChpl/8BYf/AIij/hvP4q/9DTL/AOAsP/xFeQZoDY7Uf2bhP+fcfuQv9duIP+g2r/4Ml/mewf8ADevxW/6GqX/wFh/+Irzb4kfEXWPip4pn1rXbw32pXKokkxRV3BVCrwoA6AVjs3FRTPxWtLCUKT5qcEn5I4cw4jzXHUvY43EzqRve0pNq/ezZ9f8A/BA85/4Kt/C3/r5n/wDRL1/UlX86/wDwbLfsReK/jH+2PY/F02F3aeAvASXC/wBpvGVg1G+ZCi28THhym4s+3O3ABwWAP9FFdB4wUUUUAFFFFAHDfF79mP4bftBPaN48+H3gnxs1hn7Mde0K11I22euzzkbb+GK4v/h2l+zn/wBED+C//hE6b/8AGa9tooA8S/4dp/s6f9EE+DH/AIROm/8Axmj/AIdp/s6f9EE+DH/hE6b/APGa9tooA8S/4dp/s6f9EE+DH/hE6b/8Zo/4dp/s6f8ARBPgx/4ROm//ABmvbaKAPEv+Haf7On/RBPgx/wCETpv/AMZo/wCHaf7On/RBPgx/4ROm/wDxmvbaKAPEv+Haf7On/RBPgx/4ROm//GaP+Haf7On/AEQT4Mf+ETpv/wAZr22igDxL/h2n+zp/0QT4Mf8AhE6b/wDGaP8Ah2n+zp/0QT4Mf+ETpv8A8Zr22igDxL/h2n+zof8AmgnwY/8ACJ03/wCM0f8ADtH9nM/80D+Cx78+CNM/+M17bRQBT0Dw9YeFNFtdN0uytNO0+yjWG3tbWFYYbdFGAqIoCqoHQAYq5RRQAUUUUAf/2Q==", "JPEG", 30, 10, 15, 24);
+            pdf.setFontSize(20);
+            pdf.text("ENERGY STORAGE RIGHTS", 60, 25);
+            pdf.setFontSize(10);
+            pdf.text("Your chosen energy combination: " + get_combination(), 20, 40);
+            pdf.text("1. Solar Information:", 20, 50);
+            pdf.text("Specific Photovoltaic Power output: " + pvout + " kWh/kWp", 20, 55);
+            pdf.text("Direct Normal Irradiation: " + dni + " kWh/m²", 20, 60);
+            pdf.text("Global Horizontal Irradiation: " + ghi + " kWh/m²", 20, 65);
+            pdf.text("Diffuse Horizontal Irradiation: " + dif + " kWh/m²", 20, 70);
+            pdf.text("Global Titled Irradiation At Optimum Angle: " + gti + " kWh/m²", 20, 75);
+            pdf.text("2. Wind Information:", 20, 85);
+            pdf.text("Data for 10% windiest areas: ", 20, 90);
+            pdf.text("Power Density: " + power_d + " W/m²", 20, 95);
+            pdf.text("Wind Speed: " + speed_w + " m/s", 20, 100);
+            pdf.text("3. Storage Information:", 20, 110);
+            pdf.text("(1). Hydro:", 20, 115);
+            pdf.text("Class: " + class_, 20, 120);
+            pdf.text("Storage head: " + head_ + " m", 20, 125);
+            pdf.text("Separation: " + separation + " km", 20, 130);
+            pdf.text("Volume: " + volume + " GL", 20, 135);
+            pdf.text("Water to Rock: " + w_r + " Pair", 20, 140);
+            pdf.text("(2). Battery:", 20, 150);
+            pdf.text("Energy: " + energy_battery + " GWh", 20, 155);
+            pdf.text("Storage: " + storage_time + " h", 20, 160);
+            pdf.text("Power: " + power_storage + " GW", 20, 165);
+            pdf.text("4. Investment Information:", 20, 175);
+            pdf.text("project term: " + document.getElementById("effi").value, 20, 180);
+            pdf.text("itc on storage system: " + document.getElementById("rad_r").value, 20, 185);
+            pdf.text("sgip eligible: " + document.getElementById("num_wind_turbine").value, 20, 190);
+            pdf.text("In-state supplier: " + document.getElementById("cost_c").value, 20, 195);
+            pdf.text("sgip step: " + document.getElementById("poe_e").value, 20, 200);
+            pdf.text("saving assumptions: " + document.getElementById("year_y").value, 20, 205);
+            pdf.text("calculation pattern: " + document.getElementById("calculation_pattern").value, 20, 210);
+            pdf.text("onshore: " + document.getElementById("onshore").value, 20, 215);
+            // Yuang
+            pdf.text("cost for power: " + "8 $/kW", 20, 220);
+            pdf.text("cost for energy: " + "0.7 $/kW", 20, 225);
+            pdf.text("desired hours for solar operation: " + "5h", 20, 230);
+            pdf.text("electricity price in your selected country/region: " + elec_price + " $\n", 20, 235);
+            pdf.text("total cost: " + (cal_fee() / 1000000).toFixed(6) + " million$", 20, 240);
+            pdf.text("distance to nearest energy grid: " + grid_distance, 20, 245);
+            pdf.text("5. ROI & IRR:", 20, 255);
+            pdf.text("ROI: " + roi.toFixed(2) + "%", 20, 260);
+            pdf.text("IRR: " + irr.toFixed(2) + "%", 20, 265);
+            pdf.text("6. Solar Panels Combination:", 20, 275);
+            pdf.text("Number of Array A: " + a_count, 20, 280);
+            pdf.text("Number of Array B: " + b_count, 20, 285);
+            pdf.text("Estimated Solar Panels Investment: " + dni * (28800 * a_count + 14400 * b_count) * 70 / 24 * 5 / 1000, 20, 290);
+            pdf.text("Note: The calculation results on this website are for reference only.", 20, 300);
+            pdf.save('EnergyStorageRights.pdf');
+        };
+        var element = document.getElementById("downloadBtn");
+        element.addEventListener("click", downloadPDFfromHTML);
+    </script>
+</div>
+</div>
+
+<script>
+
+    function changetopoint() {
+        console.log("C")
+        if (drawselection != 1) {
+            drawselection = 1;
+            clearall();
+            reset_fields();
+
+        }
+    }
+
+
+    function changetopolygon() {
+        console.log("B")
+        console.log(drawselection)
+        if (drawselection != 2) {
+            drawselection = 2;
+            clearall();
+            reset_fields();
+        }
+    }
+
+    function changetonan() {
+        console.log("A")
+        drawselection = 0;
+        clearall();
+        addPanelState = 0;
+        deletePanel();
+        hidePopUpSideBar();
+        reset_fields();
+    }
+
+    function hidePopUpSideBar() {
+        document.getElementById("popUpForPlacingPanel").style.display = "none";
+    }
+
+    function reset_fields() {
+
+        // speed_w = 0;
+        // power_d = 0;
+        // pvout = 0;
+        // dni = 0;
+        // ghi = 0;
+        // dif = 0;
+        // gti = 0;
+        // efficiency = 100;
+        // area_value = 1;
+        // poe = 0.3441;
+        // year = 5;
+        // cost_value = 45.74;
+        // solar_e = 0;
+        // wind_e = 0;
+        // panel_capacity = 150;
+        // // 150 200 selection TBD
+        // number_of_wind_turbine = 1;
+        // //horizontal pi r^2
+        // radius_of_wind_turbine = 25;
+        // equipment_cost = 0;
+        // // change type call reset
+
+        efficiency = 100;
+        area_value = 1;
+        poe = 0.3441;
+        year = 5;
+        cost_value = 45.74;
+        solar_e = 0;
+        wind_e = 0;
+        speed_w = 0;
+        power_d = 0;
+        pvout = 0;
+        dni = 0;
+        ghi = 0;
+        dif = 0;
+        gti = 0;
+        class_ = 0;
+        head_ = 0;
+        separation = 0;
+        slope = 0;
+        volume = 0;
+        w_r = 0;
+        energy_battery = 0;
+        storage_time = 0;
+        power_storage = 0;
+        country = " ";
+        show_mode = 1;
+        //1:wind , 2:solar
+        panel_capacity = 150;
+        // 150 200 selection TBD
+        number_of_wind_turbine = 1;
+        //horizontal pi r^2
+        radius_of_wind_turbine = 25;
+        equipment_cost = 0;
+        // equipment cost 40,000 +45.74*area
+        // 8= 10kw wind turbine cost 500000, radius=22.5
+        lastpt = null;
+        calculationpoint = null;
+
+
+        // when click with no point (no data enter), data will refresh here
+        if (show_mode == 1) {
+            toSolarMode();
+            // document.getElementById("Data_for_10%_windiest_areas").innerText = "Data for 10% windiest areas";
+            // document.getElementById("Power_Density").innerHTML = "Power Density: <br> " + power_d + " W/m²";
+            // document.getElementById("Wind_Speed").innerHTML = "Wind Speed: <br> " + speed_w + " m/s";
+            // document.getElementById("energy_info").innerHTML = "";
+            // solar_e = 0;
+            // wind_e = 0;
+            // panel_capacity = 150
+            // document.getElementById("cost_c").value = 90;
+            // cost_value = document.getElementById("cost_c").value;
+            // document.getElementById("poe_e").value = 0.3441;
+            // poe = 0.3441
+            // document.getElementById("year_y").value = 5;
+            // year = 5;
+            // document.getElementById("effi").value = 100;
+            // efficiency = 100;
+            // document.getElementById("rad_r").value = 25;
+            // radius_of_wind_turbine = 25;
+            // document.getElementById("num_wind_turbine").value = 1;
+            // number_of_wind_turbine = 100;
+            // // TBD panel capacity
+            // document.getElementById("energy_show").innerHTML = "Annual Solar energy output: test1";
+            // document.getElementById("Annual_profit").innerHTML = "Annual profit: ";
+            // document.getElementById("Net_profit").innerHTML = "Net profit: ";
+            // document.getElementById("total_cost").innerHTML = "Total Cost: ";
+            // document.getElementById("ROI").innerHTML = "ROI: ";
+        } else if (show_mode == 2) {
+            toWindMode();
+            // document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Specific Photovoltaic Power output:<br> " + pvout + " kWh/kWp";
+            // document.getElementById("Power_Density").innerHTML = "Direct Normal Irradiation:<br> " + dni + " kWh/m2";
+            // document.getElementById("Wind_Speed").innerHTML = "Global Horizontal Irradiation:<br>" + ghi + " kWh/m2";
+            // document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation:<br> " + dif + " kWh/m2";
+            // document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation At Optimum Angle:<br> " + gti + " kWh/m2";
+            // solar_e = 0;
+            // wind_e = 0;
+            // document.getElementById("cost_c").value = 0.4 * panel_capacity;
+            // cost_value = document.getElementById("cost_c").value;
+            // document.getElementById("area_a").value = 1;
+            // area_value = 1;
+            // document.getElementById("poe_e").value = 0.3441;
+            // poe = 0.3441
+            // document.getElementById("year_y").value = 5;
+            // year = 5;
+            // document.getElementById("effi").value = 100;
+            // efficiency = 100;
+            // document.getElementById("sp_ca").value = 150;
+            // panel_capacity = 150;
+            // // TBD panel capacity
+            // panel_capacity = 150;
+            // document.getElementById("energy_show").innerHTML = "Annual Solar energy output:test 2 ";
+            // document.getElementById("Annual_profit").innerHTML = "Annual profit: ";
+            // document.getElementById("Net_profit").innerHTML = "Net profit: ";
+            // document.getElementById("total_cost").innerHTML = "Total Cost: ";
+            // document.getElementById("ROI").innerHTML = "ROI: ";
+        } else if (show_mode == 3) {
+            toStorageMode();
+        } else if (show_mode == 4) {
+            toBatteryMode();
+        }
+    }
+
+    function clearall() {
+        lastpoint = null;
+        polygonlist = [];
+        view.graphics.removeAll();
+        view.popup.close();
+    }
+
+    function change_base_map() {
+        var x = document.getElementById("select_map").value;
+        map.basemap = x;
+    }
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "325px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function toWindMode() {
+        show_mode = 2;
+
+
+        document.getElementById("wind_m").style = "background-color: darkblue;";
+        document.getElementById("solar_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("storage_m").style = "background-color: rgb(81, 174, 211);";
+
+        document.getElementById("isOnshore").style.display = "block";
+        document.getElementById("calculate_energy").style.display = "block";
+        document.getElementById("two_btn").style.display = "inline";
+
+        // document.getElementById("calculate_energy").innerHTML = "";
+        // var input1 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter1: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"101\"></input> related unit </p > "
+        // var input2 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter2: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"rad_r\" wrap=\"soft\" value=\"102\"></input> related unit </p > "
+        // var input3 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter3: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"num_wind_turbine\" wrap=\"soft\" value=\"103\"></input> related unit </p > "
+        // var input4 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter4: <input type=\"text\" style=\"margin-top:20px; width:34px; height:25px;\"id=\"cost_c\" wrap=\"soft\" value=\"104\"></input> related unit </p > "
+        // var input5 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter5: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"poe_e\" wrap=\"soft\" value=\"105\"></input> related unit </p > "
+        // var input6 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> wind parameter6: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"year_y\" wrap=\"soft\" value=\"106\"></input> related unit </p > "
+        // var inputs = input1 + input2 + input3 + input4 + input5 + input6;
+        //
+        // document.getElementById("calculate_energy").innerHTML = inputs;
+
+        document.getElementById("Data_for_10%_windiest_areas").innerText = "Data for 10% windiest areas";
+        document.getElementById("Power_Density").innerHTML = "Power Density: <br> " + power_d.toFixed(2) + " W/m²";
+        document.getElementById("Wind_Speed").innerHTML = "Wind Speed: <br> " + speed_w.toFixed(2) + " m/s";
+        document.getElementById("energy_info").innerHTML = "";
+    }
+
+    function toSolarMode() {
+        show_mode = 1;
+        document.getElementById("wind_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("solar_m").style = "background-color: darkblue;";
+        document.getElementById("storage_m").style = "background-color: rgb(81, 174, 211);";
+
+        document.getElementById("isOnshore").style.display = "none";
+
+
+        document.getElementById("calculate_energy").style.display = "block";
+        document.getElementById("two_btn").style.display = "inline";
+
+        // document.getElementById("calculate_energy").innerHTML = "";
+        //
+        // var input1 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34 ;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter1:  <select style=\"margin-top:20px; width:75px; height:25px; \"id=\"sp_ca\" wrap=\"soft\"> <option value =\"150\">change1</option> <option value =\"200\">change2</option></select></p>"
+        // var input2 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter2:  <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px; \"id=\"effi\" wrap=\"soft\" value=\"232\"></input> related unit  </p > "
+        // var input3 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter3:  <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px; \"id=\"area_a\" wrap=\"soft\" value=\"233\"></input> related unit  </p >"
+        // var input4 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter4:  <input type=\"text\" style=\"margin-top:20px; width:34px; height:25px; \" id=\"cost_c\" wrap=\"soft\" value=\"234\"></input> related unit </p >"
+        // var input5 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter5:  <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px; \" id=\"poe_e\" wrap=\"soft\" value=\"235\"></input> related unit  </p >"
+        // var input6 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px \"> solar parameter6:  <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px; \" id=\"year_y\" wrap=\"soft\" value = \"236\"></input> related unit </p >"
+        //
+        // var inputs = input1 + input2 + input3 + input4 + input5 + input6
+        //
+        // document.getElementById("calculate_energy").innerHTML = inputs
+
+        // if (document.getElementById("cost_c").value == "") {
+        //     document.getElementById("cost_c").value = panel_capacity * 0.4;
+        //     cost_value = panel_capacity * 0.4;
+        // }
+
+        document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Specific Photovoltaic Power output:<br> " + pvout.toFixed(2) + " kWh/kWp";
+        document.getElementById("Power_Density").innerHTML = "Direct Normal Irradiation:<br> " + dni.toFixed(2) + " kWh/m²";
+        document.getElementById("Wind_Speed").innerHTML = "Global Horizontal Irradiation:<br> " + ghi.toFixed(2) + " kWh/m²";
+
+        var energy_info = document.getElementById("energy_info");
+
+        energy_info.innerHTML = "";
+        energy_info.innerHTML = "\n" +
+            "        <p id=\"diffuse_horizontal_irradiation\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Diffuse Horizontal Irradiation </p>\n" +
+            "\n" +
+            "        <p id=\"global_titled_irradiation_at_optimum_angle\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Global Titled Irradiation At Optimum Angle </p>"
+
+        document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation:<br> " + dif.toFixed(2) + " kWh/m²";
+        document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation At Optimum Angle:<br> " + gti.toFixed(2) + " kWh/m²";
+    }
+
+    function toStorageMode() {
+        show_mode = 3;
+        document.getElementById("wind_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("solar_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("storage_m").style = "background-color: darkblue;";
+
+        document.getElementById("calculate_energy").style.display = "none";
+        document.getElementById("two_btn").style.display = "none";
+
+        // document.getElementById("calculate_energy").innerHTML = "";
+        // var input1 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor1: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"301\"></input> related unit </p > "
+        // var input2 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor2: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"302\"></input> related unit </p > "
+        // var input3 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor3: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"303\"></input> related unit </p > "
+        // var input4 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor4: <input type=\"text\" style=\"margin-top:20px; width:34px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"304\"></input> related unit </p > "
+        // var input5 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor5: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"305\"></input> related unit </p > "
+        // var input6 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor6: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"306\"></input> related unit </p > "
+        //
+        // var inputs = input1 + input2 + input3 + input4 + input5 + input6;
+        //
+        // document.getElementById("calculate_energy").innerHTML = inputs;
+
+        document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Class:<br> " + class_;
+        document.getElementById("Power_Density").innerHTML = "Storage head:<br> " + head_ + " m";
+        document.getElementById("Wind_Speed").innerHTML = "Separation:<br> " + separation + " km";
+
+        var energy_info = document.getElementById("energy_info");
+
+
+        energy_info.innerHTML = "";
+        energy_info.innerHTML =
+            "\n" +
+            "        <p id=\"volume\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Volume </p>\n" +
+            "\n" +
+            "        <p id=\"water_to_rock\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Water to Rock </p>\n"
+        // "\n" +
+        // "        <p id=\"storage_energy\"\n" +
+        // "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+        // "            Storage Energy </p>\n" +
+        // "\n" +
+        // "        <p id=\"storage_time\"\n" +
+        // "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+        // "            Storage Time </p>\n"
+
+        document.getElementById("volume").innerHTML = "Volume:<br> " + volume + " GL";
+        document.getElementById("water_to_rock").innerHTML = "Water to Rock:<br> " + w_r + " Pair";
+        // document.getElementById("storage_energy").innerHTML = "Storage Energy:<br> " + energy_battery.toFixed(2) + " GWh";
+        // document.getElementById("storage_time").innerHTML = "Storage Time:<br> " + storage_time.toFixed(2) + " h";
+    }
+
+    function toBatteryMode() {
+        show_mode = 4;
+        document.getElementById("wind_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("solar_m").style = "background-color: rgb(81, 174, 211);";
+        document.getElementById("storage_m").style = "background-color: darkblue;";
+
+
+        document.getElementById("two_btn").style.display = "none";
+        document.getElementById("calculate_energy").style.display = "none";
+
+
+        // document.getElementById("calculate_energy").innerHTML = "";
+        //
+        // var input1 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor1: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"301\"></input> related unit </p > "
+        // var input2 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor2: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"302\"></input> related unit </p > "
+        // var input3 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor3: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"303\"></input> related unit </p > "
+        // var input4 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor4: <input type=\"text\" style=\"margin-top:20px; width:34px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"304\"></input> related unit </p > "
+        // var input5 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor5: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"305\"></input> related unit </p > "
+        // var input6 = "<p style=\"background:#c9e1ee ;font-weight:10;font-size:16px; color:#282c34; padding:20px; padding-left:35px;margin-left:-20px;margin-top: -48px\"> Storage factor6: <input type=\"text\" style=\"margin-top:20px; width:35px; height:25px;\"id=\"effi\" wrap=\"soft\" value=\"306\"></input> related unit </p > "
+        //
+        // var inputs = input1 + input2 + input3 + input4 + input5 + input6;
+
+
+        document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Energy:<br> " + energy_battery + " GWh";
+        document.getElementById("Power_Density").innerHTML = "Storage:<br> " + storage_time + " h";
+        document.getElementById("Wind_Speed").innerHTML = "Power:<br> " + power_storage + " GW";
+
+        var energy_info = document.getElementById("energy_info");
+
+        energy_info.innerHTML = "";
+    }
+
+    // function getNum() {
+    //     if (document.getElementById("cost_c").value == "") {
+    //         document.getElementById("cost_c").value = 45.74;
+    //         cost_value = 45.74
+    //     }
+    //     if (document.getElementById("cost_c").value == "") {
+    //         document.getElementById("cost_c").value = panel_capacity * 0.4;
+    //         cost_value = panel_capacity * 0.4;
+    //     }
+    //     // TBD panel capacity
+    //     if (show_mode == 1) {
+    //         cost_value = document.getElementById("cost_c").value;
+    //         poe = document.getElementById("poe_e").value;
+    //         year = document.getElementById("year_y").value;
+    //         efficiency = document.getElementById("effi").value;
+    //         radius_of_wind_turbine = document.getElementById("rad_r").value;
+    //         number_of_wind_turbine = document.getElementById("num_wind_turbine").value;
+    //
+    //     } else if (show_mode == 2) {
+    //         cost_value = document.getElementById("cost_c").value;
+    //         area_value = document.getElementById("area_a").value;
+    //         poe = document.getElementById("poe_e").value;
+    //         year = document.getElementById("year_y").value;
+    //         efficiency = document.getElementById("effi").value;
+    //         panel_capacity = document.getElementById("sp_ca").value;
+    //     } else {
+    //         cost_value = document.getElementById("cost_c").value;
+    //         area_value = document.getElementById("area_a").value;
+    //         poe = document.getElementById("poe_e").value;
+    //         year = document.getElementById("year_y").value;
+    //         efficiency = document.getElementById("effi").value;
+    //         panel_capacity = document.getElementById("sp_ca").value;
+    //     }
+    //     if (drawselection == 2 || drawselection == 0) {
+    //         fetch('/calculate_wind_power_density', {
+    //             // Specify the method
+    //             method: 'POST',
+    //
+    //             // A JSON payload
+    //             body: JSON.stringify({
+    //                 "lon": calculationpoint[0],
+    //                 "lat": calculationpoint[1],
+    //                 "ef": efficiency,
+    //                 "area": area_value,
+    //             }),
+    //             headers: {'Content-type': 'application/json'}
+    //         }).then(function (response) {
+    //             return response.text();
+    //         }).then(function (text) {
+    //             wind_e = parseFloat(text.split("Wh per")[0].slice(6));
+    //             solar_e = parseFloat(text.split("Solar: ")[1].split("kWh")[0])
+    //
+    //             view.popup.open({
+    //                 title: "Latitude: " + Math.round(calculationpoint[1] * 100000) / 100000 + ", Longitude" + Math.round(calculationpoint[0] * 100000) / 100000,
+    //                 content: "Solar: " + solar_e + " Kwh for " + area_value + " M^2 Wind:" + wind_e + " W/M^2 for " + number_of_wind_turbine + " wind turbine size of " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine) + " M^2",
+    //                 location: calculationpoint
+    //             });
+    //             if (show_mode == 1) {
+    //                 document.getElementById("energy_show").innerHTML = "Annual wind energy output: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " KWh";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + (((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + ((((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)) * 100 / (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine))).toFixed(4) + "%";
+    //             } else if (show_mode == 2) {
+    //                 document.getElementById("specific_Photovoltaic_power_output").innerHTML = "Specific Photovoltaic Power Output: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/kWp";
+    //                 document.getElementById("direct_normal_irradiation").innerHTML = "Direct Normal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " \n" + " kWh/m2";
+    //                 document.getElementById("global_horizontal_irradiation").innerHTML = "Global Horizontal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " \n" + " kWh/m2";
+    //                 document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/m2";
+    //                 document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation at Optimum Angle: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/m2";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (solar_e * 365 * panel_capacity * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (cost_value * area_value).toFixed(4) + " AUD";
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + ((solar_e * 365 * panel_capacity * poe / 1000 - 8 * area_value) * year - cost_value * area_value).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + (((solar_e * 365 * panel_capacity * poe / 1000 - 8 * area_value) * year - cost_value * area_value) * 100 / (cost_value * area_value)).toFixed(4) + "%";
+    //             } else {
+    //                 document.getElementById("storage_head").innerHTML = "Head: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " m";
+    //                 document.getElementById("separation").innerHTML = "Separation: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " km";
+    //                 document.getElementById("average_slope").innerHTML = "Average Slope: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " %";
+    //                 document.getElementById("volume").innerHTML = "Volume: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " GL";
+    //                 document.getElementById("water_to_rock").innerHTML = "Water to Rock: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " Pair";
+    //                 document.getElementById("storage_energy").innerHTML = "Energy: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " GWh";
+    //                 document.getElementById("storage_time").innerHTML = "Storage Time: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " h";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine));
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + (((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + ((((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)) * 100 / (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine))).toFixed(4) + "%";
+    //             }
+    //         });
+    //     } else if (drawselection == 1) {
+    //         fetch('/calculate_wind_power_density', {
+    //             // Specify the method
+    //             method: 'POST',
+    //
+    //             // A JSON payload
+    //             body: JSON.stringify({
+    //                 "lon": calculationpoint.longitude,
+    //                 "lat": calculationpoint.latitude,
+    //                 "ef": efficiency,
+    //                 "area": area_value,
+    //             }),
+    //             headers: {'Content-type': 'application/json'}
+    //         }).then(function (response) {
+    //             return response.text();
+    //         }).then(function (text) {
+    //             wind_e = parseFloat(text.split("Wh")[0].slice(6));
+    //             solar_e = parseFloat(text.split("Solar: ")[1].split("kWh")[0])
+    //             view.popup.open({
+    //                 title: "Latitude: " + Math.round(calculationpoint.latitude * 100000) / 100000 + ", Longitude" + Math.round(calculationpoint.longitude * 100000) / 100000,
+    //                 content: "Solar: " + solar_e + " Kwh for " + area_value + " M^2 Wind:" + wind_e + " W/M^2 for " + number_of_wind_turbine + " wind turbine size of " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine) + " M^2",
+    //                 location: calculationpoint
+    //             });
+    //
+    //             if (show_mode == 1) {
+    //                 document.getElementById("energy_show").innerHTML = "Annual wind energy output: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " KWh";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + (((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + ((((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)) * 100 / (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine))).toFixed(4) + "%";
+    //             } else if (show_mode == 2) {
+    //                 document.getElementById("specific_Photovoltaic_power_output").innerHTML = "Specific Photovoltaic Power Output: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/kWp";
+    //                 document.getElementById("direct_normal_irradiation").innerHTML = "Direct Normal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " \n" + " kWh/m2";
+    //                 document.getElementById("global_horizontal_irradiation").innerHTML = "Global Horizontal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " \n" + " kWh/m2";
+    //                 document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/m2";
+    //                 document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation at Optimum Angle: " + (solar_e * 365 * panel_capacity / 1000).toFixed(4) + " kWh/m2";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (solar_e * 365 * panel_capacity * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (cost_value * area_value).toFixed(4) + " AUD";
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + ((solar_e * 365 * panel_capacity * poe / 1000 - 8 * area_value) * year - cost_value * area_value).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + (((solar_e * 365 * panel_capacity * poe / 1000 - 8 * area_value) * year - cost_value * area_value) * 100 / (cost_value * area_value)).toFixed(4) + "%";
+    //             } else {
+    //                 document.getElementById("storage_head").innerHTML = "Head: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " m";
+    //                 document.getElementById("separation").innerHTML = "Separation: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " km";
+    //                 document.getElementById("average_slope").innerHTML = "Average Slope: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " %";
+    //                 document.getElementById("volume").innerHTML = "Volume: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " GL";
+    //                 document.getElementById("water_to_rock").innerHTML = "Water to Rock: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " Pair";
+    //                 document.getElementById("storage_energy").innerHTML = "Energy: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " GWh";
+    //                 document.getElementById("storage_time").innerHTML = "Storage Time: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 / 1000).toFixed(4) + " h";
+    //                 document.getElementById("Annual_profit").innerHTML = "Annual profit: " + (wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000).toFixed(4) + " AUD";
+    //                 document.getElementById("total_cost").innerHTML = "Total Cost: " + (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine));
+    //                 document.getElementById("Net_profit").innerHTML = "Net profit: " + (((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)).toFixed(4) + " AUD";
+    //                 document.getElementById("ROI").innerHTML = "ROI: " + ((((wind_e * Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * 365 * poe / 1000 - 71.11 * area_value)) * year - Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value - (equipment_cost * number_of_wind_turbine)) * 100 / (Math.PI * radius_of_wind_turbine * radius_of_wind_turbine * number_of_wind_turbine * cost_value + (equipment_cost * number_of_wind_turbine))).toFixed(4) + "%";
+    //             }
+    //         });
+    //     }
+    // }
+
+    function change_to_solar() {
+        // Get the checkbox
+        var checkBox = document.getElementById("solar_button");
+        // If the checkbox is checked, display the layer
+        if (checkBox.checked == true) {
+            solar_layer.visible = true;
+        } else {
+            solar_layer.visible = false;
+        }
+    }
+
+    function change_to_wind() {
+        // Get the checkbox
+        var checkBox = document.getElementById("wind_button");
+        // If the checkbox is checked, display the layer
+        if (checkBox.checked == true) {
+            wind_layer.visible = true;
+        } else {
+            wind_layer.visible = false;
+        }
+    }
+
+    function change_to_water() {
+        // Get the checkbox
+        var checkBox = document.getElementById("water_button");
+        // If the checkbox is checked, display the layer
+        if (checkBox.checked == true) {
+            water_layer.visible = true;
+        } else {
+            water_layer.visible = false;
+        }
+    }
+
+    function change_to_energy() {
+        // Get the checkbox
+        var checkBox = document.getElementById("energy_button");
+        // If the checkbox is checked, display the layer
+        if (checkBox.checked == true) {
+            energy_layer.visible = true;
+        } else {
+            energy_layer.visible = false;
+        }
+    }
+
+    function change_to_hydro() {
+        // Get the checkbox
+        var checkBox = document.getElementById("hydro_button");
+        // If the checkbox is checked, display the layer
+        if (checkBox.checked == true) {
+            hydro_layer.visible = true;
+        } else {
+            hydro_layer.visible = false;
+        }
+    }
+
+</script>
+
+<script>
+
+    // var btn = document.getElementById("calculateBtn");
+    // btn.onclick = function () {
+    //     // document.getElementById("loader-container").style.display = "none";
+    //     // loadingProcess();
+    //
+    //
+    //     replaceSideBar_info();
+    //     fadeOutLoader();
+    //     setTimeout("backToOrigin()", 5000);
+    //     setTimeout("toSolarMode()", 5000);
+    //
+    //     // $(function () {
+    //     //     $("#SideBar_info").fadeIn();
+    //     // })
+    //     // backToOrigin();
+    //
+    //
+    // }
+
+    function replaceSideBar_info() {
+        document.getElementById("SideBar_info").innerHTML = "        " +
+            "        <div id=\"loader-container\">\n" +
+            "            <p id=\"loadingText\">Loading</p>\n" +
+            "        </div>" +
+            "<p id=\"null_1\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "        <p id=\"null_2\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "            \n </p>\n" +
+            "        <p id=\"null_3\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "<p id=\"null_4\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "<p id=\"null_5\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "<p id=\"null_6\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "<p id=\"null_8\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" +
+            "<p id=\"null_7\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "           \n </p>\n" + "        <div id=\"energy_info1\"></div>"
+
+    }
+
+    // function fadeInLoader() {
+    //     $(function () {
+    //         $("#loader-container").show().fadeIn();
+    //     })
+    // }
+
+
+    function fadeOutLoader() {
+        $(function () {
+            $("#loader-container").show().delay(12000).fadeOut();
+        })
+    }
+
+    function backToOrigin() {
+
+        document.getElementById("SideBar_info").innerHTML = "        " +
+            "        <p id=\"Data_for_10%_windiest_areas\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "            Data for 10% windiest areas </p>\n" +
+            "        <p id=\"Power_Density\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "            Power Density </p>\n" +
+            "        <p id=\"Wind_Speed\"\n" +
+            "           style=\"background:#ffffff; font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px\">\n" +
+            "            Wind Speed </p>\n" +
+            "<div id=\"energy_info\"></div>"
+
+        document.getElementById("Data_for_10%_windiest_areas").innerHTML = "Specific Photovoltaic Power output:<br> " + pvout.toFixed(2) + " kWh/kWp";
+        document.getElementById("Power_Density").innerHTML = "Direct Normal Irradiation:<br> " + dni.toFixed(2) + " kWh/m²";
+        document.getElementById("Wind_Speed").innerHTML = "Global Horizontal Irradiation:<br> " + ghi.toFixed(2) + " kWh/m²";
+
+        var energy_info = document.getElementById("energy_info");
+
+        energy_info.innerHTML = "";
+        energy_info.innerHTML = "\n" +
+            "        <p id=\"diffuse_horizontal_irradiation\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Diffuse Horizontal Irradiation </p>\n" +
+            "\n" +
+            "        <p id=\"global_titled_irradiation_at_optimum_angle\"\n" +
+            "           style=\"background:#ffffff ;font-weight:30; font-size: 16px; color:#282c34; padding:20px; padding-left: 35px; margin-left:-20px; margin-top: -20px \">\n" +
+            "            Global Titled Irradiation At Optimum Angle </p>"
+
+        document.getElementById("diffuse_horizontal_irradiation").innerHTML = "Diffuse Horizontal Irradiation:<br> " + dif.toFixed(2) + " kWh/m²";
+        document.getElementById("global_titled_irradiation_at_optimum_angle").innerHTML = "Global Titled Irradiation At Optimum Angle:<br> " + gti.toFixed(2) + " kWh/m²";
+
+
+    }
+
+    function loadingProcess() {
+        replaceSideBar_info();
+        fadeOutLoader();
+        setTimeout("backToOrigin()", 13000);
+        setTimeout("toSolarMode()", 13000);
+
+
+    }
+
+    // $(document).ready(function () {
+    //     $("#calculateBtn").click(function () {
+    //         $("#loader-container").hide();
+    //     });
+    //     $("#applyBtn").click(function () {
+    //         $("#loader-container").show();
+    //     });
+    // });
+
+
+</script>
+
+</body>
+
+</html>

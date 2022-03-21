@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>ENERGY STORAGE</title>
+
+    <style>
+
+        .box {
+            position: absolute;
+            left: 30px;
+            top: 90px;
+        }
+
+        .box select {
+            background-color: #0563af;
+            color: white;
+            padding: 12px;
+            width: 250px;
+            border: none;
+            font-size: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            -webkit-appearance: button;
+            appearance: button;
+            outline: none;
+        }
+
+        .box::before {
+            content: ">";
+            font-family: cursive;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20%;
+            height: 100%;
+            text-align: center;
+            font-size: 28px;
+            line-height: 45px;
+            color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .box:hover::before {
+            color: rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .box select option {
+            padding: 30px;
+        }
+
+        .topnav {
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            background-color: #333;
+            font-size: 20px;
+            margin-top: 120px;
+            right: 10px;
+            height: 60px;
+            width: 110vw;
+            position: fixed;
+            z-index: 1;
+            top: -130px;
+            margin-right: -11vw;
+            padding: 2px;
+        }
+
+        .topnav ul {
+            list-style-type: none;
+        }
+
+
+        .topnav a {
+            text-decoration: none;
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 20px 35px;
+            font-size: 30px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .sidenav {
+            font-family: "Lato", sans-serif;
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            font-family: "Lato", sans-serif;
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+
+        .sbutton {
+            width: 303px;
+            border-radius: 5px;
+            background-color: rgb(125, 186, 214);
+            padding-top: -50px;
+            margin-left: 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            list-style-type: none;
+        }
+
+        .sbutton a {
+            text-decoration: none;
+            float: left;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px 35px;
+            font-size: 20px;
+        }
+
+        .sbutton a:hover {
+            background-color: rgb(39, 129, 165);
+            color: rgb(255, 255, 255);
+        }
+
+        .sbutton a.active {
+            background-color: rgb(18, 144, 194);
+            color: white;
+
+        }
+
+        table {
+            background: ivory;
+            border-collapse: collapse;
+            width: 300px;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        .sbutton {
+            display: inline;
+            width: 120px;
+            border-radius: 5px;
+            background-color: rgb(125, 186, 214);
+            padding-top: 0px;
+            margin-left: 10px;
+            margin-top: 100px;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            list-style-type: none;
+        }
+
+        .sbutton a {
+            background-color: rgb(81, 174, 211);
+            text-decoration: none;
+            margin-left: 40px;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 15px;
+        }
+
+        .sbutton a:hover {
+            background-color: rgb(39, 129, 165);
+            color: rgb(255, 255, 255);
+        }
+
+        .sbutton a.active {
+            background-color: rgb(18, 144, 194);
+            color: white;
+        }
+
+        body {
+            background-attachment: fixed;
+            background-image: url('static/bg.jpg');
+        }
+
+
+        .centerSection950px {
+            width: 950px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        p.CommonTitle {
+            font-size: 50px;
+            background-color: rgba(211, 211, 211, 0.911);
+            height: 70px;
+            padding-top: 30px;
+            color: white;
+            margin-top: 80px;
+            font-family: Lucida Calligraphy;
+            font-weight: bolder;
+            text-align: center;
+        }
+
+        p.storyParagraph {
+
+            background-color: rgba(211, 211, 211, 0.911);
+            color: white;
+            font-size: 22px;
+            font-family: Comic Sans MS;
+            font-weight: bold;
+
+
+            text-align: center;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        #photoGallery {
+            width: 85%;
+            height: auto;
+            position: sticky;
+            margin: auto;
+            margin-top: 100px;
+        }
+
+        #photoGallery .mySlides {
+            display: none;
+        }
+
+        /* Next & previous buttons */
+        #photoGallery .prevPhoto, #photoGallery .nextPhoto {
+            cursor: pointer;
+            position: absolute;
+            top: 45%;
+            width: auto;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s;
+            border-radius: 0 3px 3px 0;
+            background-color: #0563af;
+        }
+
+        /* Position the "next button" to the right */
+        #photoGallery .nextPhoto {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a grey color with a little bit see-through */
+        #photoGallery .prevPhoto:hover, #photoGallery .nextPhoto:hover {
+            background-color: rgba(164, 164, 164, 0.875);
+        }
+
+        /* Caption text */
+        #photoGallery .text {
+            background-color: lightgrey;
+            color: white;
+            font-size: 18px;
+            margin-top: 15px;
+            padding: 30px;
+            text-align: center;
+            font-family: Comic Sans MS;
+            font-weight: bold;
+        }
+
+        /*adjust the size of images*/
+        #photoGallery img {
+            width: 100%;
+            height: auto;
+        }
+
+
+    </style>
+
+
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <link rel="stylesheet" type="text/css" href="Code/static/style.css">
+    <link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet'/>
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+
+</head>
+<body>
+
+
+<link rel='stylesheet'
+      href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.css'
+      type='text/css'/>
+<div id='map'>
+    <div class="topnav">
+        <ul>
+            {#              <li> <a href="{{ url_for('index') }}">Home</a> </li>#}
+            {#              <li> <a class="active" href="{{ url_for('news') }}">Tutorial</a> </li>#}
+            {#              <li> <a  href="{{ url_for('contact') }}">Contact</a></li>#}
+            {#              <li> <a  href="{{ url_for('about') }}">About</a></li>#}
+            {#                 <li> <a  href="{{ url_for('map_new') }}">Map</a></li>#}
+            <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('news') }}">Tutorial</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+<!--            <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>-->
+        </ul>
+    </div>
+</div>
+
+
+<div class="centerSection950px">
+
+    <br><br>
+
+    <p class="CommonTitle">Tutorial</p>
+
+
+    <p class="storyParagraph">This page is a simple tour which can guide you how to use our map</p>
+
+
+    <!-- Slideshow container -->
+    <div id="photoGallery">
+
+        <!-- image caption text -->
+        <!-- first image -->
+        <div class="mySlides">
+            <img src="../static/1.png" alt="first">
+            <div class="text">This is the base page of out map</div>
+        </div>
+        <!-- second image -->
+        <div class="mySlides">
+            <img src="../static/2.png" alt="second">
+            <div class="text">In the choose energy part, you can shoose which energy to be represented on the map</div>
+        </div>
+        <!-- third image -->
+        <div class="mySlides">
+            <img src="../static/3.png" alt="third">
+            <div class="text">on the left top side, you can zoom and search a specific area on the map</div>
+        </div>
+        <!-- fourth image -->
+        <div class="mySlides">
+            <img src="../static/4.png" alt="fourth">
+            <div class="text">In the select area part, you can choose a specific area to show the information</div>
+        </div>
+        <!-- fifth image -->
+        <div class="mySlides">
+            <img src="../static/5.png" alt="fifth">
+            <div class="text">when you click on the map, the information of that area will display</div>
+        </div>
+        <!-- sixth image -->
+        <div class="mySlides">
+            <img src="../static/6.png" alt="sixth">
+            <div class="text">you will see the information of that area on the left, and you can choose which
+                information to show
+            </div>
+        </div>
+        <!-- seventh image -->
+        <div class="mySlides">
+            <img src="../static/7.png" alt="seventh">
+            <div class="text">In the calculation area, you can enter these variables to get more accurate result</div>
+        </div>
+        <!-- eighth image -->
+        <div class="mySlides">
+            <img src="../static/8.png" alt="eighth">
+            <div class="text">In change base map part, you can change the base map of this whole map</div>
+        </div>
+        <!-- ninth image -->
+        <div class="mySlides">
+            <img src="../static/9.png" alt="ninth">
+            <div class="text">You can press the "apply loan" button to get the bank information</div>
+        </div>
+
+
+        <!-- Next and previous buttons -->
+        <a class="prevPhoto" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="nextPhoto" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+
+    <br><br><br><br>
+
+</div>
+
+
+<script>
+    var slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Next/previous controls
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    // Thumbnail image controls
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        var i;
+        var slides = document.getElementsByClassName("mySlides");
+        if (n > slides.length) {
+            slideIndex = 1
+        }
+        if (n < 1) {
+            slideIndex = slides.length
+        }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        slides[slideIndex - 1].style.display = "block";
+    }
+
+</script>
+
+
+</body>
+
+
+<html>
+
+

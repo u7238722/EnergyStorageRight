@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>ENERGY STORAGE</title>
+
+    <style>
+
+        .box {
+            position: absolute;
+            left: 30px;
+            top: 90px;
+        }
+
+        .box select {
+            background-color: #0563af;
+            color: white;
+            padding: 12px;
+            width: 250px;
+            border: none;
+            font-size: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            -webkit-appearance: button;
+            appearance: button;
+            outline: none;
+        }
+
+        .box::before {
+            content: ">";
+            font-family: cursive;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20%;
+            height: 100%;
+            text-align: center;
+            font-size: 28px;
+            line-height: 45px;
+            color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .box:hover::before {
+            color: rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .box select option {
+            padding: 30px;
+        }
+
+        .topnav {
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            background-color: #333;
+            font-size: 20px;
+            margin-top: 120px;
+            right: 10px;
+            height: 60px;
+            width: 110vw;
+            position: fixed;
+            z-index: 1;
+            top: -130px;
+            margin-right: -11vw;
+            padding: 2px;
+        }
+
+        .topnav ul {
+            list-style-type: none;
+        }
+
+
+        .topnav a {
+            text-decoration: none;
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 20px 35px;
+            font-size: 30px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .sidenav {
+            font-family: "Lato", sans-serif;
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            font-family: "Lato", sans-serif;
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+
+        .sbutton {
+            width: 303px;
+            border-radius: 5px;
+            background-color: rgb(125, 186, 214);
+            padding-top: -50px;
+            margin-left: 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            list-style-type: none;
+        }
+
+        .sbutton a {
+            text-decoration: none;
+            float: left;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px 35px;
+            font-size: 20px;
+        }
+
+        .sbutton a:hover {
+            background-color: rgb(39, 129, 165);
+            color: rgb(255, 255, 255);
+        }
+
+        .sbutton a.active {
+            background-color: rgb(18, 144, 194);
+            color: white;
+
+        }
+
+        table {
+            background: ivory;
+            border-collapse: collapse;
+            width: 300px;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        .sbutton {
+            display: inline;
+            width: 120px;
+            border-radius: 5px;
+            background-color: rgb(125, 186, 214);
+            padding-top: 0px;
+            margin-left: 10px;
+            margin-top: 100px;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            list-style-type: none;
+        }
+
+        .sbutton a {
+            background-color: rgb(81, 174, 211);
+            text-decoration: none;
+            margin-left: 40px;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 15px;
+        }
+
+        .sbutton a:hover {
+            background-color: rgb(39, 129, 165);
+            color: rgb(255, 255, 255);
+        }
+
+        .sbutton a.active {
+            background-color: rgb(18, 144, 194);
+            color: white;
+        }
+    </style>
+    <style>
+        body {
+            background-attachment: fixed;
+            background-image: url('static/bg.jpg');
+        }
+
+        .container {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 80px;
+            margin-left: 15px;
+            margin-right: 15px;
+            padding: 100px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 50px 80px;
+            margin-top: 5%;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+    </style>
+
+
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <link rel="stylesheet" type="text/css" href="Code/static/style.css">
+    <link href='https://api.mapbox.com/mapbox-assembly/mbx/v0.18.0/assembly.min.css' rel='stylesheet'>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet'/>
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+
+</head>
+<body>
+
+<link rel='stylesheet'
+      href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.css'
+      type='text/css'/>
+<div id='map'>
+    <div class="topnav">
+        <ul>
+            {#                  <li> <a href="{{ url_for('index') }}">Home</a> </li>#}
+            {#                  <li> <a href="{{ url_for('news') }}">Tutorial</a> </li>#}
+            {#                  <li> <a href="{{ url_for('contact') }}">Contact</a></li>#}
+            {#                  <li> <a  class="active" href="{{ url_for('about') }}">About</a></li>#}
+            {#                    <li> <a  href="{{ url_for('map_new') }}">Map</a></li>#}
+            <li><a class="active" href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+            <li><a href="{{ url_for('openSolar') }}">OpenSolar.com</a></li>
+<!--            <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>-->
+        </ul>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <h1 style="font-weight: 30;font-size: 55px; color:aliceblue;padding: 10% ">Abstract</h1>
+
+    <p style="font-weight: 30;font-size: 25px;color:aliceblue; line-height:45px; text-align: left"> This is an ongoing project for Energy
+        Storage Rights.
+        It aims to create a platform that allows users to see the return of investment on
+        potential sites for renewable energy technologies. The target users include small enterprises,
+        organizations, individuals. The implementation includes Data Mining, Machine Learning,
+        and Web development. In summary, an applicable and portable website app which can evaluate
+        and utilize the renewable energy for potential users is our client’s desired outcome
+        at the end of the project. </p>
+    <h1 style="font-weight: 30;font-size: 55px; color:aliceblue;padding: 10% "> Background </h1>
+
+    <p style="font-weight: 30;font-size: 25px;color:aliceblue;line-height:45px; text-align: left ">There is an ongoing trend
+        of renewable energy technologies to be further developed in Australia.
+        However, a platform which allows interaction between the technology developers and the potential user
+        is absent. In 2017, coal still contributes 62% to Australian electricity generation.
+        Thus, the potential of our application is brimming with opportunity.</p>
+    <h1 style="font-weight: 30;font-size: 55px; color:aliceblue;padding: 10% "> Brief Introduction</h1>
+
+    <p style="font-weight: 30;font-size: 25px;color:aliceblue;line-height:45px; text-align: left "> Deployment of renewable energy
+        technologies in a different location often comes with advantage and disadvantage.
+        The energy storage rights is a digital platform that will map, evaluate, promote and help investments
+        in the development rights for energy storage pilot projects such as pumped hydro energy storage,
+        floating solar pilots on lake or sea. Alongside with the platform is the energy storage rights app.
+        We strive to build up an application which used to evaluate and optimize the performance and potential of
+        location viable for development of different renewable-energy technologies, this outcome will then be visualized
+        to the target user.
+
+    </p>
+
+    <h1 style="font-weight: 30;font-size: 55px; color:aliceblue;padding: 10% "> Support and Data source</h1>
+
+    <p style="font-weight: 30;font-size: 25px;color:aliceblue;line-height:45px; text-align: left "> This website is supported by
+        <U><a href="https://developers.arcgis.com/rest/services-reference/map-service.htm">ArcGis ESRI Map service</a></U>.<br>
+        The data is from <U><a href="https://www.worldbank.org/">World Bank Group</a></U> and <U><a href="https://nationalmap.gov.au/renewables/#share=s-oDPMo1jDBBtwBNhD">AREMI by ANU</a></U>.
+
+    </p>
+
+</div>
+
+
+</body>
+
+
+<html>

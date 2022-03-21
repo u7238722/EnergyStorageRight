@@ -1,0 +1,15 @@
+flask
+openpyxl
+requests
+numpy
+numpy_financial==1.0.0
+bs4
+pandas
+lxml
+pymssql
+gunicorn==20.0.4
+# pyodbc
+reverse_geocode
+geopy
+argparse
+matplotlib
