@@ -87,7 +87,7 @@ def isInPolygon(points_list, point):
 
     return nCross % 2 == 1
 
-
+#asd
 def generate_rectangle_from_list(list):
     points_list = []
 
@@ -120,10 +120,12 @@ def generate_rectangle_from_list(list):
     t1_num_hor = length // 240
     t1_num_ver = height // 120
 
-    t2_num_hor = (length - 240 * t1_num_hor) // 120
-    t2_num_ver = (height - 120 * t1_num_ver) // 120
-
+    #t2_num_hor = (length - 240 * t1_num_hor) // 120
+    #t2_num_ver = (height - 120 * t1_num_ver) // 120
+    t2_num_hor =  length // 120
+    t2_num_ver =  height // 120
     print(t2_num_hor)
+    print("test")
 
     sol_dict = {}
     sol_arr = []
@@ -133,11 +135,20 @@ def generate_rectangle_from_list(list):
             point = ["A", min_lon + (120 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
             if isInPolygon(points_list, point):
                 sol_arr.append(point)
+    for k in range(0,t2_num_ver):
+        for w in range(0, t2_num_hor):
+            point_test = ["B", min_lon + (60 + w * 120) / (111 * 1000), min_lat + (60 + k * 120) / (111 * 1000)]
+            if isInPolygon(points_list, point_test):
+                sol_arr.append(point_test)
+            
+        
 
-        if t2_num_hor > 0:
-            point = ["B", (60 + (t1_num_hor + 1) * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
-            if isInPolygon(points_list, point):
-                sol_arr.append(point)
+        #if t2_num_hor > 0:
+            #point = ["B", min_lon + (60 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
+            
+            #point = ["B", (60 + (t1_num_hor + 1) * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
+            #if isInPolygon(points_list, point):
+            #sol_arr.append(point)
 
     print("spp.py sol_arr : ", sol_arr)
 
