@@ -1792,6 +1792,11 @@
         var close = document.getElementById('close-button');
         var cal_btn = document.getElementById('calculateBtn');
 
+
+        // edit point
+        const block_button = document.querySelector('calculateBtn')
+        //document.getElementById("applyBtn").disabled = true;
+
         // btn.onclick = function () {
         //     hiddenLoading();
         //     document.getElementById("loader-container").style.display = "none";
@@ -1811,7 +1816,11 @@
             }
         }
 
+
         cal_btn.onclick = function calculate_ROI_IRR() {
+
+
+
             //TODO: this is only solar
             fetch('/calculate_roi_irr', {
                 method: 'POST',
@@ -1830,8 +1839,21 @@
                 // roi_text = text.indexOf("roi");
                 roi = parseFloat(text.substring(roi_text + 5));
                 document.getElementById("Investment").innerHTML = "Est. Investment:<br> " + (cal_fee() / 1000000).toFixed(2) + "million $";
-                document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
-                document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+                // edit point
+                if ((cal_fee() / 1000000).toFixed(2)== 0.00){
+                    alert("Please select area before click calculate button")
+                    document.getElementById("ROI").innerHTML = "ROI:<br> " ;
+                    document.getElementById("IRR").innerHTML = "IRR:<br> " ;
+                }else{                
+                    document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
+                    document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+                    block_button.disabled = true};
+                    
+                    
+                // document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
+                // document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+                // block_button.disabled = true
+                
             })
         }
     </script>
@@ -2137,6 +2159,7 @@
         document.getElementById("Investment").innerHTML = "Est. Investment:<br> ";
         document.getElementById("ROI").innerHTML = "ROI:<br> " ;
         document.getElementById("IRR").innerHTML = "IRR:<br> " ;
+        block_button.disabled = false;
     }
 
     function hidePopUpSideBar() {
