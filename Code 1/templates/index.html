@@ -1575,7 +1575,7 @@
                         style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
                         wrap="soft"
                         title=" 1: Solar & no storage&#10;2: Solar & pump hydro&#10;3: Solar & battery&#10;4: Wind & no storage&#10;5: Wind & pump hydro&#10;6: Wind & battery&#10;">
-                    <option value="1" selected>1: Solar & no storag</option>
+                    <option value="1" selected>1: Solar & no storage</option>
                     <option value="2">2: Solar & pump hydro</option>
                     <option value="3">3: Solar & battery</option>
                     <option value="4">4: Wind & no storage</option>
@@ -1946,7 +1946,7 @@
         function cal_fee() {
             cal_value = 0;
             battery_fee = 0;
-            pump_fee = 0
+            pump_fee = 0;
             if (energy_battery != "No value in this area") {
                 battery_fee = parseFloat(energy_battery) * 1000 * 70;
                 pump_fee = parseFloat(power_storage) * 800 * 1000;

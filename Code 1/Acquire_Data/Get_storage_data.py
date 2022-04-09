@@ -12,7 +12,6 @@ data['Lower longitude'].apply(lambda x: float(x))
 print(type(data['Upper latitude'].iloc[0]))
 print(len(data))
 
-
 def get_iter(geocode):
      a=data.loc[((data['Upper latitude'] > data['Lower latitude']) & (data['Upper longitude'] > data['Lower longitude']))& ((geocode[0] <= data['Upper latitude']) & (geocode[0] >= data['Lower latitude']))&((geocode[1] <= data['Upper longitude']) & (geocode[1] >= data['Lower longitude'])), ['Class','Head (m)','Separation (km)','Slope (%)','Volume (GL)','Energy (GWh)','Storage time (h)','Combined water to rock ratio','Energy stoage MWh per ha']]
      b = data.loc[
