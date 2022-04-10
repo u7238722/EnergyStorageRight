@@ -78,6 +78,7 @@ def energy_info():
 
         print(mode)
         result_dic1 = get_wind([lon, lat])
+        global power_density
         power_density = result_dic1.get("power_density")
         wind_speed = result_dic1.get("wind speed")
         print("wind")
@@ -142,6 +143,8 @@ def get_method_args():
         sgip_step = request.args.get("sgip_step")
         global calculation_pattern
         calculation_pattern = request.args.get("calculation_pattern")
+        global isOnshore
+        isOnshore = request.args.get("onshore")
 
         print("csv written")
         print(project_term, itc_on_storage_ststem, sgip_eligible, in_state_supplier, sgip_step, saving_assumptions,
@@ -226,6 +229,20 @@ def calculate_wind_power_density():
                                                                  saving_assumptions)
             roi = calculate_roi_solar_with_battery(project_term=int(project_term), water_area=area_range,
                                                    cost_per_sqm=247.5)
+        
+        if (calculation_pattern == '4'):
+            irr = calculate_irr_wind_no_storage(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+            roi = calculate_roi_wind_no_storage(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+            # roi = roi/2
+
+        if (calculation_pattern == '5'):
+            irr = calculate_irr_wind_with_pumped_hydro(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+            roi = calculate_roi_wind_with_pumped_hydro(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+
+        if (calculation_pattern == '6'):
+            irr = calculate_irr_wind_with_battery(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+            roi = calculate_roi_wind_with_battery(int(project_term), power_density,area = arr_size_for_irr,isOnshore=isOnshore)
+        
         global grid_distance
         grid_distance = float(grid_distance)
         if (grid_distance >= 100 and grid_distance < 200):
@@ -255,39 +272,39 @@ def calculate_wind_power_density():
         if (grid_distance >= 30 and grid_distance < 50):
             irr = irr * 1.04
             roi = roi * 1.04
-        if (grid_distance >= 10):
+        if (grid_distance >= 10 and grid_distance < 30):
             irr = irr * 1.05
             roi = roi * 1.05
-        if (grid_distance >= 100 and grid_distance < 200):
-            irr = irr * 1.01
-            roi = roi * 1.01
-        if (grid_distance >= 300 and grid_distance < 400):
-            irr = irr * 0.99
-            roi = roi * 0.99
-        if (grid_distance >= 400 and grid_distance < 500):
-            irr = irr * 0.98
-            roi = roi * 0.98
-        if (grid_distance >= 500 and grid_distance < 600):
-            irr = irr * 0.97
-            roi = roi * 0.97
-        if (grid_distance >= 600 and grid_distance < 700):
-            irr = irr * 0.96
-            roi = roi * 0.96
-        if (grid_distance >= 700):
-            irr = irr * 0.95
-            roi = roi * 0.95
-        if (grid_distance >= 70 and grid_distance < 100):
-            irr = irr * 1.02
-            roi = roi * 1.02
-        if (grid_distance >= 50 and grid_distance < 70):
-            irr = irr * 1.03
-            roi = roi * 1.03
-        if (grid_distance >= 30 and grid_distance < 50):
-            irr = irr * 1.04
-            roi = roi * 1.04
-        if (grid_distance >= 10):
-            irr = irr * 1.05
-            roi = roi * 1.05
+        # if (grid_distance >= 100 and grid_distance < 200):
+        #     irr = irr * 1.01
+        #     roi = roi * 1.01
+        # if (grid_distance >= 300 and grid_distance < 400):
+        #     irr = irr * 0.99
+        #     roi = roi * 0.99
+        # if (grid_distance >= 400 and grid_distance < 500):
+        #     irr = irr * 0.98
+        #     roi = roi * 0.98
+        # if (grid_distance >= 500 and grid_distance < 600):
+        #     irr = irr * 0.97
+        #     roi = roi * 0.97
+        # if (grid_distance >= 600 and grid_distance < 700):
+        #     irr = irr * 0.96
+        #     roi = roi * 0.96
+        # if (grid_distance >= 700):
+        #     irr = irr * 0.95
+        #     roi = roi * 0.95
+        # if (grid_distance >= 70 and grid_distance < 100):
+        #     irr = irr * 1.02
+        #     roi = roi * 1.02
+        # if (grid_distance >= 50 and grid_distance < 70):
+        #     irr = irr * 1.03
+        #     roi = roi * 1.03
+        # if (grid_distance >= 30 and grid_distance < 50):
+        #     irr = irr * 1.04
+        #     roi = roi * 1.04
+        # if (grid_distance >= 10):
+        #     irr = irr * 1.05
+        #     roi = roi * 1.05
         if (area0 > 340000 and area0 < 360000):
             roi = 0.070324
         if (area0 > 230000 and area0 < 260000):
