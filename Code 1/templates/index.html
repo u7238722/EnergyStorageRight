@@ -1494,7 +1494,7 @@
     <!-- parameters the users need to set on the start up screen: fixed bugs-->
     <br><br>
 
-    <form action="/main/form" ,method="get" , target="the_Frame">
+    <form id = "form1" action="/main/form" ,method="get" , target="the_Frame", onsubmit="return check_submit()">
         <div style="background:#c9e1ee;padding-bottom:65px;padding-left:0px" id="calculate_energy">
             <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px; ">
                 project term:
@@ -1597,16 +1597,24 @@
             </p>
         </div>
         <div id="two_btn">
+            <div style="width:65px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-50px; margin-bottom:35px; margin-left:20px; border-radius: 7px;">
+                <button type="submit" id="submitBtn" value="myValue">
+                    <p title="Submit the value to be calculated."
+                       style="background:#0084CC ;font-weight:10;font-size:16px; color:white">
+                        Submit</p>
+                </button>
+            </div>
+
             <!-- Calculate button -->
-            <div style="width:80px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-70px; margin-bottom:25px; margin-left:60px; border-radius: 7px;">
-                <button typle="submit" id="calculateBtn" value="myValue" onclick="getNum()">
+            <div style="width:80px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-70px; margin-bottom:25px; margin-left:100px; border-radius: 7px;">
+                <button id="calculateBtn" value="myValue" onclick= "getNum()">
                     <p title="Calculate the ROI and IRR for the selected energy in selected area."
                        style="background:#0084CC ;font-weight:10;font-size:16px; color:white">
                         Calculate</p>
                 </button>
             </div>
             <!-- Apply loan button and the pop window-->
-            <div style="width:100px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-58.5px; margin-bottom:25px; margin-left:170px; border-radius: 7px;">
+            <div style="width:95px; overflow:hidden; background:#0084CC; padding:5px; margin-top:-60px; margin-bottom:30px; margin-left:195px; border-radius: 7px;">
                 <button id="applyBtn" value="myValue" onclick="getNum()">
                     <p title="Interested in investing in this area? Get a loan!"
                        style="background:#0084CC ;font-weight:10;font-size:16px; color:white">
@@ -1794,9 +1802,9 @@
 
 
         // edit point
-        const block_button = document.querySelector('calculateBtn')
+        const block_button = document.querySelector('calculateBtn')//document.getElementById("applyBtn").disabled = true;
         //document.getElementById("applyBtn").disabled = true;
-
+        
         // btn.onclick = function () {
         //     hiddenLoading();
         //     document.getElementById("loader-container").style.display = "none";
@@ -1818,8 +1826,8 @@
 
 
         cal_btn.onclick = function calculate_ROI_IRR() {
-
-
+            
+            document.getElementById("form1").submit()
 
             //TODO: this is only solar
             fetch('/calculate_roi_irr', {
@@ -1840,11 +1848,14 @@
                 roi = parseFloat(text.substring(roi_text + 5));
                 document.getElementById("Investment").innerHTML = "Est. Investment:<br> " + (cal_fee() / 1000000).toFixed(2) + "million $";
                 // edit point
-                if ((cal_fee() / 1000000).toFixed(2)== 0.00){
+                if(area_value<=1){
                     alert("Please select area before click calculate button")
+                }
+                if ((cal_fee() / 1000000).toFixed(2)== 0.00){
+                    alert("Please select the correct pattern")
                     document.getElementById("ROI").innerHTML = "ROI:<br> " ;
                     document.getElementById("IRR").innerHTML = "IRR:<br> " ;
-                }else{                
+                }else{               
                     document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
                     document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
                     block_button.disabled = true};
@@ -2673,6 +2684,16 @@
             hydro_layer.visible = true;
         } else {
             hydro_layer.visible = false;
+        }
+    }
+
+    function check_submit(){
+        var submit_btn = document.getElementById("submitBtn");
+        if (area_value > 1){
+                return true;
+        }
+        else{
+            alert("Please select area before click submit button")
         }
     }
 
