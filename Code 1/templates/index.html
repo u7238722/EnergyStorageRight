@@ -1089,7 +1089,7 @@
                     view.popup.open({
                         // title: "Latitude: " + "<div style='background-color:DarkGray;color:white'>"+Math.round(calculationpoint[1] * 100000) / 100000 +".</div>"+ ", Longitude" + "<div style='background-color:DarkGray;color:white'>"+Math.round(calculationpoint[0] * 100000) / 100000+".</div>",
                         // Yuang .toFixed(2)
-                        content: "Area: " + area_value.toFixed(2) + " m²<br><br><br>" + "Latitude: " + (Math.round(calculationpoint[1] * 100000) / 100000).toFixed(2) + ", Longitude: " + (Math.round(calculationpoint[0] * 100000) / 100000).toFixed(2) + "<br><br><br>Country: " + country + "<br><br><br>Distance to nearest grid: " + grid_distance,
+                        content: "Area: " + area_value.toLocaleString()  + " m²<br><br><br>" + "Latitude: " + Math.round(calculationpoint[1] * 100) / 100 + ", Longitude: " + Math.round(calculationpoint[0] * 100) / 100 + "<br><br><br>Country: " + country + "<br><br><br>Distance to nearest grid: " + grid_distance,
 
                         // location: "<div style='color:black'>"+calculationpoint+".</div>",
                         // highlightAll: [255,0,0]
