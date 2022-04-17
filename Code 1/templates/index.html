@@ -1584,6 +1584,25 @@
 
                 </select>
             </p>
+
+            <!--this is new edit point-->
+            
+            <p style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
+                Battery storage capacity:
+                <select name="Battery_storage_capacity" id="battery_storage_capacity"
+                        style="margin-top:20px; border-radius: 5px;width:60px; height:25px;"
+                        wrap="soft"
+                        title="0%&#10;20%&#10;40%&#10;60%&#10;80%&#10;100%&#10;">
+                    <option value="1">0%</option>
+                    <option value="2"  selected>20%</option>
+                    <option value="3">40%</option>
+                    <option value="4">60%</option>
+                    <option value="5">80%</option>
+                    <option value="6">100%</option>
+
+                </select>
+            </p>
+            
             <p id="isOnshore"
                style="background:#c9e1ee ;font-weight:10;font-size:16px; color:#818181;padding:20px;padding-left:35px;margin-left:-20px;margin-top: -48px ">
                 onshore:
@@ -1842,22 +1861,30 @@
                 irr_text = text.indexOf("irr");
                 roi_text = text.indexOf("roi");
                 irr = parseFloat(text.substring(irr_text + 5, roi_text - 1));
+       
+            // id="energy_capacity"
+
+            // id="storage_capacity"
 
                 // TODO: Put ROI here:
                 // roi_text = text.indexOf("roi");
                 roi = parseFloat(text.substring(roi_text + 5));
-                document.getElementById("Investment").innerHTML = "Est. Investment:<br> " + (cal_fee() / 1000000).toFixed(2) + "million $";
+                document.getElementById("Investment").innerHTML = "Est. Investment: " + (cal_fee() / 1000000).toFixed(2) + "m $";
+                document.getElementById("energy_capacity").innerHTML ="Energy_Capacity: " + energy_capacity.toFixed(2) + "mwh" ;
+                document.getElementById("storage_capacity").innerHTML ="Storage_Capacity: " + storage_capacity.toFixed(2) + "mwh";
                 // edit point
                 if(area_value<=1){
                     alert("Please select area before click calculate button")
                 }
                 if ((cal_fee() / 1000000).toFixed(2)== 0.00){
                     alert("Please select the correct pattern")
-                    document.getElementById("ROI").innerHTML = "ROI:<br> " ;
-                    document.getElementById("IRR").innerHTML = "IRR:<br> " ;
+                    document.getElementById("ROI").innerHTML = "ROI: " ;
+                    document.getElementById("IRR").innerHTML = "IRR: " ;
+                    document.getElementById("energy_capacity").innerHTML ="Energy_Capacity: "  ;
+                    document.getElementById("storage_capacity").innerHTML ="Storage_Capacity: " ;
                 }else{               
-                    document.getElementById("ROI").innerHTML = "ROI:<br> " + roi.toFixed(2) + "%";
-                    document.getElementById("IRR").innerHTML = "IRR:<br> " + irr.toFixed(2) + "%";
+                    document.getElementById("ROI").innerHTML = "ROI: " + roi.toFixed(2) + "%";
+                    document.getElementById("IRR").innerHTML = "IRR: " + irr.toFixed(2) + "%";
                     block_button.disabled = true};
                     
                     
@@ -1877,6 +1904,20 @@
                title="Estimated investment on your selected energy combination in your selected area."
                style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
                 Est. Investment
+        </div>
+
+        <div>
+            <p id="energy_capacity"
+               title="Estimated investment on your selected energy combination in your selected area."
+               style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
+                Energy Capacity
+        </div>
+
+        <div>
+            <p id="storage_capacity"
+               title="Estimated investment on your selected energy combination in your selected area."
+               style="background:#c9e1ee ;font-weight:bold;font-size: 20px; color:#282c34;padding: 35px;margin-left:-20px;margin-top: -25px ">
+                Storage Capacity
         </div>
 
         <div>
@@ -1953,15 +1994,33 @@
             }
             return text;
         }
+        var energy_generation = 0;
+        var storage_capacity = 0;
+        var energy_capacity = 0;
+        var cal_value = 0;
+        var battery_fee = 0;
+        //new edit point  200$/mwh
+        var battery_cost = 200
+        // 800$/kwh =0.8$/mwh
+        var battery_installation = 0.8
+        var pump_fee = 0;
 
         function cal_fee() {
+            energy_generation = 0;
+            storage_capacity = 0;
+            energy_capacity = 0;
             cal_value = 0;
             battery_fee = 0;
+            //new edit point  200$/mwh
+            battery_cost = 200
+            // 800$/kwh =0.8$/mwh
+            battery_installation = 0.8
             pump_fee = 0;
             if (energy_battery != "No value in this area") {
                 battery_fee = parseFloat(energy_battery) * 1000 * 70;
                 pump_fee = parseFloat(power_storage) * 800 * 1000;
             }
+            // solar model
             if (show_mode == 1) {
 
                 if (document.getElementById("calculation_pattern").value == "1") {
@@ -1969,7 +2028,23 @@
                 } else if (document.getElementById("calculation_pattern").value == "2") {
                     cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + pump_fee;
                 } else if (document.getElementById("calculation_pattern").value == "3") {
-                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + battery_fee;
+                    assitance_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5;
+                    //cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + battery_fee;
+                    // total energy generation = area_value * global titled irradiation optimum anagle 
+                    var e = document.getElementById("battery_storage_capacity");
+                    var storage_percent = e.options[e.selectedIndex].text;
+                    storage_percent= storage_percent.substring(0,storage_percent.length-1);
+                    storage_percent= parseInt(storage_percent);
+                    alert(storage_percent);
+                    alert("Energy generation mwh"+ area_value * gti / 1000);   
+                    storage_capacity = area_value * gti / 1000 * storage_percent / 100 
+                    alert("storage_capacity is "+ storage_capacity);
+                    alert("Old investment"+ cal_value + dni * area_value / 1000 * 70 / 24 * 5)
+                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + storage_capacity * 200.8;
+                    alert("new investment" + cal_value);
+                    // energy_capacity mwh
+                    energy_capacity = assitance_value / 800 / 1000;
+                    alert("Energy_capcity is " + energy_capacity);
                 }
             }
             if (show_mode == 2) {
@@ -2072,6 +2147,16 @@
 
 
         }
+        // new edit point
+        // function new_calculation(){
+        //     var e = document.getElementById("battery_storage_capacity");
+        //     var storage_capacity = e.options[e.selectedIndex].text;
+        //     storage_percent= storage_capacity.substring(0,storage_capacity.length-1);
+        //     storage_percent= parseInt(storage_capacity);
+        //     alert(storage_percent);       
+        // }
+        // new_calculation()
+        
 
 
         //jsPDF download function

@@ -2,7 +2,9 @@
 
 import pandas as pd
 
-data=pd.read_csv(r'Code 1\test_data.csv', sep=',')
+# Please make below line is valid if you have filenotfoundErro
+#data=pd.read_csv(r'Code 1\test_data.csv', sep=',')
+data=pd.read_csv('test_data.csv', sep=',')
 data['Upper latitude'].apply(lambda x: float(x))
 data['Lower latitude'].apply(lambda x: float(x))
 data['Upper longitude'].apply(lambda x: float(x))

@@ -130,13 +130,17 @@ def generate_rectangle_from_list(list):
     sol_dict = {}
     sol_arr = []
 
+    ## edit_point
+    order = 0
+
     for i in range(0, t1_num_ver):
         for j in range(0, t1_num_hor):
             point = ["A", min_lon + (120 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
             if isInPolygon(points_list, point):
                 sol_arr.append(point)
-    for k in range(0,t2_num_ver):
-        for w in range(0, t2_num_hor):
+    
+    for k in range(0,t2_num_ver+2):
+        for w in range(0, t2_num_hor+2):
             point_test = ["B", min_lon + (60 + w * 120) / (111 * 1000), min_lat + (60 + k * 120) / (111 * 1000)]
             if isInPolygon(points_list, point_test):
                 sol_arr.append(point_test)
