@@ -132,7 +132,7 @@ def generate_rectangle_from_list(list):
             if ";" in list[x][y] :
                 list[x][y] = list[x][y].replace(';','')
     print("Final new list ", list)
-    list = list[0:5]
+    list = list[0:4]
                 
         
            

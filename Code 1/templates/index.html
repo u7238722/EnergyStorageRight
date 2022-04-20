@@ -2036,16 +2036,16 @@
                     var storage_percent = e.options[e.selectedIndex].text;
                     storage_percent= storage_percent.substring(0,storage_percent.length-1);
                     storage_percent= parseInt(storage_percent);
-                    alert(storage_percent);
-                    alert("Energy generation mwh"+ area_value * gti / 1000);   
+                    //alert(storage_percent);
+                    //alert("Energy generation mwh"+ area_value * gti / 1000);   
                     storage_capacity = area_value * gti / 1000 * storage_percent / 100 
-                    alert("storage_capacity is "+ storage_capacity);
-                    alert("Old investment"+ cal_value + dni * area_value / 1000 * 70 / 24 * 5)
+                    //alert("storage_capacity is "+ storage_capacity);
+                    //alert("Old investment"+ cal_value + dni * area_value / 1000 * 70 / 24 * 5)
                     cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + storage_capacity * 200.8;
-                    alert("new investment" + cal_value);
+                    //alert("new investment" + cal_value);
                     // energy_capacity mwh
                     energy_capacity = assitance_value / 800 / 1000;
-                    alert("Energy_capcity is " + energy_capacity);
+                    //alert("Energy_capcity is " + energy_capacity);
                 }
             }
             if (show_mode == 2) {
