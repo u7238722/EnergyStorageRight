@@ -92,6 +92,54 @@ def generate_rectangle_from_list(list):
     points_list = []
 
     print("spp.py List : ", list)
+    error_detect = 0
+
+    # this is used to remove the typo value when user open the website with safari browser. 
+    for x in range(len(list)):
+        list[x] = ['None' if v is None else v for v in list[x]]
+        if error_detect == 1 :
+            print("Start to debug")
+            old_fst = list[x][0]
+            old_second = list[x][1]
+            # reorder 
+            list[x][0] = next_fst_pos
+            list[x][1] =  old_fst
+            next_fst_pos = old_second
+        print("this is test : ", list[x])
+        for y in range(len(list[x])):
+            print("Detect bug",list[x][y])
+            if ("=" in list[x][y]) and (";" in list[x][y]):
+                #if ";" in list[x][y]:
+                error_detect = 1
+
+                print("****Found A bug **** ", list[x][y])
+                new_string = list[x][y].replace(" ","")
+                print("new string ",new_string)
+                get_typo_index = new_string.index(';')
+                print("*** The index is ",get_typo_index)
+                next_fst_pos = new_string[-get_typo_index+1:]
+                print("its next fst",next_fst_pos)
+                current_lst_pos = new_string[0:get_typo_index-1]
+                print("its current second numbner ", current_lst_pos)
+                # current index y = 1 position
+                list[x][y] = current_lst_pos
+                print("Update new :", list[x][y])
+                print("Check the current", list[x])
+            if "=" in list[x][y]:
+                list[x][y] = list[x][y].replace('=','')
+                print("Remove the last = symbol")
+
+            if ";" in list[x][y] :
+                list[x][y] = list[x][y].replace(';','')
+    print("Final new list ", list)
+    list = list[0:5]
+                
+        
+           
+           
+                
+        
+
 
     for point in list:
         points_list.append([float(point[0]), float(point[1])])

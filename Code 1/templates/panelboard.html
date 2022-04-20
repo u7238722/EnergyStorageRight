@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" href="data:,">
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
     <title>Panel Control Board</title>
@@ -421,7 +422,7 @@
             //basemap: 'statellite',
             basemap: localStorage.getItem("key"),
         });
-        alert(localStorage.getItem("key"));
+        //alert(localStorage.getItem("key"));
 
         point_list = []
         dynamicLayerMap = new HashMap();
@@ -597,7 +598,7 @@
                             dynamicLayerMap.put(([modifed_x, y, 2]), ImageOverlayLayer4.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                         
                             break;
                            
@@ -631,7 +632,7 @@
                             dynamicLayerMap.put(([modifed_x, y, 2]), ImageOverlayLayer4.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                         
                             break;
                            
@@ -666,7 +667,7 @@
                             }); 
                             map.add(ImageOverlayLayer4);
                             dynamicLayerMap.put(([x, modifed_y, 2]), ImageOverlayLayer4.id);              
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                             
                             break;
                            
@@ -703,7 +704,7 @@
                             dynamicLayerMap.put(([x, modifed_y, 2]), ImageOverlayLayer4.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                             
                            
                             break;
@@ -804,7 +805,7 @@
                             dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                         
                             break;
                            
@@ -852,7 +853,7 @@
                             dynamicLayerMap.put(([modifed_x, y, 1]), ImageOverlayLayer3.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                             
                         //     var ImageOverlayLayer3 = new CustomImageOverlayLayer({
                         //     picUrl: url_pic,
@@ -899,7 +900,7 @@
                             }); 
                             map.add(ImageOverlayLayer3);
                             dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);              
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                             
                             // var ImageOverlayLayer3 = new CustomImageOverlayLayer({
                             // picUrl: url_pic,
@@ -948,7 +949,7 @@
                             dynamicLayerMap.put(([x, modifed_y, 1]), ImageOverlayLayer3.id);
                             
                                 
-                            }else {alert("No avaliable space,please change board position.")}
+                            }
                             
                             // var ImageOverlayLayer3 = new CustomImageOverlayLayer({
                             // picUrl: url_pic,
@@ -1235,9 +1236,15 @@
                 }).then(function (response) {
                     return response.text();
                 }).then(function (text) {
-                    // alert(text);
+                    //alert(text);
                     let placementList = JSON.parse(text);
-                    // alert(placementList.length);
+                    // try {
+                    //     placementList = JSON.parse(text);
+                    // }
+                    // catch (error) {
+                    //     console.log('Error parsing JSON:', error, text);
+                    // }
+                    //alert(placementList.length);
 
                     for (var panel of placementList) {
                         if (panel[0] == 'A') {
