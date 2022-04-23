@@ -10,7 +10,7 @@ def get_country(lat,lon):
     point=Point(lat,lon)
     try:
         location = geolocator.reverse(point)
-        value = (location.address).split(',')[-1]
+        value = location.address.split(',')[-1]
         # area_code=location.address['country_code']
         return value,location.raw['address']['country_code'].upper()
     except TypeError:

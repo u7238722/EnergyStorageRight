@@ -101,7 +101,7 @@ def energy_info():
         water_to_rock = result_dic3.get("Combined water to rock ratio")
         energy = result_dic3.get("Energy (GWh)")
         storage_time = result_dic3.get("Storage time (h)")
-        country,country_code = get_country(lat_str, lon_str)
+        country, country_code = get_country(lat_str, lon_str)
         elec_price=get_elec_price(country_code)
 
         global grid_distance
