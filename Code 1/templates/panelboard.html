@@ -344,7 +344,6 @@
         "esri/views/MapView",
 
 
-
         "esri/layers/BaseDynamicLayer",
         "esri/geometry/Polygon",
         "esri/symbols/SimpleFillSymbol",
@@ -418,11 +417,22 @@
        
         map = new Map({
 
-            //basemap: 'streets',
+            //basemap: 'streets-vector',
             //basemap: 'statellite',
             basemap: localStorage.getItem("key"),
+            //basemap:'topo-vector',
+    
         });
-        //alert(localStorage.getItem("key"));
+         if (map.basemap == null){
+            map = new Map({
+            basemap:'topo-vector',
+           
+
+        });
+       // alert("changed");
+         }
+        
+       // alert(localStorage.getItem("key"));
 
         point_list = []
         dynamicLayerMap = new HashMap();
