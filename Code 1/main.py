@@ -65,6 +65,8 @@ def map_new():
     return render_template('map_new.html')
 
 
+global power_density
+
 # Introduce the functions written in back-end files
 @app.route("/energy_info", methods=["GET", "POST"])
 def energy_info():
@@ -78,7 +80,7 @@ def energy_info():
 
         print(mode)
         result_dic1 = get_wind([lon, lat])
-        global power_density
+
         power_density = result_dic1.get("power_density")
         wind_speed = result_dic1.get("wind speed")
         print("wind")
@@ -119,6 +121,7 @@ def energy_info():
             water_to_rock) + " Energy: " + str(energy) + " Storage time: " + str(storage_time) + " Power: " + str(
             power) + " Country: " + (country) + " Distance: " + str(grid_distance) + " Elec_price: " + str(elec_price)
 
+global isOnshore
 
 # From user's choice get the parameters
 @app.route("/main/form", methods=["GET", "POST"])
@@ -143,7 +146,7 @@ def get_method_args():
         sgip_step = request.args.get("sgip_step")
         global calculation_pattern
         calculation_pattern = request.args.get("calculation_pattern")
-        global isOnshore
+
         isOnshore = request.args.get("onshore")
 
         print("csv written")
