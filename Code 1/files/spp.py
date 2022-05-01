@@ -194,7 +194,7 @@ def generate_rectangle_from_list(list_exp):
     
     for k in range(0,t2_num_ver+2):
 
-        for w in range(0, t2_num_hor + round(t2_num_hor * 0.2)):
+        for w in range(0, t2_num_hor + round(t2_num_hor * 0.5)):
             point_test = ["B", min_lon + (60 + w * 120) / (111 * 1000), min_lat + (60 + k * 120) / (111 * 1000)]
             #if isInPolygon(points_list, point_test):
             sol_arr.append(point_test)

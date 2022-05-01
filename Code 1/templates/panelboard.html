@@ -1192,7 +1192,7 @@
 
             if (!isInPolygon([x - 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
                 place = false;
-                place = true;
+                
             }
 
             if (dynamicLayerMap.size() !== 0) {
@@ -1278,8 +1278,7 @@
                             // // alert(ImageOverlayLayer1.id);
                         } else if (panel[0] == 'B') {
                             //putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
-                            putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
-                            //putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+                            putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
                             // addPanelB();
                             // if (panel[0] == 'B') {
                             //     // addPanelA();
