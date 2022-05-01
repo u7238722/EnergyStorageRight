@@ -446,7 +446,7 @@
             "esri/layers/GraphicsLayer",
             "esri/layers/FeatureLayer",
             "esri/layers/TileLayer",
-            "esri/layers/WMTSLayer",
+            "esri/layers/WMSLayer",
             "esri/layers/WMSLayer",
             "esri/Graphic",
             "esri/geometry/Point",
@@ -461,7 +461,7 @@
 
             // "esri/geometry/geometryEngine",
             "esri/widgets/Legend"
-        ], function (Map, MapView, Search, VectorTileLayer, GraphicsLayer, FeatureLayer, TileLayer, WMTSLayer, WMSLayer,
+        ], function (Map, MapView, Search, VectorTileLayer, GraphicsLayer, FeatureLayer, TileLayer, WMSLayer, WMSLayer,
                      Graphic, Point, SimpleMarkerSymbol, Polyline, SimpleLineSymbol, Polygon, SimpleFillSymbol, Legend, BaseDynamicLayer) {
             efficiency = 100;
             area_value = 1;
@@ -538,8 +538,8 @@
             solar_layer.visible = false;
 
             // water_layer
-            water_layer = new WMTSLayer({
-                url: ""
+            water_layer = new WMSLayer({
+                url: "https://services.ga.gov.au/gis/services/UpperBurdekinClassifiedTasselledCapWetnessPercentageExceedance/MapServer/WMSServer"
                 //url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_Water.xml"
                 // url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_WaterV2020.xml"
             });
