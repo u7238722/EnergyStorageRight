@@ -539,7 +539,8 @@
 
             // water_layer
             water_layer = new WMTSLayer({
-                url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_Water.xml"
+                url: ""
+                //url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_Water.xml"
                 // url: "https://storage.googleapis.com/global-surface-water/downloads_ancillary/WMTS_Global_Surface_WaterV2020.xml"
             });
             map.add(water_layer);
@@ -548,7 +549,9 @@
 
             //energy_layer
             energy_layer = new WMSLayer({
-                url: "http://services.ga.gov.au/gis/services/Proximity_To_Transmission_Infrastructure_Lines_WM/MapServer/WMSServer"
+                //url: "http://services.ga.gov.au/gis/services/Proximity_To_Transmission_Infrastructure_Lines_WM/MapServer/WMSServer"
+                //url访问不到
+                url: "https://services.ga.gov.au/gis/services/RenewableEnergyCapacityFactorMaps/MapServer/WMSServer"
             });
             map.add(energy_layer);
             energy_layer.visible = false;
@@ -672,7 +675,7 @@
                     area_value = calculatepolygonarea(polygonlist);
                     // document.getElementById("area_a").value = area_value;
                     // }
-                    showPopup_polygon(get_polygon_centroid(polygonlist));
+                    showPopup_polygon(get_polygon_centroid(polygonlist));//null
                 }
             });
 
