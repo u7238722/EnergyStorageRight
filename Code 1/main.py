@@ -82,6 +82,7 @@ def energy_info():
         result_dic1 = get_wind([lon, lat])
 
         power_density = result_dic1.get("power_density")
+        print(power_density)
         wind_speed = result_dic1.get("wind speed")
         print("wind")
 
