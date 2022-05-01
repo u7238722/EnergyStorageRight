@@ -1876,8 +1876,8 @@
                 // roi_text = text.indexOf("roi");
                 roi = parseFloat(text.substring(roi_text + 5));
                 document.getElementById("Investment").innerHTML = "Est. Investment: " + (cal_fee() / 1000000).toFixed(2) + "m $";
-                document.getElementById("battery_cost").innerHTML ="Battery Cost: " +(battery_cost/1000000).toFixed(2) + "m $"
-                document.getElementById("battery_fee").innerHTML ="Battery Install fee: " +(battery_fee/1000000).toFixed(2) + "m $"
+                document.getElementById("battery_cost").innerHTML ="Battery Cost: " +(battery_cost).toFixed(2) + "$/mwh"
+                document.getElementById("battery_fee").innerHTML ="Battery Install fee: " +(battery_fee).toFixed(2) + "$/mwh"
                 document.getElementById("energy_capacity").innerHTML ="Energy Capacity: " + energy_capacity.toFixed(2) + "mw" ;
                 document.getElementById("storage_capacity").innerHTML ="Storage Capacity: " + storage_capacity.toFixed(2) + "mw";
                 // edit point
