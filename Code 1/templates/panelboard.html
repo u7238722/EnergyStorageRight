@@ -582,6 +582,7 @@
 
             if (!isInPolygon([x - 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
                 window.place = false;
+  
                 // p1, p4
                 if(!isInPolygon([x - 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list)|| !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
                     var distance = globe_var - (x - 60 / 0.11131955 * 0.000001);   
@@ -723,9 +724,9 @@
                     }
 
                 }
-                if (!isInPolygon([x- 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 60 / 0.11131955 * 0.000001,y+ 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
-                    alert("Please apply the solar panel board in selected area");
-                }
+                // if (!isInPolygon([x- 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 60 / 0.11131955 * 0.000001,y+ 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                //     alert("Please apply the solar panel board in selected area");
+                // }
                 
         
             }
@@ -980,9 +981,9 @@
                     }
 
                 }
-                if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001,y+ 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
-                    alert("Please apply the solar panel board in selected area");
-                }
+                // if (!isInPolygon([x- 120 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001,y+ 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x - 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) && !isInPolygon([x + 120 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)){
+                //     alert("Please apply the solar panel board in selected area");
+                // }
 
             }
 
@@ -1191,7 +1192,7 @@
 
             if (!isInPolygon([x - 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y + 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x - 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list) || !isInPolygon([x + 60 / 0.11131955 * 0.000001, y - 60 / 0.11131955 * 0.000001], point_list)) {
                 place = false;
-                //place = true;
+                
             }
 
             if (dynamicLayerMap.size() !== 0) {
@@ -1257,6 +1258,7 @@
                     //alert(placementList.length);
 
                     for (var panel of placementList) {
+                        
                         if (panel[0] == 'A') {
                             
                             putPanelA(panel[1]+120/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_A.png")
@@ -1275,8 +1277,8 @@
                             // dynamicLayerMap.put([panel[1], panel[2], 1], ImageOverlayLayer1.id);
                             // // alert(ImageOverlayLayer1.id);
                         } else if (panel[0] == 'B') {
-                            putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
-                            //putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+                            //putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+                            putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
                             // addPanelB();
                             // if (panel[0] == 'B') {
                             //     // addPanelA();
