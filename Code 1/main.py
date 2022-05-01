@@ -1,3 +1,4 @@
+from tkinter.tix import Tree
 from flask import Flask, render_template, request
 from Acquire_Data.extract_data_combination import *
 from Acquire_Data.Get_storage_data import *
@@ -21,6 +22,8 @@ saving_assumptions = '1'
 sgip_step = '1'
 calculation_pattern = '1'
 grid_distance = 0
+power_density = '1'
+isOnshore = True
 elec_price=0.176
 
 # Different urls stand for different pages
@@ -64,8 +67,6 @@ def panelBoard():
 def map_new():
     return render_template('map_new.html')
 
-
-global power_density
 
 # Introduce the functions written in back-end files
 @app.route("/energy_info", methods=["GET", "POST"])
@@ -122,7 +123,6 @@ def energy_info():
             water_to_rock) + " Energy: " + str(energy) + " Storage time: " + str(storage_time) + " Power: " + str(
             power) + " Country: " + (country) + " Distance: " + str(grid_distance) + " Elec_price: " + str(elec_price)
 
-global isOnshore
 
 # From user's choice get the parameters
 @app.route("/main/form", methods=["GET", "POST"])
@@ -147,7 +147,9 @@ def get_method_args():
         sgip_step = request.args.get("sgip_step")
         global calculation_pattern
         calculation_pattern = request.args.get("calculation_pattern")
-
+        global power_density
+        power_density = request.args.get("power_density")
+        global isOnshore
         isOnshore = request.args.get("onshore")
 
         print("csv written")
