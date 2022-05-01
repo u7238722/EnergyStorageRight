@@ -88,32 +88,32 @@ def isInPolygon(points_list, point):
     return nCross % 2 == 1
 
 #asd
-def generate_rectangle_from_list(list):
+def generate_rectangle_from_list(list_exp):
     points_list = []
 
-    print("spp.py List : ", list)
+    print("spp.py List : ", list_exp)
     error_detect = 0
 
     # this is used to remove the typo value when user open the website with safari browser. 
-    for x in range(len(list)):
-        list[x] = ['None' if v is None else v for v in list[x]]
+    for x in range(len(list_exp)):
+        list_exp[x] = ['None' if v is None else v for v in list_exp[x]]
         if error_detect == 1 :
             print("Start to debug")
-            old_fst = list[x][0]
-            old_second = list[x][1]
+            old_fst = list_exp[x][0]
+            old_second = list_exp[x][1]
             # reorder 
-            list[x][0] = next_fst_pos
-            list[x][1] =  old_fst
+            list_exp[x][0] = next_fst_pos
+            list_exp[x][1] =  old_fst
             next_fst_pos = old_second
-        print("this is test : ", list[x])
-        for y in range(len(list[x])):
-            print("Detect bug",list[x][y])
-            if ("=" in list[x][y]) and (";" in list[x][y]):
+        print("this is test : ", list_exp[x])
+        for y in range(len(list_exp[x])):
+            print("Detect bug",list_exp[x][y])
+            if ("=" in list_exp[x][y]) and (";" in list_exp[x][y]):
                 #if ";" in list[x][y]:
                 error_detect = 1
 
-                print("****Found A bug **** ", list[x][y])
-                new_string = list[x][y].replace(" ","")
+                print("****Found A bug **** ", list_exp[x][y])
+                new_string = list_exp[x][y].replace(" ","")
                 print("new string ",new_string)
                 get_typo_index = new_string.index(';')
                 print("*** The index is ",get_typo_index)
@@ -122,17 +122,17 @@ def generate_rectangle_from_list(list):
                 current_lst_pos = new_string[0:get_typo_index-1]
                 print("its current second numbner ", current_lst_pos)
                 # current index y = 1 position
-                list[x][y] = current_lst_pos
-                print("Update new :", list[x][y])
-                print("Check the current", list[x])
-            if "=" in list[x][y]:
-                list[x][y] = list[x][y].replace('=','')
+                list_exp[x][y] = current_lst_pos
+                print("Update new :", list_exp[x][y])
+                print("Check the current", list_exp[x])
+            if "=" in list_exp[x][y]:
+                list_exp[x][y] = list_exp[x][y].replace('=','')
                 print("Remove the last = symbol")
 
-            if ";" in list[x][y] :
-                list[x][y] = list[x][y].replace(';','')
-    print("Final new list ", list)
-    list = list[0:4]
+            if ";" in list_exp[x][y] :
+                list_exp[x][y] = list_exp[x][y].replace(';','')
+    print("Final new list ", list_exp)
+    list_exp = list_exp[0:4]
                 
         
            
@@ -141,7 +141,7 @@ def generate_rectangle_from_list(list):
         
 
 
-    for point in list:
+    for point in list_exp:
         points_list.append([float(point[0]), float(point[1])])
 
     print("spp.py Point List : ", points_list)
@@ -174,13 +174,18 @@ def generate_rectangle_from_list(list):
     t2_num_ver =  height // 120
     print(t2_num_hor)
     print("test")
+    print(t2_num_hor)
 
     sol_dict = {}
     sol_arr = []
 
     ## edit_point
     order = 0
-
+    i = 0
+    j = 0
+    k = 0
+    w = 0
+    
     for i in range(0, t1_num_ver):
         for j in range(0, t1_num_hor):
             point = ["A", min_lon + (120 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
@@ -188,12 +193,18 @@ def generate_rectangle_from_list(list):
                 sol_arr.append(point)
     
     for k in range(0,t2_num_ver+2):
-        for w in range(0, t2_num_hor+2):
+
+        for w in range(0, t2_num_hor + round(t2_num_hor * 0.2)):
             point_test = ["B", min_lon + (60 + w * 120) / (111 * 1000), min_lat + (60 + k * 120) / (111 * 1000)]
-            if isInPolygon(points_list, point_test):
-                sol_arr.append(point_test)
-            
+            #if isInPolygon(points_list, point_test):
+            sol_arr.append(point_test)
         
+    # for a in range(0,t2_num_ver+2):
+    #     for b in range(0, t2_num_hor+2):
+    #         point_new = ["B", max_lon - (60 + b * 120) / (111 * 1000), max_lat - (60 + a * 120) / (111 * 1000)]
+    #         if isInPolygon(points_list, point_new):
+    #             sol_arr.append(point_new)
+         
 
         #if t2_num_hor > 0:
             #point = ["B", min_lon + (60 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
@@ -202,7 +213,14 @@ def generate_rectangle_from_list(list):
             #if isInPolygon(points_list, point):
             #sol_arr.append(point)
 
+
     print("spp.py sol_arr : ", sol_arr)
+    # filter(partial(is_not, None), sol_arr)
+    # sol_arr.sort()
+    # sol_arr = list(sol_arr for sol_arr,_ in itertools.groupby(sol_arr))
+   
+    # print(" new length is :" ,len(sol_arr))
+    #sol_arr = sol_arr[0:80]
 
     return sol_arr
 

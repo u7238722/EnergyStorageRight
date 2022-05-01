@@ -2030,10 +2030,13 @@
             energy_capacity = 0;
             cal_value = 0;
             battery_fee = 0;
+            new_investment = 0;
+            total_energy_generation = 0;
+            
             //new edit point  200$/mwh
-            battery_cost = 200
+            battery_cost = 0;
             // 800$/kwh =0.8$/mwh
-            battery_installation = 0.8
+            battery_installation = 0;
             pump_fee = 0;
             if (energy_battery != "No value in this area") {
                 battery_fee = parseFloat(energy_battery) * 1000 * 70;
@@ -2056,13 +2059,22 @@
                     storage_percent= parseInt(storage_percent);
                     //alert(storage_percent);
                     //alert("Energy generation mwh"+ area_value * gti / 1000);   
-                    storage_capacity = area_value * gti / 1000 * storage_percent / 100 
+                    //storage_capacity = area_value * gti / 1000 * storage_percent / 100 
+                    energy_capacity = area_value * 0.2
+                    storage_capacity =  energy_capacity * (storage_percent / 100) * 5 
+                    // total price = energy output per year * battery storage * investment: 200$/mwh 800$/kwh = 0.8$/mwh
+                    total_energy_generation = area_value * gti / 1000 
+                    battery_cost = total_energy_generation * storage_percent / 100 * 200
+                    battery_installation = total_energy_generation * storage_percent / 100 * 0.8
+                    new_investment = area_value * gti / 1000 * storage_percent / 100 * 200.8
+
+
                     //alert("storage_capacity is "+ storage_capacity);
                     //alert("Old investment"+ cal_value + dni * area_value / 1000 * 70 / 24 * 5)
-                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + storage_capacity * 200.8;
+                    cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + new_investment;
                     //alert("new investment" + cal_value);
                     // energy_capacity mwh
-                    energy_capacity = assitance_value / 800 / 1000;
+                   
                     //alert("Energy_capcity is " + energy_capacity);
                 }
             }
@@ -2292,20 +2304,25 @@
                     pdf.text("saving assumptions: " + document.getElementById("year_y").value, 20, 145);
                     pdf.text("calculation pattern: " + document.getElementById("calculation_pattern").value, 20, 150);
                     pdf.text("onshore: " + document.getElementById("onshore").value, 20, 155);
-                    pdf.text("cost for power: " + "8 $/kW", 20, 160);
+                    pdf.text("cost for power: " + "800 $/kW", 20, 160);
                     pdf.text("cost for energy: " + "0.07 $/kWh", 20, 165);
                     pdf.text("desired hours for solar operation: " + "5h", 20, 170);
                     pdf.text("electricity price in your selected country/region: " + elec_price + " $/kWh\n", 20, 175);
                     pdf.text("total cost (include Estimated Solar Panels Investment): " + ( (cal_fee() + dni * (28800 * a_count + 14400 * b_count) * 70 / 24 * 5 / 1000) / 1000000).toFixed(6) + " million$", 20, 180);
-                    pdf.text("distance to nearest energy grid: " + grid_distance, 20, 185);
-                    pdf.text("4. ROI & IRR:", 20, 195);
-                    pdf.text("ROI: " + roi.toFixed(2) + "%", 20, 200);
-                    pdf.text("IRR: " + irr.toFixed(2) + "%", 20, 205);
-                    pdf.text("5. Solar Panels Combination:", 20, 215);
-                    pdf.text("Number of Array A: " + a_count, 20, 220);
-                    pdf.text("Number of Array B: " + b_count, 20, 225);
-                    pdf.text("Estimated Solar Panels Investment: " + dni * (28800 * a_count + 14400 * b_count) * 70 / 24 * 5 / 1000, 20, 230);
-                    pdf.text("Note: The calculation results on this website are for reference only.", 20, 240);
+                    pdf.text("Battery Cost: " + battery_cost.toFixed(2) + "$",20,185);
+                    pdf.text("Battery installation fee: " + battery_installation.toFixed(2) + "$",20,190);
+                    pdf.text("distance to nearest energy grid: " + grid_distance, 20, 195);
+                    pdf.text("4. ROI & IRR:", 20, 205);
+                    pdf.text("ROI: " + roi.toFixed(2) + "%", 20, 210);
+                    pdf.text("IRR: " + irr.toFixed(2) + "%", 20, 215);
+                    // edit point
+                    pdf.text("Energy Capacity: " + energy_capacity.toFixed(2) + "mwh",20,220);
+                    pdf.text("Storage Capacity: " + storage_capacity.toFixed(2) + "mwh",20,225);
+                    pdf.text("5. Solar Panels Combination:", 20, 240);
+                    pdf.text("Number of Array A: " + a_count, 20, 245);
+                    pdf.text("Number of Array B: " + b_count, 20, 250);
+                    pdf.text("Estimated Solar Panels Investment: " + dni * (28800 * a_count + 14400 * b_count) * 70 / 24 * 5 / 1000, 20, 255);
+                    pdf.text("Note: The calculation results on this website are for reference only.", 20, 260);
                     pdf.save('EnergyStorageRights.pdf');
                 }
             }
