@@ -15,6 +15,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.debug.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0-rc.1/chartjs-plugin-datalabels.min.js" integrity="sha512-+UYTD5L/bU1sgAfWA0ELK5RlQ811q8wZIocqI7+K0Lhh8yVdIoAMEs96wJAIbgFvzynPm36ZCXtkydxu1cs27w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- side bar implement -->
     <style>
@@ -477,6 +478,7 @@ Debug phase _> change back to working versionn -->
                         
             //function (Map, MapView, Search, VectorTileLayer, GraphicsLayer, FeatureLayer, TileLayer, WMSLayer,
             //Graphic, Point, SimpleMarkerSymbol, Polyline, SimpleLineSymbol, Polygon, SimpleFillSymbol, Legend, BaseDynamicLayer)
+            transfer_data = [];
             efficiency = 100;
             area_value = 1;
             poe = 0.3441;
@@ -1087,7 +1089,9 @@ Debug phase _> change back to working versionn -->
                     power_d = parseFloat(text.substring(n1 + 15, n2 - 1));
                     speed_w = parseFloat(text.substring(n2 + 12, n3 - 1));
                     pvout = parseFloat(text.substring(n3 + 11, n4 - 1));
+                    
                     dni = parseFloat(text.substring(n4 + 5, n5 - 1));
+                    localStorage.setItem("itsdni",dni);
                     ghi = parseFloat(text.substring(n5 + 5, n6 - 1));
                     dif = parseFloat(text.substring(n6 + 5, n7 - 1));
                     gti = parseFloat(text.substring(n7 + 10, s1 - 1));
@@ -1103,6 +1107,16 @@ Debug phase _> change back to working versionn -->
                     country = text.substring(c1 + 9, c2 - 1);
                     grid_distance = text.substring(c2 + 10, c3 - 1) + " km";
                     elec_price = text.substring(c3 + 12);
+                    //'DNI', 'GHI', 'DHI', 'GTI'
+                    // pdf.text("Direct Normal Irradiation: " + dni + " kWh/m²", 20, 60);
+                    // pdf.text("Global Horizontal Irradiation: " + ghi + " kWh/m²", 20, 65);
+                    // pdf.text("Diffuse Horizontal Irradiation: " + dif + " kWh/m²", 20, 70);
+                    // pdf.text("Global Titled Irradiation At Optimum Angle: " + gti + " kWh/m²", 20, 75);
+                    transfer_data = [dni,ghi,dif,gti];
+                    itistest(transfer_data);
+                    //buildimage(transfer_data);
+                    //alert(typeof(dni));
+                    //alert("I have build the image");
                     // if (country != ' Australia') {
                     //     grid_distance = "Currently we don't support this area."
                     // }
@@ -2090,6 +2104,43 @@ Debug phase _> change back to working versionn -->
         // 800$/kwh =0.8$/mwh
         var battery_installation = 0.8
         var pump_fee = 0;
+        var storage_dni = 0;
+
+        //async function test()
+        // async function get_data() {
+
+
+        //     // solar model
+        //     if (show_mode == 1) {
+
+        //         if (document.getElementById("calculation_pattern").value == "1") {
+        //             pass
+                    
+        //         } else if (document.getElementById("calculation_pattern").value == "2") {
+        //             pass
+        //         } else if (document.getElementById("calculation_pattern").value == "3") {
+        //             storage_dni = dni;      
+        //             alert("new data loading");         
+        //             alert(storage_dni);
+                
+        //         }
+        //     }
+        //     if (show_mode == 2) {
+        //         storage_dni = dni;
+                
+
+        //         if (document.getElementById("calculation_pattern").value == "4") {
+        //             pass
+        //         } else if (document.getElementById("calculation_pattern").value == "5") {
+        //             pass
+        //         } else if (document.getElementById("calculation_pattern").value == "6") {
+        //             pass
+        //         }
+        //     }
+        //     return storage_dni;
+        // }
+
+
 
         function cal_fee() {
             energy_generation = 0;
@@ -2105,18 +2156,30 @@ Debug phase _> change back to working versionn -->
             // 800$/kwh =0.8$/mwh
             battery_installation = 0;
             pump_fee = 0;
+
             if (energy_battery != "No value in this area") {
                 battery_fee = parseFloat(energy_battery) * 1000 * 70;
                 pump_fee = parseFloat(power_storage) * 800 * 1000;
             }
             // solar model
             if (show_mode == 1) {
+                
+
+                
 
                 if (document.getElementById("calculation_pattern").value == "1") {
                     cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5;
+                    
                 } else if (document.getElementById("calculation_pattern").value == "2") {
                     cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + pump_fee;
                 } else if (document.getElementById("calculation_pattern").value == "3") {
+                    storage_dni = dni;
+                    //get_data();
+                    //alert("run get data in cal_fee()");
+
+
+                    
+                    //alert(storage_dni);
                     assitance_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5;
                     //cal_value = cal_value + dni * area_value / 1000 * 70 / 24 * 5 + battery_fee;
                     // total energy generation = area_value * global titled irradiation optimum anagle 
@@ -2146,6 +2209,8 @@ Debug phase _> change back to working versionn -->
                 }
             }
             if (show_mode == 2) {
+                storage_dni = dni;
+                
 
                 if (document.getElementById("calculation_pattern").value == "4") {
                     cal_value = cal_value + 0.001 * power_d * area_value / 1000 * 70 * 60;
@@ -2255,70 +2320,241 @@ Debug phase _> change back to working versionn -->
         // }
         // new_calculation()
 
+        //add real data
+        //alert(storage_dni);
+        // fetch('/energy_info', {
+        //             method: 'POST',
+        //             body: JSON.stringify({
+        //                 "lon": calculationpoint[0],
+        //                 "lat": calculationpoint[1],
+        //                 "mode": show_mode
+        //             }),
+        //             headers: {'Content-type': 'application/json'}
+        //         }).then(function (response) {
+        //             return response.text();
+        //         }).then(function (text) {
+        //             n1 = text.indexOf("power_density");
+        //             n2 = text.indexOf("wind_speed");
+        //             n3 = text.indexOf("PVOUT_csi");
+        //             n4 = text.indexOf("DNI");
+        //             n5 = text.indexOf("GHI");
+        //             n6 = text.indexOf("DIF");
+        //             n7 = text.indexOf("GTI_opta");
+        //             s1 = text.indexOf("Class");
+        //             s2 = text.indexOf("Head");
+        //             s3 = text.indexOf("Separation");
+        //             s4 = text.indexOf("Slope");
+        //             s5 = text.indexOf("Volume");
+        //             s6 = text.indexOf("Water to Rock");
+        //             s7 = text.indexOf("Energy");
+        //             s8 = text.indexOf("Storage time");
+        //             s9 = text.indexOf("Power");
+        //             c1 = text.indexOf("Country");
+        //             c2 = text.indexOf("Distance");
+        //             c3 = text.indexOf("Elec_price")
 
-        const data = {
-        labels: ['DNI', 'GHI', 'DHI', 'GTI'],
-        datasets: [{
-            label: 'Irradiation Energy (kWh/m²)',
-            //data: [dni, ghi, dif, gti],
-            data: [50, 60, 70, 100],
-            backgroundColor: [
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(0, 0, 0, 0.2)'
-            ],
-            borderColor: [
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(0, 0, 0, 1)'
-            ],
-            borderWidth: 1
-        }]
-        };
+        //             power_d = parseFloat(text.substring(n1 + 15, n2 - 1));
+        //             speed_w = parseFloat(text.substring(n2 + 12, n3 - 1));
+        //             pvout = parseFloat(text.substring(n3 + 11, n4 - 1));
+        //             dni = parseFloat(text.substring(n4 + 5, n5 - 1));
+        //             ghi = parseFloat(text.substring(n5 + 5, n6 - 1));
+        //             dif = parseFloat(text.substring(n6 + 5, n7 - 1));
+        //             gti = parseFloat(text.substring(n7 + 10, s1 - 1));
+        //             class_ = (text.substring(s1 + 7, s2 - 1));
+        //             head_ = (text.substring(s2 + 6, s3 - 1));
+        //             separation = (text.substring(s3 + 12, s4 - 1));
+        //             slope = (text.substring(s4 + 7, s5 - 1));
+        //             volume = (text.substring(s5 + 8, s6 - 1));
+        //             w_r = (text.substring(s6 + 15, s7 - 1));
+        //             energy_battery = (text.substring(s7 + 8, s8 - 1));
+        //             storage_time = (text.substring(s8 + 14, s9 - 1));
+        //             power_storage = (text.substring(s9 + 7, c1 - 1));
+        //             country = text.substring(c1 + 9, c2 - 1);
+        //             grid_distance = text.substring(c2 + 10, c3 - 1) + " km";
+        //             elec_price = text.substring(c3 + 12);
 
-        const bgColor = {
-            id: 'bgColor',
-            beforeDraw: (chart, options) => {
-                const { ctx, width, height } = chart
-                ctx.fillStyle = 'white'
-                ctx.fillRect(0, 0, width, height)
-                ctx.restore()
+        // var exam; 
+        // async function fetchExam() {
+        //     try {
+        //         const response = await fetch ('/energy_info', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //             "lon": calculationpoint[0],
+        //             "lat": calculationpoint[1],
+        //             "mode": show_mode
+        //         }),
+        //         headers: {'Content-type': 'application/json'}
+        //         });
+        //         exam = await response.text();
+        //         //exam = JSON.parse(exam);
+        //         return exam;
+
+        //     }catch(error){
+        //         console.error(error);
+        //     }
+        
+        // }
+        // async function renderExam() {
+        //     exam = await fetchExam();
+        //     console.log(exam);
+        //     alert(exam);
+        //     alert("its old" + typeof(exam));
+        //     exam = exam.indexOf("DNI");
+        //     alert("its new" +typeof(exam));
+        // }
+        async function renderExam(){
+            
+            await cal_fee();
+            const bgColor = {
+                id: 'bgColor',
+                beforeDraw: (chart, options) => {
+                    const { ctx, width, height } = chart
+                    ctx.fillStyle = 'white'
+                    ctx.fillRect(0, 0, width, height)
+                    ctx.restore()
+            }
+            }
+
+            // config
+            const config = {
+                type: 'bar',
+                data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                },
+                plugins: [bgColor]
+            };
+
+            // render init block
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+        }
+    //itistest();
+        function itistest(input_value){
+            //myChart.clear();
+            // alert("wait cal_fee")
+            // await get_data();
+            // alert("get_data")
+            const data = {
+            labels: ['DNI', 'GHI', 'DHI', 'GTI'],
+            datasets: [{
+                label: 'Irradiation Energy (kWh/m²)',
+                //data: [dni, ghi, dif, gti],
+                //data: [10, 60, 70, 100],
+                data: input_value,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(0, 0, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1,
+                datalabels:{
+                    color : 'blue',
+                    anchor: 'end',
+                    align: 'top'
+
+
+                }
+            }]
+            };
+
+            const bgColor = {
+                id: 'bgColor',
+                beforeDraw: (chart, options) => {
+                    const { ctx, width, height } = chart
+                    ctx.fillStyle = 'white'
+                    ctx.fillRect(0, 0, width, height)
+                    ctx.restore()
+                }
+            }
+          
+
+            // config
+            const config = {
+                type: 'bar',
+                data,
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                },
+                plugins: [bgColor,ChartDataLabels],
+
+               // plugins: [ChartDataLabels]
+            };
+
+            // render init block
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+            
+    }
+  
+    async function buildimage(input_value){
+        // alert("wait get_data")
+        // await get_data();
+        // alert("get_data")
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        //var yValues = [55, 49, 44, 24, 15];
+        var yValues = input_value;
+        var barColors = ["red", "green","blue","orange","brown"];
+
+        new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+            display: true,
+            text: "World Wine Production 2018"
             }
         }
-
-        // config
-        const config = {
-            type: 'bar',
-            data,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            },
-            plugins: [bgColor]
-        };
-
-        // render init block
-        const myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
+        });
+    }
 
 
+    
         //jsPDF download function
         function downloadPDFfromHTML() {
             getCookies();
             var pdf = new jsPDF();
 
+
+
+            //itistest();
             const canvas = document.getElementById('myChart');
             const canvasImage = canvas.toDataURL('image/jpeg', 1.0);
+
+            //alert("test");
+            //alert(storage_dni);
             if (show_mode == 1) {
 
                 if (document.getElementById("calculation_pattern").value == "1") {
+                    
                     pdf.addImage("data:image/jpeg;base64,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", "JPEG", 30, 10, 15, 24);
                     pdf.setFontSize(20);
                     pdf.text("ENERGY STORAGE RIGHTS", 60, 25);
@@ -2427,7 +2663,7 @@ Debug phase _> change back to working versionn -->
                     pdf.text("Global Horizontal Irradiation: " + ghi + " kWh/m²", 20, 65);
                     pdf.text("Diffuse Horizontal Irradiation: " + dif + " kWh/m²", 20, 70);
                     pdf.text("Global Titled Irradiation At Optimum Angle: " + gti + " kWh/m²", 20, 75);
-                    pdf.addImage(canvasImage, 'JPEG', 20, 90, 170, 120)
+                    pdf.addImage(canvasImage, 'JPEG', 20, 90, 150, 130)
 
                     pdf.text("2. Storage Information:", 20, 220);
                     pdf.text("Battery:", 20, 225);
@@ -2608,6 +2844,9 @@ Debug phase _> change back to working versionn -->
         };
         var element = document.getElementById("downloadBtn");
         element.addEventListener("click", downloadPDFfromHTML);
+        //element.addEventListener("click",renderExam)
+
+       
     </script>
 </div>
 </div>

@@ -48,7 +48,7 @@ def generate_rectangle(f_name):
     t2_num_hor = (length - 240 * t1_num_hor) // 120
     t2_num_ver = (height - 120 * t1_num_ver) // 120
 
-    print(t2_num_hor)
+    #print(t2_num_hor)
 
     sol_dict = {}
     sol_arr = []
@@ -91,7 +91,7 @@ def isInPolygon(points_list, point):
 def generate_rectangle_from_list(list_exp):
     points_list = []
 
-    print("spp.py List : ", list_exp)
+    #print("spp.py List : ", list_exp)
     error_detect = 0
 
     # this is used to remove the typo value when user open the website with safari browser. 
@@ -105,33 +105,33 @@ def generate_rectangle_from_list(list_exp):
             list_exp[x][0] = next_fst_pos
             list_exp[x][1] =  old_fst
             next_fst_pos = old_second
-        print("this is test : ", list_exp[x])
+        #print("this is test : ", list_exp[x])
         for y in range(len(list_exp[x])):
-            print("Detect bug",list_exp[x][y])
+            #print("Detect bug",list_exp[x][y])
             if ("=" in list_exp[x][y]) and (";" in list_exp[x][y]):
                 #if ";" in list[x][y]:
                 error_detect = 1
 
-                print("****Found A bug **** ", list_exp[x][y])
+                #print("****Found A bug **** ", list_exp[x][y])
                 new_string = list_exp[x][y].replace(" ","")
-                print("new string ",new_string)
+                #print("new string ",new_string)
                 get_typo_index = new_string.index(';')
-                print("*** The index is ",get_typo_index)
+                #print("*** The index is ",get_typo_index)
                 next_fst_pos = new_string[-get_typo_index+1:]
-                print("its next fst",next_fst_pos)
+                #print("its next fst",next_fst_pos)
                 current_lst_pos = new_string[0:get_typo_index-1]
-                print("its current second numbner ", current_lst_pos)
+                #print("its current second numbner ", current_lst_pos)
                 # current index y = 1 position
                 list_exp[x][y] = current_lst_pos
-                print("Update new :", list_exp[x][y])
-                print("Check the current", list_exp[x])
+                #print("Update new :", list_exp[x][y])
+                #print("Check the current", list_exp[x])
             if "=" in list_exp[x][y]:
                 list_exp[x][y] = list_exp[x][y].replace('=','')
-                print("Remove the last = symbol")
+                #print("Remove the last = symbol")
 
             if ";" in list_exp[x][y] :
                 list_exp[x][y] = list_exp[x][y].replace(';','')
-    print("Final new list ", list_exp)
+    #print("Final new list ", list_exp)
     list_exp = list_exp[0:4]
                   
 
@@ -167,9 +167,9 @@ def generate_rectangle_from_list(list_exp):
     #t2_num_ver = (height - 120 * t1_num_ver) // 120
     t2_num_hor =  length // 120
     t2_num_ver =  height // 120
-    print(t2_num_hor)
-    print("test")
-    print(t2_num_hor)
+    #print(t2_num_hor)
+    #print("test")
+    #print(t2_num_hor)
 
     sol_dict = {}
     sol_arr = []
@@ -181,14 +181,14 @@ def generate_rectangle_from_list(list_exp):
     k = 0
     w = 0
     
-    for i in range(0, t1_num_ver):
-        for j in range(0, t1_num_hor):
+    for i in range(0, t1_num_ver+2):
+        for j in range(0, t1_num_hor+ round(t1_num_hor * 0.5)):
             point = ["A", min_lon + (120 + j * 240) / (111 * 1000), min_lat + (60 + i * 120) / (111 * 1000)]
             if isInPolygon(points_list, point):
                 sol_arr.append(point)
     
     for k in range(0,t2_num_ver+2):
-        for w in range(0, t2_num_hor + round(t2_num_hor * 0.8)):
+        for w in range(0, t2_num_hor + round(t2_num_hor * 0.5)):
             point_test = ["B", min_lon + (60 + w * 120) / (111 * 1000), min_lat + (60 + k * 120) / (111 * 1000)]
             #if isInPolygon(points_list, point_test):
             sol_arr.append(point_test)
@@ -208,7 +208,7 @@ def generate_rectangle_from_list(list_exp):
             #sol_arr.append(point)
 
 
-    print("spp.py sol_arr : ", sol_arr)
+    #print("spp.py sol_arr : ", sol_arr)
     # filter(partial(is_not, None), sol_arr)
     # sol_arr.sort()
     # sol_arr = list(sol_arr for sol_arr,_ in itertools.groupby(sol_arr))

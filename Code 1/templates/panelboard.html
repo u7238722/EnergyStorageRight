@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html>
+<!-- <html> -->
+<html lang="en" id = "whole">
 <head>
     <link rel="icon" href="data:,">
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
     <title>Panel Control Board</title>
     <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
+    <script type="text/javascript" src="html2canvas-master/dist/html2canvas.js"></script> -->
+    <!-- <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- New API for taking screenshot -->
+    <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css"> -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.9/"></script>
     <style>
         html,
         body,
@@ -58,8 +69,11 @@
 
         #popUpForPlacingPanel {
             background: white;
-            height: 400px;
-            width: 250px;
+            /* height: 400px;
+            width: 250px; */
+
+            height: 500px;
+            width:250px;
             border-radius: 7px;
             border-style: solid;
             border-color: #0084CC;
@@ -70,32 +84,152 @@
             z-index: 1;
         }
 
-        #add_panel, #select_panel, #delete_panel, #delete_all_panel, #addToReport {
+        #add_panel, #apply_solar, #select_panel, #delete_panel, #delete_all_panel, #addToReport, #report {
             height: 40px;
             width: 170px;
         }
 
-        #add_panel:hover, #select_panel:hover, #delete_panel:hover, #delete_all_panel:hover, #addToReport:hover {
+        #add_panel:hover, #apply_solar:hover, #select_panel:hover, #delete_panel:hover, #delete_all_panel:hover, #addToReport:hover ,#report:hover{
             background: rgb(125, 186, 214);
         }
 
-        #add_panel:active, #select_panel:active, #delete_panel:active, #delete_all_panel:active, #addToReport:active {
+        #add_panel:active,#apply_solar:hover, #select_panel:active, #delete_panel:active, #delete_all_panel:active, #addToReport:active, #report:active {
             box-shadow: 0 10px #999;
             transform: translateY(5px);
         }
 
+         /* *****************EDIT  */
+
+        /* .bug-container {
+            background: rgb(255,0,0,0.1);  
+            margin-top:20px;
+            text-align: center;
+        }
+
+        .bug {
+            margin-top: 10px; 
+            cursor: crosshair;
+        /*  border: solid 1px black;       */   
+        /* } */
+
+        /* .hide {
+            display: none;
+        } */
+
+        /* .example {
+            height: 100px;
+            background: yellow;
+        } */ 
+
+        /* .region {
+            position: absolute;
+            
+            background: rgba(255,0,0,0.4);
+        }
+
+        .send {
+            border-radius:5px;
+            padding:10px;
+            background: green;
+            cursor: pointer;
+        
+        }
+        body {
+        margin: 0;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        line-height: 20px;
+        color: #333;
+        background-color: #fff;
+        padding-left: 15px;
+        }
+    
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px; */
+        /* }
+        
+        .btn-default {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+        
+        h1{
+            font-size: 36px;
+        }
+        
+        h1{
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit;
+        }
+        
+        h1 small{
+            font-size: 65%;
+        } */
+/*         
+        h1 small {
+            font-weight: 400;
+            line-height: 1;
+            color: #777;
+            display: block;
+        padding-top: 15px;
+        }
+        .specific{
+            background-color: #fff;
+        }
+    
+    p a{
+    padding: 5px;
+    } */
+        /* *****************EDIT  */
+
     </style>
     <script src="https://js.arcgis.com/4.16/"></script>
+    
     
 
 </head>
 
 <script>
+//     function final(){
+//     alert("test");
+//     html2canvas(document.body).then(function(canvas) {
+//     document.body.appendChild(canvas);
+//    });
+//    html2canvas(document.getElementById('container')).then(function(canvas) {
+//  document.getElementById("alignment").src= canvas.toDataURL();
+// });
+
+
+//   }
     addPanelState = 0;
 
 
     function addPanelA() {
         addPanelState = 1;
+    }
+    function applySolar(){
+        addPanelState = 4;
     }
 
     function addPanelB() {
@@ -255,7 +389,7 @@
 
 </script>
 
-<body>
+<body id="capture">
 <div id="viewDiv"></div>
 <div id="popUpForPlacingPanel" class="popUp">
 
@@ -268,6 +402,12 @@
                     <a title="Add Array A in the permitted location. &#10Array A is about 120m long and 60m wide"> Add Array A </a>
                 </button>
             </li>
+
+            <!-- <li style="line-height:5">
+                <button onclick="applySolar()" id="apply_solar">
+                    <a title="Add solar panel board in the permitted location. &#10Array A is about 120m long and 60m wide"> Apply solar panel board </a>
+                </button>
+            </li> -->
 
             <li style="line-height:5">
                 <button onclick="addPanelB()" id="select_panel">
@@ -290,6 +430,10 @@
             <li style="line-height:5">
                 <button onclick="addToReport()" id="addToReport">
                     <a title="Add current placement information to the PDF"> Add to Report </a>
+                </button>
+            <li style="line-height:5">
+                <button id="report">
+                    <a title="Add current placement information to the PDF"> Add image </a>
                 </button>
             </li>
         </ul>
@@ -335,19 +479,39 @@
                 <!--Optimized Placement</p>-->
         <!--</button>-->
     <!--</div>-->
+   <!-- <img id="bannerImg" src="images/image-placeholder.jpg" alt="Banner Image" style="display:none;" width="100%" height="200px" /> -->
 </div>
 
+
 <script>
+    // function final(){
+    //     alert("clicked");
+    //     document.querySelector('button').addEventListener('click', function() {
+    //         html2canvas(document.querySelector('.specific'), {
+    //             onrendered: function(canvas) {
+    //                 // document.body.appendChild(canvas);
+    //             return Canvas2Image.saveAsPNG(canvas);
+    //             }
+    //         });
+    //     });
+    // }
+
+
     window.place = true;
+    window.wait = 0;
     require([
         "esri/Map",
         "esri/views/MapView",
+        //
 
 
+        ///
         "esri/layers/BaseDynamicLayer",
         "esri/geometry/Polygon",
         "esri/symbols/SimpleFillSymbol",
         "esri/Graphic"
+
+
     ], function (Map, MapView, BaseDynamicLayer
         , Polygon, SimpleFillSymbol, Graphic
     ) {
@@ -408,13 +572,15 @@
                 var screen_righttop = view.toScreen(righttop);
 
                 this.canvas.getContext("2d").drawImage(this.image, screenPoint.x, screenPoint.y, Math.abs(screen_righttop.x - screen_leftbottom.x), Math.abs(screen_righttop.y - screen_leftbottom.y));
-                return this.canvas.toDataURL("image/png");
+                return this.canvas.toDataURL();
+                window.wait = window.wait + 1;
                 
                 
 
 
             }
         });
+        
 
        
        
@@ -424,9 +590,12 @@
             //basemap: 'statellite',
             basemap: localStorage.getItem("key"),
             //basemap:'topo-vector',
+            
+            
+            
     
         });
-         if (map.basemap == null){
+        if (map.basemap == null){
             map = new Map({
             basemap:'topo-vector',
            
@@ -442,6 +611,7 @@
 
         // alert(document.cookie)
 
+
         function getcookie() {
             //获取传递过来的localStorage
             // 	console.log(window.localStorage.getItem('list'))
@@ -452,7 +622,7 @@
                 point_list.push([arr1, arr2]);
             }
         }
-
+        if (window.wait = false){}
         getcookie();
         // alert(point_list);
 
@@ -562,6 +732,7 @@
                 geometry: polygon,
                 symbol: fillSymbol
             });
+            window.wait = window.wait + 1;
             // Add the graphic to the view
             view.graphics.add(polygonGraphic);
         }
@@ -569,7 +740,124 @@
         drawpolygon();
 
 
+        // edit point for adding image ##########
+        // async function report() {
 
+        //     alert("btn clicked");
+        //     let screenshot = await makeScreenshot(); // png dataUrl
+        //     let img = q(".screen");
+        //     img.src = screenshot; 
+            
+        //     let c = q(".bug-container");
+        //     c.classList.remove('hide')
+                
+        //     let box = await getBox();    
+        //     c.classList.add('hide');
+
+        //     send(screenshot,box); // sed post request  with bug image, region and description
+        //     alert('To see POST requset with image go to: chrome console > network tab');
+        // }
+
+        // // ----- Helper functions
+
+        // let q = s => document.querySelector(s); // query selector helper
+        // window.report = report; // bind report be visible in fiddle html
+        // //window.html2canvas;
+
+        // async function  makeScreenshot(selector="body") 
+        // {
+        //     return new Promise((resolve, reject) => {  
+        //         let node = document.querySelector(selector);
+                
+        //     html2canvas(node, { onrendered: (canvas) => {
+        //         let pngUrl = canvas.toDataURL();      
+        //         resolve(pngUrl);
+        //     }});  
+        // });
+        // }
+
+        // async function getBox(box) {
+        // return new Promise((resolve, reject) => {
+        //     let b = q(".bug");
+        //     let r = q(".region");
+        //     let scr = q(".screen");
+        //     let send = q(".send");
+        //     let start=0;
+        //     let sx,sy,ex,ey=-1;
+        //     console.log({b,r, scr});
+        //     b.addEventListener("click", e=>{
+        //     if(start==0) {
+        //         sx=e.offsetX+scr.offsetLeft;
+        //         sy=e.offsetY+b.offsetTop;
+        //         ex=0;
+        //         ey=0;
+        //         r.style.top = sy +'px';
+        //         r.style.left =sx +'px';     
+        //         r.style.width = 0;
+        //         r.style.height = 0; 
+        //     }
+        //     start=(start+1)%3;  		
+        //     });
+            
+        //     b.addEventListener("mousemove", e=>{
+        //     //console.log(e)
+        //     if(start==1) {
+        //         ex=e.offsetX+scr.offsetLeft-sx;
+        //         ey=e.offsetY+b.offsetTop-sy
+        //         r.style.width = ex +'px';
+        //         r.style.height = ey +'px'; 
+        //     }
+        //     });
+            
+        //     send.addEventListener("click", e=>{
+        //     start=0;
+        //     let a=100/75 //zoom out img 75%       
+        //     resolve({
+        //         x:Math.floor((sx-scr.offsetLeft)*a),
+        //         y:Math.floor((sy-b.offsetTop)*a),
+        //         width:Math.floor(ex*a),
+        //         height:Math.floor(ey*a),
+        //         desc: q('.bug-desc').value
+        //         });
+                
+        //     });
+        // });
+        // }
+
+        // function send(image,box) {
+
+        //     let formData = new FormData();
+        //     let req = new XMLHttpRequest();
+            
+        //     formData.append("box", JSON.stringify(box)); 
+        //     formData.append("screenshot", image);     
+            
+        //     req.open("POST", '/upload/screenshot');
+        //     req.send(formData);
+        // }
+  // end point ############
+
+
+        function capture() {
+            const captureElement = document.querySelector('#capture')
+            html2canvas(captureElement)
+                    .then(canvas => {
+                    canvas.style.display = 'none'
+                    document.body.appendChild(canvas)
+                    return canvas
+                })
+                .then(canvas => {
+                const image2 = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
+                const a = document.createElement('a')
+                a.setAttribute('download', 'my-image.png')
+                a.setAttribute('href', image2)
+                a.click()
+                canvas.remove()
+                })
+            }
+
+        const btn = document.querySelector('#report')
+        btn.addEventListener('click', capture)
         // author : Yuang LI 
         function putPanelBBtn(x, y, url_pic) {
             var ImageOverlayLayer2 = new CustomImageOverlayLayer({
@@ -1235,10 +1523,48 @@
 
         
 
+        // var img = new Image();
+        // img.src = 'static/array_A.png';
+        // img.load = function() {
+        //     var canvas = document.createElement('canvas');
+        //     document.body.appendChild(canvas);
+        //     var context = canvas.getContext('2d');
+        //     context.drawImage(img, 0, 0);
+        //     var data = context.getImageData(x, y, img.width, img.height).data;
+        //     localStorage.setItem('image', data); // save image data
+        //     };
+
+        // window.onload = function() {
+        // var picture = localStorage.getItem('image');
+        // var image = document.createElement('img');
+        // image.src = picture;
+        // document.body.appendChild(image);
+        // };
+
+        // var img2 = new Image();
+        // img2.src = 'static/array_B.png';
+        // img2.load = function() {
+        //     var canvas2 = document.createElement('canvas');
+        //     document.body.appendChild(canvas);
+        //     var context2 = canvas2.getContext('2d');
+        //     context2.drawImage(img2, 0, 0);
+        //     var data2 = context2.getImageData(x, y, img2.width, img2.height).data2;
+        //     localStorage.setItem('image2', data2); // save image data
+        //     };
+
+        // window.onload2 = function() {
+        // var picture2 = localStorage.getItem('image2');
+        // var image2 = document.createElement('img2');
+        // image2.src = picture2;
+        // document.body.appendChild(image2);
+        // };
 
 
+       
+        // var counter = 0;
         //todo: get the panel coordinates from backend and place on map
         function placeBackendPanel() {
+        
             {
                 //TODO: this is for optimizedPlacement
                 fetch('/optimizedPlacement_list', {
@@ -1249,9 +1575,12 @@
                     headers: {'Content-type': 'application/json'}
                 }).then(function (response) {
                     return response.text();
+
                 }).then(function (text) {
                     //alert(text);
                     let placementList = JSON.parse(text);
+                    
+                    //alert(window.placementList);
                     // try {
                     //     placementList = JSON.parse(text);
                     // }
@@ -1259,11 +1588,21 @@
                     //     console.log('Error parsing JSON:', error, text);
                     // }
                     //alert(placementList.length);
+                    // let counter = 0;
+                    //let counter2 = 0;
 
                     for (var panel of placementList) {
+                        // if (counter == 500){
+                        //     break;
+                        // }
+                        // if (counter2 == 1000){
+                        //     break;
+                        // }
+                        
                         
                         if (panel[0] == 'A') {
-                            
+                            // counter = counter +  1
+                            //static/array_A.png
                             putPanelA(panel[1]+120/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_A.png")
                             // // addPanelA();
                             // var ImageOverlayLayer1 = new CustomImageOverlayLayer({
@@ -1279,7 +1618,9 @@
                             // imageList.push([panel[1], panel[2], 1]);
                             // dynamicLayerMap.put([panel[1], panel[2], 1], ImageOverlayLayer1.id);
                             // // alert(ImageOverlayLayer1.id);
-                        } else if (panel[0] == 'B') {
+                        } 
+                        if (panel[0] == 'B') {
+                            //counter = counter + 1 
                             //putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
                             putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
                             // addPanelB();
@@ -1302,19 +1643,79 @@
                         }
                         // return response.text();
                     }
+                
+                 
                 })
 
             }
         }
 
+        
+        // var exam; 
+        // async function fetchExam() {
+        //     try {
+        //         const response = await fetch ('/optimizedPlacement_list', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //             "point_list": point_list
+        //         }),
+        //         headers: {'Content-type': 'application/json'}
+        //         });
+        //         exam = await response.text();
+        //         //exam = JSON.parse(exam);
+        //         return exam;
+
+        //     }catch(error){
+        //         console.error(error);
+        //     }
+        
+        // }
+        // async function renderExam() {
+        //     exam = await fetchExam();
+        //     console.log(exam);
+        //    // alert(exam);
+        //    // alert("its old" + typeof(exam));
+        //     exam = JSON.parse(exam);
+        //    // alert("its new" +typeof(exam));
+
+        //     // for (var panel of exam) {
+        //     //     if (panel[0] == 'A') {
+        //     //         putPanelA(panel[1]+120/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_A.png")
+                
+        //     //     }else if (panel[0] == 'B'){
+        //     //         putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+        //     //     }
+        // }
+        // renderExam();
         placeBackendPanel();
+        // function WithoutError(a){
+        //     for (var panel of a) {
+                        
+        //         if (panel[0] == 'A') {
+
+        //             //alert(panel[1]);
+                    
+                            
+        //             putPanelA(panel[1]+120/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_A.png")
+
+        //         } 
+        //         else if (panel[0] == 'B') {
+        //                     //putPanelBBtn(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+        //             putPanelB(panel[1]+60/ 0.11131955 * 0.000001,panel[2]+60/ 0.11131955 * 0.000001,"static/array_B.png")
+        
+        //                 }
+                      
+        //             }
+        //         }
+        //WithoutError(exam);
+
 
         view.on("click", function (evt) {
             // for(var i=0;i<imageList.length;i++){
             // 	if (imageList[i][0])
             // }
             if (addPanelState === 1) {
-                // alert("1")
+                //alert("1");
                 putPanelAbtn(evt.mapPoint.longitude, evt.mapPoint.latitude, "static/array_A.png");
 
 
@@ -1326,6 +1727,7 @@
                 // imageList.push([evt.mapPoint.longitude, evt.mapPoint.latitude, 2])
                 // dynamicLayerMap.put([evt.mapPoint.longitude, evt.mapPoint.latitude, 2], ImageOverlayLayer2.id);
             }
+
             if (addPanelState === 3) {
                 // var dlkey=dynamicLayerMap.keySet()
                 // for (var k in dlkey){
