@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
     <title>Panel Control Board</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css"> -->
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
@@ -15,8 +15,10 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- New API for taking screenshot -->
     <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css"> -->
-    <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
-    <script src="https://js.arcgis.com/4.9/"></script> -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.9/"></script>
+    <!-- <script src="jquery.storage.js"></script>  -->
+
     <style>
         html,
         body,
@@ -205,7 +207,7 @@
 
     </style>
     <script src="https://js.arcgis.com/4.16/"></script>
-    
+
     
 
 </head>
@@ -848,6 +850,13 @@
                 })
                 .then(canvas => {
                 const image2 = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
+                // Save image into localStorage
+                // try {
+                //     localStorage.setItem("picture", image2);
+                // }
+                // catch (e) {
+                //     console.log("Storage failed: " + e);
+                // }
                 const a = document.createElement('a')
                 a.setAttribute('download', 'my-image.png')
                 a.setAttribute('href', image2)
