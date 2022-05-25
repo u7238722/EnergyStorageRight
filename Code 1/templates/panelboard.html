@@ -16,8 +16,10 @@
     <!-- New API for taking screenshot -->
     <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css"> -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/css/main.css">
-    <script src="https://js.arcgis.com/4.9/"></script>
+    <!-- <script src="https://js.arcgis.com/4.9/"></script> -->
     <!-- <script src="jquery.storage.js"></script>  -->
+
+    <!-- <script src="https://raw.githubusercontent.com/amiad/screenshot.js/master/screenshot.js"></script> -->
 
     <style>
         html,
@@ -101,6 +103,34 @@
         }
 
          /* *****************EDIT  */
+
+        .guidence_message {
+            padding: 20px;
+            background-color: #f44336;
+            color: white;
+        }
+
+        .closeMsg {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .closeMsg:hover {
+        color: black;
+        }
+        #screenshots{
+            width: 300px;
+            min-height: 200px;
+            border: 1px solid black;
+        }
+        img{
+            border: red 2px solid;
+        }
 
         /* .bug-container {
             background: rgb(255,0,0,0.1);  
@@ -394,6 +424,12 @@
 <body id="capture">
 <div id="viewDiv"></div>
 <div id="popUpForPlacingPanel" class="popUp">
+        <!-- edit point -->
+    <div class="guidence_message">
+        <span class="closeMsg" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <strong>Note</strong> Please reload the webpage if the solar panel board is not loaded.
+    </div>
+    <!-- edit point -->
 
     <div class="popUpContent_functions"
          style="font-weight:bold;font-size:16px;color:#818181;text-align: center;margin-right: 10px">
@@ -607,7 +643,153 @@
          }
         
        // alert(localStorage.getItem("key"));
+/// get directly
+        function img2base64(imgSrc, cb) {
+            var img = new Image();
+            // formats: image/png, image/jpeg, image/jpg, image/gif, image/bmp
+            var outputFormat = 'image/png';
+            img.onload = function() {
+                var canvas = document.createElement('CANVAS');
+                var ctx = canvas.getContext('2d');
+                var dataURL;
+                canvas.height = this.naturalHeight;
+                canvas.width = this.naturalWidth;
+                ctx.drawImage(this, 0, 0);
+                dataURL = canvas.toDataURL(outputFormat);
+                cb(dataURL);
+            };
+            img.src = imgSrc;
+        }
 
+
+        var screenshotVideo;
+        const defaultSound = 'https://github.com/amiad/screenshot.js/raw/master/assets/cam-click.mp3';
+
+        class Screenshot {
+            constructor(args){
+                this.args = args;
+
+                if (typeof navigator.mediaDevices.getDisplayMedia == 'function'){
+                    if (! screenshotVideo){
+                        screenshotVideo = document.createElement("video");
+                        screenshotVideo.setAttribute('autoplay', true);
+                        screenshotVideo.style.top = '-9999px';
+                        screenshotVideo.style.position = 'absolute';
+                        screenshotVideo.style.marginBottom = screenshotVideo.clientHeight * -1 + 'px';
+                        document.body.appendChild(screenshotVideo);
+
+                        screenshotVideo.addEventListener('canplay', () => {this.takeScreenshot();});
+                    }
+                    if (! screenshotVideo.srcObject || ! screenshotVideo.srcObject.active ||args.askNewShare){
+                        if (screenshotVideo.srcObject){
+                            let tracks =  screenshotVideo.srcObject.getTracks();
+                            tracks.forEach(track => track.stop());
+                            screenshotVideo.srcObject = null;
+                        }
+                        navigator.mediaDevices.getDisplayMedia({
+                            audio: false
+                        })
+                        .then((record) => {
+                            screenshotVideo.srcObject = record;
+                        })
+                        .catch((e) => {
+                            //console.log('You need to allow screen share');
+                            if (typeof this.args.noPremit == 'function'){
+                                this.args.noPremit();
+                            }
+                        });
+                    }
+                    else {
+                        this.takeScreenshot();
+                    }
+                }
+                else {
+                    //console.log('You\'re browser not support screen share');
+                    if (typeof this.args.noSupport == 'function'){
+                        this.args.noSupport();
+                    }
+                }
+            }
+          
+
+            takeScreenshot(){
+
+                if (this.args.sound) {
+                    this.playSound();
+                }
+
+                const canvas = document.createElement("canvas");
+                canvas.width = screenshotVideo.clientWidth;
+                canvas.height = screenshotVideo.clientHeight;
+                canvas.getContext('2d').drawImage(screenshotVideo, 0, 0, canvas.width, canvas.height);
+                const img = document.createElement("img");
+                // img.src = canvas.toDataURL();
+
+                img.src = canvas.toDataURL('image/png').replace('image/png', 'image/webp')
+                //img.src = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
+                // alert("take shot");
+                // alert(img.src);
+
+                var test;
+
+                test = img.src
+
+                const a = document.createElement('a')
+                a.setAttribute('download', 'my-image.png')
+                a.setAttribute('href', img.src)
+                a.click()
+                canvas.remove()
+
+                // var base64Str;
+                // img2base64(img.src, function(dataUrl) {
+                // // do something
+                // console.log(dataUrl);
+                // base64Str = dataUrl;
+                localStorage.removeItem('img1');
+                // alert("remove image 1") 
+                localStorage.setItem('img1', test);
+                // alert(test);
+                // });
+                // alert("set local storage");
+
+                // document.cookie = img.src;
+                // alert(document.cookie);
+
+                if (this.args.width) {
+                    img.width = this.args.width;
+                }
+                if (this.args.height) {
+                    img.height = this.args.height;
+                }
+
+                img.addEventListener('load', () => {
+                    if (typeof this.args.success == 'function'){
+                        this.args.success(img);
+                    }
+                });
+            }
+
+            playSound(){
+                let sound;
+                if (this.args.sound === true){
+                    sound = defaultSound;
+                }
+                else {
+                    sound = this.args.sound;
+                }
+                new Audio(sound).play();
+            }
+        }
+        document.getElementById('report').addEventListener('click',()=>{
+            new Screenshot({
+                success: img => {
+                    documet.getElementById(screenshots).append(img);
+                    alert("new picture");
+                }
+            })
+        })
+
+/// get directly
         point_list = []
         dynamicLayerMap = new HashMap();
 
@@ -840,34 +1022,33 @@
   // end point ############
 
 
-        function capture() {
-            const captureElement = document.querySelector('#capture')
-            html2canvas(captureElement)
-                    .then(canvas => {
-                    canvas.style.display = 'none'
-                    document.body.appendChild(canvas)
-                    return canvas
-                })
-                .then(canvas => {
-                const image2 = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-                // Save image into localStorage
-                // try {
-                //     localStorage.setItem("picture", image2);
-                // }
-                // catch (e) {
-                //     console.log("Storage failed: " + e);
-                // }
-                const a = document.createElement('a')
-                a.setAttribute('download', 'my-image.png')
-                a.setAttribute('href', image2)
-                a.click()
-                canvas.remove()
-                })
-            }
+        // function capture() {
+        //     const captureElement = document.querySelector('#capture')
+        //     html2canvas(captureElement)
+        //             .then(canvas => {
+        //             canvas.style.display = 'true'
+        //             document.body.appendChild(canvas)
+        //             return canvas
+        //         })
+        //         .then(canvas => {
+        //         const image2 = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
+        //         // Save image into localStorage
+        //         // try {
+        //         //     localStorage.setItem("picture", image2);
+        //         // }
+        //         // catch (e) {
+        //         //     console.log("Storage failed: " + e);
+        //         // }
+        //         const a = document.createElement('a')
+        //         a.setAttribute('download', 'my-image.png')
+        //         a.setAttribute('href', image2)
+        //         a.click()
+        //         canvas.remove()
+        //         })
+        //     }
 
-        const btn = document.querySelector('#report')
-        btn.addEventListener('click', capture)
-        // author : Yuang LI 
+        // const btn = document.querySelector('#report')
+        // btn.addEventListener('click', capture)
         function putPanelBBtn(x, y, url_pic) {
             var ImageOverlayLayer2 = new CustomImageOverlayLayer({
                 picUrl: url_pic,
@@ -1477,7 +1658,7 @@
                 window.place = true;
             }    
         }
-        // new edit_point Yuang LI
+        
         function putPanelB(x, y, url_pic) {
             var ImageOverlayLayer2 = new CustomImageOverlayLayer({
                 picUrl: url_pic,
